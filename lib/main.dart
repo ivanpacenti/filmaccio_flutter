@@ -1,192 +1,47 @@
+import 'package:filmaccio_flutter/widgets/login/auth.dart';
+import 'package:filmaccio_flutter/widgets/login/home.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'widgets/login/login.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp( MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+   MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a blue toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  bool visibilitaPassword=false;
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        constraints: BoxConstraints.expand(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              margin: EdgeInsets.only(top: 100),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Entra in ',
-                    style: TextStyle(
-                      fontFamily: 'serif',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                    ),
-                  ),
-                  Text(
-                    'Filmaccio',
-                    style: TextStyle(
-                      fontFamily: 'serif',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      color: Theme.of(context).primaryColor,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 10),
-              width: 300,
-              child: TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Nome utente o email',
-                  prefixIcon: Icon(Icons.person),
-                ),
-                keyboardType: TextInputType.emailAddress,
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 10),
-              width: 300,
-              child: TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  prefixIcon: const Icon(Icons.lock),
-                  suffixIcon: IconButton(
-                    icon: Icon(visibilitaPassword ? Icons.visibility_off : Icons.visibility),
-                    onPressed: () {
-                      setState(() {
-                        visibilitaPassword=!visibilitaPassword;
-                      });
-
-                    },
-                  ),
-                ),
-                obscureText: !visibilitaPassword,
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 5),
-              width: 250,
-              child: ElevatedButton(
-                onPressed: () {},
-                child: Text('Entra'),
-              ),
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text(
-                'Password dimenticata',
-                style: TextStyle(fontSize: 12),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 10),
-              child: const Row(
-                children: [
-                  Expanded(
-                    child: Divider(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: Text(
-                      'Oppure',
-                      style: TextStyle(fontSize: 12),
-                    ),
-                  ),
-                  Expanded(
-                    child: Divider(),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 10),
-              width: 250,
-              child: OutlinedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.login),
-                label: const Text('Accedi con Google'),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 10),
-              child: const Text(
-                'Non hai un account?',
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 10),
-              width: 250,
-              child: ElevatedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.email),
-                label: const Text('Registrati con email'),
-              ),
-            ),
-          ],
+        title: 'Filmaccio',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
         ),
-      ),
+        home: StreamBuilder(
+          stream: Auth().authStateChanges,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              print("ho i dati");
+              return Home();
+
+            } else {
+              return LoginPage();
+            }
+          },
+        )
     );
   }
 }
