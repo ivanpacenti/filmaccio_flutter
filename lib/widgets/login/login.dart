@@ -33,14 +33,14 @@ class _LoginPageState extends State<LoginPage> {
     try{
         await Auth().signInWithEmailAndPassword(email: _email.text, password: _password.text);
     }
-    on FirebaseAuthException {}
+    on FirebaseAuthException catch (error){print(error);}
   }
   Future<void> CreateUser() async
   {
     try{
       await Auth().createUserWithEmailAndPassword(email: _email.text, password: _password.text);
     }
-    on FirebaseAuthException {}
+    on FirebaseAuthException catch (error){print(error);}
   }
 
 
