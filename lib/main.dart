@@ -1,5 +1,7 @@
+import 'package:filmaccio_flutter/widgets/nav/bottomnavbar.dart';
+
 import 'package:filmaccio_flutter/widgets/login/auth.dart';
-import 'package:filmaccio_flutter/widgets/login/home.dart';
+
 import 'package:flutter/material.dart';
 import 'widgets/login/login.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,17 +28,11 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Filmaccio',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
         home: StreamBuilder(
           stream: Auth().authStateChanges,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-
-              return Home();
-
+              return BottomNavBar();
             } else {
               return LoginPage();
             }

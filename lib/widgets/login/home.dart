@@ -1,3 +1,4 @@
+
 import 'package:filmaccio_flutter/widgets/login/auth.dart';
 import 'package:flutter/material.dart';
 
@@ -9,11 +10,6 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(onPressed: (){SignOut();}, icon: Icon(Icons.logout))
-        ],
-      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
