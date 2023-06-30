@@ -61,12 +61,18 @@ class _RegSecondaState extends State<RegSeconda> {
               ),
             ],
           ),
-
+          const Divider(
+            height: 50,
+            thickness: 0,
+          ),
           const Text(
             'Seleziona il tuo genere',
             style: TextStyle(
               fontSize: 18,
             ),
+          ),
+          const Divider(
+            height: 3,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -104,8 +110,7 @@ class _RegSecondaState extends State<RegSeconda> {
             ],
           ),
           const Divider(
-            height: 20,
-            thickness: 0,
+            height: 30,
           ),
           const Text(
             'Inserisci la tua data di nascita',
@@ -113,8 +118,11 @@ class _RegSecondaState extends State<RegSeconda> {
               fontSize: 18,
             ),
           ),
+          const Divider(
+            height: 20,
+          ),
           Container(
-            width: 450,
+            width: 420,
             child: DropdownDatePicker(
 
               inputDecoration: InputDecoration(
@@ -147,13 +155,15 @@ class _RegSecondaState extends State<RegSeconda> {
           ),
           const Divider(
             height: 20,
-            thickness: 0,
           ),
           ElevatedButton(
             onPressed: () {
               // Azione da eseguire quando il pulsante viene premuto
             },
             child: const Text('Avanti'),
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size(150, 40),
+            ),
           ),
         ],
       ),

@@ -55,7 +55,11 @@ class _RegPrimaState extends State<RegPrima> {
     }
     return true;
   }
-
+  bool isPassword(String string)
+  {
+    //DA IMPLEMENTARE CONTROLLO PASSWORD 8 CARATTERI MAIUSCOLA MINISCOLA E NUMERO
+    return false;
+  }
 
 
   Future<void> CreateUser() async
@@ -233,7 +237,7 @@ class _RegPrimaState extends State<RegPrima> {
                         color: Colors.red)),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const Divider(height: 16),
                 ElevatedButton(
                   onPressed: () {
                     if (isEmail(_email.text)) {
@@ -264,7 +268,7 @@ class _RegPrimaState extends State<RegPrima> {
                   },
                   child: const Text('Avanti'),
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(150, 0),
+                    minimumSize: const Size(150, 40),
                   ),
                 ),
               ],
