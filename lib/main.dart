@@ -1,6 +1,7 @@
 import 'package:filmaccio_flutter/widgets/nav/bottomnavbar.dart';
 
 import 'package:filmaccio_flutter/widgets/login/auth.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 import 'widgets/login/login.dart';
@@ -25,11 +26,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
+
         title: 'Filmaccio',
+        debugShowCheckedModeBanner: false,
         home: StreamBuilder(
           stream: Auth().authStateChanges,
           builder: (context, snapshot) {

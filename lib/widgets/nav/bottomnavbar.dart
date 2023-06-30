@@ -1,6 +1,6 @@
 import 'package:filmaccio_flutter/widgets/login/logout.dart';
 import 'package:filmaccio_flutter/widgets/login/profilo.dart';
-import 'package:filmaccio_flutter/widgets/login/registrazione.dart';
+import 'package:filmaccio_flutter/widgets/login/RegPrima.dart';
 import 'package:filmaccio_flutter/widgets/login/ricerca.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
@@ -15,7 +15,7 @@ class BottomNavBar extends StatelessWidget {
     List<Widget> _buildScreens() {
       return [
         Home(),
-        Registrazione(),
+        RegPrima(),
         Logout(),
         Ricerca(),
         Profilo()

@@ -1,5 +1,6 @@
 import 'package:filmaccio_flutter/widgets/login/auth.dart';
 import 'package:filmaccio_flutter/widgets/login/home.dart';
+import 'package:filmaccio_flutter/widgets/login/RegPrima.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -206,7 +207,12 @@ class _LoginPageState extends State<LoginPage> {
               margin: const EdgeInsets.only(top: 10),
               width: 250,
               child: ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) =>  RegPrima()),
+                  );
+                },
                 icon: const Icon(Icons.email),
                 label: const Text('Registrati con email'),
               ),

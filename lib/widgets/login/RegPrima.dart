@@ -1,22 +1,23 @@
+import 'package:filmaccio_flutter/widgets/login/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'RegSeconda.dart';
 import 'auth.dart';
 
 
 
-class Registrazione extends StatefulWidget {
+class RegPrima extends StatefulWidget {
   @override
-  _RegistrazioneState createState() => _RegistrazioneState();
+  _RegPrimaState createState() => _RegPrimaState();
 }
 
-class _RegistrazioneState extends State<Registrazione> {
+class _RegPrimaState extends State<RegPrima> {
   var confirmPass;
   bool visibilitaPassword1=false;
   bool visibilitaPassword2=false;
   bool erroreLogin=false;
-  Color _color= Colors.black;
   int lunghezza=0;
   final TextEditingController _email=TextEditingController();
   final TextEditingController _utente=TextEditingController();
@@ -66,7 +67,6 @@ class _RegistrazioneState extends State<Registrazione> {
       print(error);
       setState(() {
         erroreLogin=true;
-        _color=Colors.red;
       });
     }
   }
@@ -227,7 +227,7 @@ class _RegistrazioneState extends State<Registrazione> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if(!passwordUguali) const Text("Le password non corrispondono",
+                    if(passwordUguali==false) const Text("Le password non corrispondono",
                         style: TextStyle(
                         fontSize: 12,
                         color: Colors.red)),
@@ -254,6 +254,13 @@ class _RegistrazioneState extends State<Registrazione> {
                         utenteValido=false;
                       });
                     }
+                    if(utenteValido&&emailValida&&passwordUguali)
+                      {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>  RegSeconda()),
+                        );
+                      }
                   },
                   child: const Text('Avanti'),
                   style: ElevatedButton.styleFrom(
@@ -268,16 +275,26 @@ class _RegistrazioneState extends State<Registrazione> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginPage()),
+            );
+
+          },
         ),
-        title: Text(
-          '1 su 3',
-          style: TextStyle(
-            fontFamily: 'sans-serif-medium',
-            color: Theme.of(context).primaryColor,
-            fontSize: 24,
-          ),
-        ),
+        title: Align(
+            alignment: Alignment.centerRight,
+            child:Text(
+              '1/3',
+              textAlign: TextAlign.end,
+              style: TextStyle(
+                fontFamily: 'sans-serif',
+                color: Theme.of(context).secondaryHeaderColor,
+                fontSize: 24,
+
+              ),
+            )),
       ),
     );
   }
