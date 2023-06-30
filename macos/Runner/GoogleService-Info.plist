@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>345521301448-esdsgjpo93em9qmahqqvl6463kqn2shl.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.345521301448-esdsgjpo93em9qmahqqvl6463kqn2shl</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>345521301448-0u06erg3bbjjo6tme4bnkroajodefsh6.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDPKAQ-SdMfbOOY_Z40woByB40b_YgbPWg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>345521301448</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.filmaccioFlutter.RunnerTests</string>
+	<key>PROJECT_ID</key>
+	<string>filmaccio</string>
+	<key>STORAGE_BUCKET</key>
+	<string>filmaccio.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:345521301448:ios:bfabecc3ad9d4fa7ac82fd</string>
+</dict>
+</plist>

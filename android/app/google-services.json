@@ -1,0 +1,100 @@
+{
+  "project_info": {
+    "project_number": "345521301448",
+    "project_id": "filmaccio",
+    "storage_bucket": "filmaccio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:345521301448:android:3ad31cf8a2e0310bac82fd",
+        "android_client_info": {
+          "package_name": "com.example.filmaccio_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "345521301448-nqilj1b09jveh07teotr4vam7hjdjape.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsv7bFz-YugncqP4CUdlc0ICcDHiMTdo8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "345521301448-nqilj1b09jveh07teotr4vam7hjdjape.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:345521301448:android:371c52036ee16fa1ac82fd",
+        "android_client_info": {
+          "package_name": "it.univpm.filmaccio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "345521301448-0u06erg3bbjjo6tme4bnkroajodefsh6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.univpm.filmaccio",
+            "certificate_hash": "7f57eaf725dc7bb3b0e7f0a5a42df021bb1e1fe8"
+          }
+        },
+        {
+          "client_id": "345521301448-3bkb6mmoi60uo5d4rifigq20f3897s5m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.univpm.filmaccio",
+            "certificate_hash": "19d253f1cbc3f288d7eaf96fb931c8fa3c1b8e4e"
+          }
+        },
+        {
+          "client_id": "345521301448-g1q2p410ismrp6nkj77vrdg6dagfmud4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.univpm.filmaccio",
+            "certificate_hash": "1ac8a884681987a5e17f56ed48a358dcdb504ce2"
+          }
+        },
+        {
+          "client_id": "345521301448-te2k13n053mke1naqinnnl3s7ng4sk54.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.univpm.filmaccio",
+            "certificate_hash": "bc5315b8bd739c356658d023bdf2de2e253cfd56"
+          }
+        },
+        {
+          "client_id": "345521301448-nqilj1b09jveh07teotr4vam7hjdjape.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsv7bFz-YugncqP4CUdlc0ICcDHiMTdo8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "345521301448-nqilj1b09jveh07teotr4vam7hjdjape.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
