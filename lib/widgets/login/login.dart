@@ -26,6 +26,8 @@ class LoginPage extends StatefulWidget {
 }
 class _LoginPageState extends State<LoginPage> {
   bool visibilitaPassword=false;
+  bool erroreLogin=false;
+  Color _color= Colors.black;
   final TextEditingController _email=TextEditingController();
   final TextEditingController _password=TextEditingController();
   Future<void> SignIn() async
@@ -33,14 +35,27 @@ class _LoginPageState extends State<LoginPage> {
     try{
         await Auth().signInWithEmailAndPassword(email: _email.text, password: _password.text);
     }
-    on FirebaseAuthException catch (error){print(error);}
+    on FirebaseAuthException catch (error){
+      print(error);
+      setState(() {
+        erroreLogin=true;
+        _color=Colors.red;
+      });
+
+      }
   }
   Future<void> CreateUser() async
   {
     try{
       await Auth().createUserWithEmailAndPassword(email: _email.text, password: _password.text);
     }
-    on FirebaseAuthException catch (error){print(error);}
+    on FirebaseAuthException catch (error){
+      print(error);
+      setState(() {
+        erroreLogin=true;
+        _color=Colors.red;
+      });
+      }
   }
 
 
@@ -81,7 +96,18 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               margin: const EdgeInsets.only(top: 10),
               width: 300,
+              decoration:
+              BoxDecoration(
+                  border: Border.all(color: _color)
+              ),
               child: TextFormField(
+                onChanged: (String newValue) {
+                    // test for your condition
+                    setState(() {
+                      _color = Colors.black;
+                      erroreLogin=false;// change the color
+                    });
+                },
                 controller: _email,
                 decoration: const InputDecoration(
                   labelText: 'Nome utente o email',
@@ -90,10 +116,31 @@ class _LoginPageState extends State<LoginPage> {
                 keyboardType: TextInputType.emailAddress,
               ),
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if(erroreLogin) Text(
+                  "Indirizzo email o password errati",
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.red),),
+              ],
+            ),
             Container(
               margin: const EdgeInsets.only(top: 10),
               width: 300,
+              decoration:
+                BoxDecoration(
+                  border: Border.all(color: _color)
+              ) ,
               child: TextFormField(
+                onChanged: (String newValue) {
+                  // test for your condition
+                  setState(() {
+                    _color = Colors.black;
+                    erroreLogin=false;// change the color
+                  });
+                },
                 controller: _password,
                 decoration: InputDecoration(
                   labelText: 'Password',
@@ -116,6 +163,10 @@ class _LoginPageState extends State<LoginPage> {
               child: ElevatedButton(
                 onPressed: () {
                   SignIn();
+                  setState(() {
+                    if(erroreLogin)
+                      {_color=Colors.red;}
+                  });
                 },
                 child: const Text('Entra'),
               ),
