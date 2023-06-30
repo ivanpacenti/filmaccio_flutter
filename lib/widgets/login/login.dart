@@ -44,19 +44,7 @@ class _LoginPageState extends State<LoginPage> {
 
       }
   }
-  Future<void> CreateUser() async
-  {
-    try{
-      await Auth().createUserWithEmailAndPassword(email: _email.text, password: _password.text);
-    }
-    on FirebaseAuthException catch (error){
-      print(error);
-      setState(() {
-        erroreLogin=true;
-        _color=Colors.red;
-      });
-      }
-  }
+
 
 
   @override
