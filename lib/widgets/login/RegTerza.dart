@@ -1,3 +1,4 @@
+import 'package:filmaccio_flutter/widgets/login/RegSeconda.dart';
 import 'package:flutter/material.dart';
 
 class RegTerza extends StatefulWidget {
@@ -6,124 +7,111 @@ class RegTerza extends StatefulWidget {
 }
 
 class _RegTerzaState extends State<RegTerza> {
+  int lunghezza=0;
+  final TextEditingController _nomeVisualizzato=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        constraints: const BoxConstraints.expand(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>  RegSeconda()),
+            );
+          },
+        ),
+        title: Align(
+            alignment: Alignment.centerRight,
+            child:Text(
+              '3/3',
+              textAlign: TextAlign.end,
+              style: TextStyle(
+                fontFamily: 'sans-serif',
+                color: Theme.of(context).secondaryHeaderColor,
+                fontSize: 24,
+
+              ),
+            )),
+      ),
+      body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(
-              flex: 1,
-              child: Row(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 4.0),
-                      child: Text(
-                        'Registrati a',
-                        style: TextStyle(
-                          fontFamily: 'serif',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24.0,
-                        ),
-                      ),
+                  const Text(
+                    'Registrati a ',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20
                     ),
                   ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: Text(
-                        'Filmaccio',
-                        style: TextStyle(
-                          fontFamily: 'serif',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24.0,
-                          fontStyle: FontStyle.italic,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
+                  Text(
+                    'Filmaccio',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic,
+                      fontSize: 20,
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
                 ],
               ),
+            Container(
+              height: 50,
+
             ),
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 12.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Azione del pulsante "Fine"
-                  },
-                  child: const Text('Fine'),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Row(
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      // Azione del pulsante "Indietro"
-                    },
-                    icon: const Icon(Icons.arrow_back),
-                  ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        '3 su 3',
-                        style: TextStyle(
-                          fontFamily: 'sans-serif-medium',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24.0,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                'Imposta propic',
-                style: TextStyle(fontSize: 16.0),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-              child: TextFormField(
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 400,
+                    child:TextFormField(
+                controller: _nomeVisualizzato,
+                onChanged: (hasValue){
+                  setState(() {
+                    lunghezza=hasValue.length;
+                  });
+                },
                 decoration: InputDecoration(
                   labelText: 'Nome visualizzato',
-                  counterText: '0 / 50',
+                  counterText: '$lunghezza / 50',
                   prefixIcon: const Icon(Icons.contact_page),
                   suffixIcon: IconButton(
                     onPressed: () {
-                      // Azione dell'icona di cancellazione del testo
+                      setState(() {
+                        _nomeVisualizzato.text="";
+                        lunghezza=0;
+                      });
                     },
                     icon: const Icon(Icons.clear),
+
                   ),
                 ),
                 maxLength: 50,
                 keyboardType: TextInputType.text,
-              ),
+
+            )),
+                const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text(
+                  "Se vuoi imposta un'immagine del profilo",
+                  style: TextStyle(fontSize: 14),
+                ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 12.0),
               child: Container(
                 width: 150.0,
                 height: 150.0,
-                child: Image.asset('assets/default_propic.png'),
+                child: Image.asset('assets/images/default_propic.png'),
               ),
             ),
           ],
         ),
-      ),
+      ]),
     );
   }
 }

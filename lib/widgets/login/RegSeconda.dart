@@ -75,9 +75,8 @@ class _RegSecondaState extends State<RegSeconda> {
               ),
             ],
           ),
-          const Divider(
+           Container(
             height: 50,
-            thickness: 0,
           ),
           const Text(
             'Seleziona il tuo genere',
@@ -85,7 +84,7 @@ class _RegSecondaState extends State<RegSeconda> {
               fontSize: 18,
             ),
           ),
-          const Divider(
+           Container(
             height: 3,
           ),
           Row(
@@ -123,7 +122,7 @@ class _RegSecondaState extends State<RegSeconda> {
               const Text('Altro'),
             ],
           ),
-          const Divider(
+           Container(
             height: 30,
           ),
           const Text(
@@ -132,7 +131,7 @@ class _RegSecondaState extends State<RegSeconda> {
               fontSize: 18,
             ),
           ),
-          const Divider(
+           Container(
             height: 20,
           ),
           Container(
@@ -171,7 +170,7 @@ class _RegSecondaState extends State<RegSeconda> {
               locale: "it_IT",// optional
             ),
           ),
-          const Divider(
+           Container(
             height: 20,
           ),
           ElevatedButton(

@@ -1,3 +1,4 @@
+import 'package:filmaccio_flutter/widgets/login/RegTerza.dart';
 import 'package:filmaccio_flutter/widgets/login/logout.dart';
 import 'package:filmaccio_flutter/widgets/login/profilo.dart';
 import 'package:filmaccio_flutter/widgets/login/RegPrima.dart';
@@ -18,7 +19,7 @@ class BottomNavBar extends StatelessWidget {
         RegPrima(),
         Logout(),
         Ricerca(),
-        Profilo()
+        RegTerza()
       ];
     }
 
