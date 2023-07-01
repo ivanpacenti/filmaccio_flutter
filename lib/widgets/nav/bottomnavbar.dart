@@ -19,7 +19,8 @@ class BottomNavBar extends StatelessWidget {
         RegPrima(),
         Logout(),
         Ricerca(),
-        RegTerza()
+        RegTerza(),
+        Profilo()
       ];
     }
 
@@ -46,6 +47,12 @@ class BottomNavBar extends StatelessWidget {
         PersistentBottomNavBarItem(
           icon: const Icon(Icons.app_registration),
           title: ("Registrazione"),
+          activeColorPrimary: Colors.blue,
+          inactiveColorPrimary: Colors.grey,
+        ),
+        PersistentBottomNavBarItem(
+          icon: const Icon(Icons.app_registration),
+          title: ("RegSeconda"),
           activeColorPrimary: Colors.blue,
           inactiveColorPrimary: Colors.grey,
         ),
