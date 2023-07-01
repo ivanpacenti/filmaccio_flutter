@@ -16,9 +16,8 @@ class BottomNavBar extends StatelessWidget {
     List<Widget> _buildScreens() {
       return [
         Home(),
-        RegPrima(),
-        Logout(),
         Ricerca(),
+        RegPrima(),
         RegTerza(),
         Profilo()
       ];
@@ -33,14 +32,8 @@ class BottomNavBar extends StatelessWidget {
           inactiveColorPrimary: Colors.grey,
         ),
         PersistentBottomNavBarItem(
-          icon: const Icon(Icons.home),
+          icon: const Icon(Icons.search),
           title: ("Ricerca"),
-          activeColorPrimary: Colors.blue,
-          inactiveColorPrimary: Colors.grey,
-        ),
-        PersistentBottomNavBarItem(
-          icon: const Icon(Icons.logout),
-          title: ("Logout"),
           activeColorPrimary: Colors.blue,
           inactiveColorPrimary: Colors.grey,
         ),
