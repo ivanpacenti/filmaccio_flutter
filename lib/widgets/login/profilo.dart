@@ -1,9 +1,15 @@
+import 'package:filmaccio_flutter/widgets/login/RegTerza.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../Services/UserService.dart';
 import '../models/UserModel.dart';
+import 'modificaUtente.dart';
 
+import '../login/Auth.dart';
 class Profilo extends StatelessWidget {
   const Profilo({Key? key}) : super(key: key);
+
+  get modificaUtente => null;
 
   @override
   Widget build(BuildContext context) {
@@ -40,16 +46,39 @@ class Profilo extends StatelessWidget {
                                 email ?? 'No Email',
                                 style: TextStyle(fontSize: 14),
                               ),
-                              ElevatedButton(
-                                onPressed: () {},
-                                child: Text('SEGUI'),
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    // Aggiungi qui la logica per la modifica del profilo
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ModificaUtente(),
+                                      ),
+                                    );
+                                  },
+                                  child: Text('Modifica'),
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 8),
+                                ElevatedButton(
+                                  onPressed: logoutFunction,
+                                  child: Text('Logout'),
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            SizedBox(height: 8),
                               SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 child: Row(
@@ -163,4 +192,15 @@ class Profilo extends StatelessWidget {
       },
     );
   }
+  void logoutFunction() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      // Aggiungi qui eventuali altre operazioni di pulizia o navigazione dopo il logout
+    } catch (e) {
+      // Gestisci eventuali errori durante il logout
+      print('Errore durante il logout: $e');
+    }
+  }
+  
+
 }

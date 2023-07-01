@@ -3,7 +3,6 @@ import '../models/UserModel.dart';
 
 class UserService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  String nameShown = 'Nome Utente Sconosciuto';
 
   // Metodo per ottenere lo stream dell'utente
   Stream<UserModel> get user {
@@ -12,7 +11,7 @@ class UserService {
         // Restituisci un UserModel con i dati dell'utente corrente
         return UserModel(
           uid: user.uid,
-          nameShown:user.displayName??'Nome Utente Sconosciuto',
+          nameShown: user.displayName ?? 'boh',
           email: user.email ?? 'Email Sconosciuta',
         );
       } else {
@@ -25,9 +24,6 @@ class UserService {
       }
     });
   }
-
   // Metodo per impostare il campo nameShown
-  void setNameShown(String nameShown) {
-    nameShown = nameShown;
-  }
+
 }
