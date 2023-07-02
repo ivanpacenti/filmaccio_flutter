@@ -26,39 +26,23 @@ class _RegPrimaState extends State<RegPrima> {
   bool passwordUguali=true;
   bool emailValida=true;
   bool utenteValido=true;
+  bool passwordValida=true;
 
   bool isEmail(String string) {
-    // Null or empty string is invalid
-    if (string == null || string.isEmpty) {
-      return false;
-    }
-
-    const pattern = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
-    final regExp = RegExp(pattern);
-
-    if (!regExp.hasMatch(string)) {
-      return false;
-    }
-    return true;
+    RegExp regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    return regex.hasMatch(string);
   }
-
   bool isUtente(String string) {
-    if (string == null || string.isEmpty) {
-      return false;
-    }
-    // Null or empty string is invalid
-    const pattern = r"^(?=.*[a-zA-Z])[a-zA-Z0-9._]{3,}$";
-    // Quì viene restituito il risultato del match tra il pattern e lo username inserito dall'utente
-    final regExp = RegExp(pattern);
-    if (!regExp.hasMatch(string)) {
-      return false;
-    }
-    return true;
+    RegExp regex = RegExp(r"^(?=.*[a-zA-Z])[a-zA-Z0-9._]{3,}$");
+    return regex.hasMatch(string);
   }
-  bool isPassword(String string)
+  bool isPassword(String string) {
+    RegExp regex = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$');
+    return regex.hasMatch(string);
+  }
+  bool isPasswordUguali(String pwd1, String pwd2)
   {
-    //DA IMPLEMENTARE CONTROLLO PASSWORD 8 CARATTERI MAIUSCOLA MINISCOLA E NUMERO
-    return false;
+    return(_password2.text==_password1.text);
   }
 
 
@@ -198,6 +182,17 @@ class _RegPrimaState extends State<RegPrima> {
                   ),
                   obscureText: visibilitaPassword1,
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if(!passwordValida) const Text("La password deve essere lunga "
+                        "almeno 8 caratteri e contenere almeno una lettera "
+                        "maiuscola, una minuscola e un numero",
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.red))
+                  ],
+                ),
 
                 TextFormField(
                   controller: _password2,
@@ -216,17 +211,9 @@ class _RegPrimaState extends State<RegPrima> {
                   obscureText: visibilitaPassword2,
                   onChanged: (String hasChange){
                     if(hasChange.isNotEmpty){
-                      if(_password2.text!=_password1.text){
-                        setState(() {
-                          passwordUguali=false;
-                        });
-                      } else {
-                        setState(() {
-                          passwordUguali=true;
-                        });
-                      }
-                    }
-                  },
+                      passwordUguali=isPasswordUguali(_password1.text, _password2.text);
+                      } else passwordUguali=false;
+                    },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -258,7 +245,17 @@ class _RegPrimaState extends State<RegPrima> {
                         utenteValido=false;
                       });
                     }
-                    if(utenteValido&&emailValida&&passwordUguali)
+                    if (isPassword(_password1.text)) {
+                      setState(() {
+                        passwordValida=true;
+                      });
+                    } else {
+                      setState(() {
+                        passwordValida=false;
+                      });
+                    }
+                    passwordUguali=isPasswordUguali(_password1.text,_password2.text);
+                    if(utenteValido&&emailValida&&passwordUguali&&passwordValida)
                       {
                         Navigator.push(
                           context,
