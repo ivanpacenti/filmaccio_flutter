@@ -1,5 +1,7 @@
 import 'package:filmaccio_flutter/widgets/login/RegSeconda.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class RegTerza extends StatefulWidget {
   @override
@@ -7,6 +9,22 @@ class RegTerza extends StatefulWidget {
 }
 
 class _RegTerzaState extends State<RegTerza> {
+  // This is the file that will be used to store the image
+  File? _image;
+
+  _getFromGallery() async {
+    XFile? pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 1800,
+      maxHeight: 1800,
+    );
+    if (pickedFile != null) {
+       setState(() {
+
+         _image = File(pickedFile.path);
+       });
+    }
+  }
   int lunghezza=0;
   final TextEditingController _nomeVisualizzato=TextEditingController();
   @override
@@ -106,7 +124,17 @@ class _RegTerzaState extends State<RegTerza> {
               child: Container(
                 width: 150.0,
                 height: 150.0,
-                child: Image.asset('assets/images/default_propic.png'),
+                child: GestureDetector(
+                  onTap: (){
+                    _getFromGallery();
+                  },
+                  child: CircleAvatar(
+                    radius: 80,
+                    backgroundImage: (_image != null)
+                        ? Image.file(_image!).image
+                        : AssetImage('assets/images/default_propic.png'),
+                  ),
+                ),
               ),
             ),
           ],
@@ -114,4 +142,7 @@ class _RegTerzaState extends State<RegTerza> {
       ]),
     );
   }
+
+
+
 }
