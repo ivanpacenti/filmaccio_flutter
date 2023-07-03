@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import '../Firebase/FirestoreService.dart';
 import 'Auth.dart';
 
 class ModificaUtente extends StatefulWidget {
@@ -68,8 +68,16 @@ class _ModificaUtenteState extends State<ModificaUtente> {
                     SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () {
-                        updateUserName();
-                        Navigator.of(context).pop(true); // ritorna alla pagina di profilo con un valore true
+                        final User? currentUser = Auth().currentUser;
+                        if (currentUser != null) {
+                          FirestoreService.updateUserField(currentUser.uid, 'nameShown', _nameController.text, (bool success) {
+                            if (success) {
+                              Navigator.of(context).pop(true); // ritorna alla pagina di profilo con un valore true
+                            } else {
+                              // Gestisci il caso in cui l'aggiornamento non sia riuscito
+                            }
+                          });
+                        }
                       },
                       child: Text('Salva'),
                     ),
@@ -115,13 +123,5 @@ class _ModificaUtenteState extends State<ModificaUtente> {
           }
         }
     );
-  }
-
-  void updateUserName() async {
-    final User? currentUser = Auth().currentUser;
-    if (currentUser != null) {
-      await FirebaseFirestore.instance.collection('users').doc(currentUser.uid)
-          .update({'nameShown': _nameController.text});
-    }
   }
 }
