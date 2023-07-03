@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../models/UserData.dart';
+
 class FirestoreService {
   static FirebaseFirestore _db = FirebaseFirestore.instance;
   static CollectionReference _collectionUsers = _db.collection('users');
@@ -403,5 +405,25 @@ class FirestoreService {
       }
     }
     return latestReview;
+  }
+
+  static Future<void> saveUserData(UserData userData) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userData.email)
+          .set({
+        'username': userData.nomeUtente,
+        'gender': userData.genere,
+        'birthDate': userData.dataNascita,
+        'nameShown': userData.nomeVisualizzato,
+        // Aggiungi altri campi dati se necessario
+      });
+      // Caricamento dati completato con successo
+    } catch (error) {
+      // Si è verificato un errore durante il caricamento dei dati
+      print(error);
+      // Gestisci l'errore di conseguenza
+    }
   }
 }

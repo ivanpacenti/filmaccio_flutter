@@ -15,7 +15,7 @@ class Auth{
       ({required String email, required String password}) async{
 
     await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
-    print("creato");
+
   }
 
   Future<void> signOut() async

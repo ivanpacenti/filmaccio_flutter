@@ -3,12 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import '../models/UserData.dart';
+
 class RegTerza extends StatefulWidget {
+  final UserData userData;
+  const RegTerza( {Key? key,required this.userData}) : super(key: key);
   @override
   _RegTerzaState createState() => _RegTerzaState();
 }
 
 class _RegTerzaState extends State<RegTerza> {
+  late UserData userData;
+
+  @override
+  void initState() {
+    super.initState();
+    userData = widget.userData;
+  }
   // This is the file that will be used to store the image
   File? _image;
 
@@ -36,7 +47,7 @@ class _RegTerzaState extends State<RegTerza> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) =>  RegSeconda()),
+              MaterialPageRoute(builder: (context) =>  RegSeconda(userData: userData)),
             );
           },
         ),
@@ -137,6 +148,17 @@ class _RegTerzaState extends State<RegTerza> {
                 ),
               ),
             ),
+                ElevatedButton(
+                  onPressed: () {
+                    userData.nomeVisualizzato=_nomeVisualizzato.text;
+                    userData.avatar=Image.file(_image!).image;
+
+                  },
+                  child: const Text('Avanti'),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(150, 40),
+                  ),
+                ),
           ],
         ),
       ]),

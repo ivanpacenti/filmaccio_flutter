@@ -2,13 +2,14 @@ import 'package:filmaccio_flutter/widgets/login/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import '../models/UserData.dart';
 import 'RegSeconda.dart';
 import 'auth.dart';
 
 
 
 class RegPrima extends StatefulWidget {
+  UserData userData=UserData();
   @override
   _RegPrimaState createState() => _RegPrimaState();
 }
@@ -17,7 +18,6 @@ class _RegPrimaState extends State<RegPrima> {
   var confirmPass;
   bool visibilitaPassword1=false;
   bool visibilitaPassword2=false;
-  bool erroreLogin=false;
   int lunghezza=0;
   final TextEditingController _email=TextEditingController();
   final TextEditingController _utente=TextEditingController();
@@ -27,6 +27,14 @@ class _RegPrimaState extends State<RegPrima> {
   bool emailValida=true;
   bool utenteValido=true;
   bool passwordValida=true;
+  bool emailEsistente=false;
+  late UserData userData;
+
+  @override
+  void initState() {
+    super.initState();
+    userData = widget.userData;
+  }
 
   bool isEmail(String string) {
     RegExp regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
@@ -46,16 +54,17 @@ class _RegPrimaState extends State<RegPrima> {
   }
 
 
-  Future<void> CreateUser() async
+  Future<bool> createUser() async
   {
     try{
       await Auth().createUserWithEmailAndPassword(email: _email.text, password: _password2.text);
+      return true;
     }
-    on FirebaseAuthException catch (error){
-      print(error);
+    on FirebaseAuthException catch (e){
       setState(() {
-        erroreLogin=true;
+        emailEsistente=true;
       });
+      return false;
     }
   }
   @override
@@ -117,7 +126,12 @@ class _RegPrimaState extends State<RegPrima> {
                     if(!emailValida) const Text("Indirizzo mail non valido",
                         style: TextStyle(
                             fontSize: 12,
-                            color: Colors.red))
+                            color: Colors.red)) else
+                              if(emailEsistente) const Text("Indirizzo mail già esistente",
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.red))
+
                   ],
                 ),
                 TextFormField(
@@ -149,19 +163,19 @@ class _RegPrimaState extends State<RegPrima> {
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [  if(!utenteValido)  const Expanded(
-                      child:
-                      FittedBox(
-                        child: Text("Il nome utente deve essere lungo "
+                  children: [  if(!utenteValido)
+                      Container(
+                        width: 300,
+                        child: const Text("Il nome utente deve essere lungo "
                             "almeno 3 caratteri, deve contenere almeno una lettera e può contenere "
                             "solo lettere, numeri e i caratteri '.' e '_'",
                             softWrap: true,
                             overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
+                            maxLines: 3,
                             style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.red))
-                      ))
+                      )
                     
                   ],
                 ),
@@ -184,13 +198,15 @@ class _RegPrimaState extends State<RegPrima> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if(!passwordValida) const Text("La password deve essere lunga "
+                  children: [  if(!passwordValida)  Container(
+                    width: 300,
+                    child: const Text("La password deve essere lunga "
                         "almeno 8 caratteri e contenere almeno una lettera "
-                        "maiuscola, una minuscola e un numero",
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.red))
+                        "maiuscola, una minuscola e un numero",style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.red)),
+                  )
+
                   ],
                 ),
 
@@ -226,7 +242,7 @@ class _RegPrimaState extends State<RegPrima> {
                 ),
                 const Divider(height: 16),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async{
                     if (isEmail(_email.text)) {
                       setState(() {
                       emailValida=true;
@@ -257,10 +273,17 @@ class _RegPrimaState extends State<RegPrima> {
                     passwordUguali=isPasswordUguali(_password1.text,_password2.text);
                     if(utenteValido&&emailValida&&passwordUguali&&passwordValida)
                       {
-                        Navigator.push(
+
+                        userData.email=_email.text;
+                        userData.nomeUtente=_utente.text;
+                        userData.password=_password1.text;
+
+                        if(await createUser()) {
+                          Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) =>  RegSeconda()),
+                          MaterialPageRoute(builder: (context) => RegSeconda(userData: userData)),
                         );
+                        }
                       }
                   },
                   child: const Text('Avanti'),

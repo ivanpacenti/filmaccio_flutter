@@ -7,10 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:filmaccio_flutter/widgets/other_user_profile.dart';
 import '../login/home.dart';
+import '../models/UserData.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({Key? key}) : super(key: key);
-
+//da cencellare sucesivamente
   @override
   Widget build(BuildContext context) {
     List<Widget> _buildScreens() {
@@ -18,7 +19,6 @@ class BottomNavBar extends StatelessWidget {
         Home(),
         Ricerca(),
         OtherUserProfile("ciao"),
-        RegTerza(),
         Profilo()
       ];
     }
@@ -40,12 +40,6 @@ class BottomNavBar extends StatelessWidget {
         PersistentBottomNavBarItem(
           icon: const Icon(Icons.app_registration),
           title: ("OtherUserProfile"),
-          activeColorPrimary: Colors.blue,
-          inactiveColorPrimary: Colors.grey,
-        ),
-        PersistentBottomNavBarItem(
-          icon: const Icon(Icons.app_registration),
-          title: ("RegSeconda"),
           activeColorPrimary: Colors.blue,
           inactiveColorPrimary: Colors.grey,
         ),

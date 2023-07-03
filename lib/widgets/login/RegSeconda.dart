@@ -1,11 +1,13 @@
 import 'package:filmaccio_flutter/widgets/login/RegPrima.dart';
+import 'package:filmaccio_flutter/widgets/models/UserData.dart';
 import 'package:flutter/material.dart';
 import 'package:datepicker_dropdown/datepicker_dropdown.dart';
 
 import 'RegTerza.dart';
 
 class RegSeconda extends StatefulWidget {
-  const RegSeconda({Key? key}) : super(key: key);
+  final UserData userData;
+  const RegSeconda( {Key? key,required this.userData}) : super(key: key);
 
   @override
   _RegSecondaState createState() => _RegSecondaState();
@@ -25,6 +27,13 @@ class _RegSecondaState extends State<RegSeconda> {
   }
 
   Genere? _genere= Genere.Maschile;
+  late UserData userData;
+
+  @override
+  void initState() {
+    super.initState();
+    userData = widget.userData;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -176,9 +185,12 @@ class _RegSecondaState extends State<RegSeconda> {
           ElevatedButton(
             onPressed: () {
               if(dateValidator(year, month, day)) {
+                userData.dataNascita=DateTime(year,month,day);
+                userData.genere=_genere.toString();
+
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>  RegTerza()),
+                  MaterialPageRoute(builder: (context) =>  RegTerza(userData: userData)),
                 );
               }
               else {
