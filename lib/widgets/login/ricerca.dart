@@ -1,6 +1,9 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:filmaccio_flutter/widgets/Firebase/FirestoreService.dart';
 import 'package:flutter/material.dart';
+
+import '../other_user_profile.dart';
 
 class Ricerca extends StatefulWidget {
   @override
@@ -30,6 +33,16 @@ class _RicercaState extends State<Ricerca> {
       _usersStream = null; //  questa riga per ripulire lo stream dei dati degli utenti
     }
     setState(() {});
+  }
+  void _openOtherUserProfile(String userId, String id) {
+
+    // per aprire la pagina di un utente cercato
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OtherUserProfile(userId: userId),
+      ),
+    );
   }
 
   @override
@@ -90,9 +103,18 @@ class _RicercaState extends State<Ricerca> {
                       .map((DocumentSnapshot document) {
                     Map<String, dynamic> data =
                     document.data() as Map<String, dynamic>;
+                    String userId = data['uid']; // Utilizzo il campo 'uid' invece di 'userId'
                     return ListTile(
                       title: Text(data['username']),
                       subtitle: Text(data['nameShown']),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OtherUserProfile(userId: userId),
+                          ),
+                        );
+                      },
                     );
                   }).toList(),
                 );
