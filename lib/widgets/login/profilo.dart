@@ -67,14 +67,21 @@ class _ProfiloState extends State<Profilo> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 ElevatedButton(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     // Aggiungi qui la logica per la modifica del profilo
-                                    Navigator.push(
+                                  final result = await  Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => ModificaUtente(),
                                       ),
                                     );
+                                    if (result == true){
+                                            final User? currentUser = Auth().currentUser;
+                                            if (currentUser != null) {
+                                              userDocFuture = FirebaseFirestore.instance.collection('users').doc(currentUser.uid).get();
+                                              setState(() {});
+                                            } // Forza il FutureBuilder a ricostruire con il nuovo Future
+                                    }
                                   },
                                   child: Text('Modifica'),
                                   style: ElevatedButton.styleFrom(
