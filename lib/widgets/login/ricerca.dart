@@ -1,26 +1,35 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Ricerca extends StatefulWidget {
   @override
   _RicercaState createState() => _RicercaState();
+
 }
 
 class _RicercaState extends State<Ricerca> {
   final TextEditingController _searchController = TextEditingController();
   Stream<QuerySnapshot>? _usersStream;
 
+  // implento una variabile booleana per sapere se sto cercando o meno
+  bool _isSearching = false;
+
   void _search() {
     final String searchText = _searchController.text.trim();
     if (searchText.isNotEmpty) {
+      _isSearching = true;
       _usersStream = FirebaseFirestore.instance
       // query che mi fa la ricerca, mi fa un ceck se inizia o finisce con la stringa cercata
           .collection('users')
           .where('username', isGreaterThanOrEqualTo: searchText)
           .where('username', isLessThanOrEqualTo: searchText + '\uf8ff')
           .snapshots();
-      setState(() {});
+    } else {
+      _isSearching = false;
+      _usersStream = null; //  questa riga per ripulire lo stream dei dati degli utenti
     }
+    setState(() {});
   }
 
   @override
@@ -91,199 +100,200 @@ class _RicercaState extends State<Ricerca> {
             )
                 : Container(),
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: EdgeInsets.all(16),
-                    child: Text(
-                      'Film consigliati',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+          if (!_isSearching) // Mostra solo se non si sta cercando
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.all(16),
+                      child: Text(
+                        'Film consigliati',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                        ),
                       ),
                     ),
-                  ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        SizedBox(width: 16),
-                        Container(
-                          width: 110,
-                          height: 165,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(8),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          SizedBox(width: 16),
+                          Container(
+                            width: 110,
+                            height: 165,
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 16),
-                        Container(
-                          width: 110,
-                          height: 165,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(8),
+                          SizedBox(width: 16),
+                          Container(
+                            width: 110,
+                            height: 165,
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 16),
-                        Container(
-                          width: 110,
-                          height: 165,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(8),
+                          SizedBox(width: 16),
+                          Container(
+                            width: 110,
+                            height: 165,
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 16),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Container(
-                    margin: EdgeInsets.all(16),
-                    child: Text(
-                      'Serie consigliate',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+                          SizedBox(width: 16),
+                        ],
                       ),
                     ),
-                  ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        SizedBox(width: 16),
-                        Container(
-                          width: 110,
-                          height: 165,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+                    SizedBox(height: 16),
+                    Container(
+                      margin: EdgeInsets.all(16),
+                      child: Text(
+                        'Serie consigliate',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
                         ),
-                        SizedBox(width: 16),
-                        Container(
-                          width: 110,
-                          height: 165,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        SizedBox(width: 16),
-                        Container(
-                          width: 110,
-                          height: 165,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        SizedBox(width: 16),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Container(
-                    margin: EdgeInsets.all(16),
-                    child: Text(
-                      'Film in tendenza',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
                       ),
                     ),
-                  ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        SizedBox(width: 16),
-                        Container(
-                          width: 110,
-                          height: 165,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(8),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          SizedBox(width: 16),
+                          Container(
+                            width: 110,
+                            height: 165,
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 16),
-                        Container(
-                          width: 110,
-                          height: 165,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(8),
+                          SizedBox(width: 16),
+                          Container(
+                            width: 110,
+                            height: 165,
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 16),
-                        Container(
-                          width: 110,
-                          height: 165,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(8),
+                          SizedBox(width: 16),
+                          Container(
+                            width: 110,
+                            height: 165,
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 16),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Container(
-                    margin: EdgeInsets.all(16),
-                    child: Text(
-                      'Serie in tendenza',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+                          SizedBox(width: 16),
+                        ],
                       ),
                     ),
-                  ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        SizedBox(width: 16),
-                        Container(
-                          width: 110,
-                          height: 165,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+                    SizedBox(height: 16),
+                    Container(
+                      margin: EdgeInsets.all(16),
+                      child: Text(
+                        'Film in tendenza',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
                         ),
-                        SizedBox(width: 16),
-                        Container(
-                          width: 110,
-                          height: 165,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        SizedBox(width: 16),
-                        Container(
-                          width: 110,
-                          height: 165,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        SizedBox(width: 16),
-                      ],
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 16),
-                ],
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          SizedBox(width: 16),
+                          Container(
+                            width: 110,
+                            height: 165,
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Container(
+                            width: 110,
+                            height: 165,
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Container(
+                            width: 110,
+                            height: 165,
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Container(
+                      margin: EdgeInsets.all(16),
+                      child: Text(
+                        'Serie in tendenza',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          SizedBox(width: 16),
+                          Container(
+                            width: 110,
+                            height: 165,
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Container(
+                            width: 110,
+                            height: 165,
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Container(
+                            width: 110,
+                            height: 165,
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                  ],
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
