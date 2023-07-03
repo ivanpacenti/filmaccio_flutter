@@ -1,6 +1,28 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class Ricerca extends StatelessWidget {
+class Ricerca extends StatefulWidget {
+  @override
+  _RicercaState createState() => _RicercaState();
+}
+
+class _RicercaState extends State<Ricerca> {
+  final TextEditingController _searchController = TextEditingController();
+  Stream<QuerySnapshot>? _usersStream;
+
+  void _search() {
+    final String searchText = _searchController.text.trim();
+    if (searchText.isNotEmpty) {
+      _usersStream = FirebaseFirestore.instance
+      // query che mi fa la ricerca, mi fa un ceck se inizia o finisce con la stringa cercata
+          .collection('users')
+          .where('username', isGreaterThanOrEqualTo: searchText)
+          .where('username', isLessThanOrEqualTo: searchText + '\uf8ff')
+          .snapshots();
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,13 +50,47 @@ class Ricerca extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: TextField(
+              controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Cerca...',
                 border: InputBorder.none,
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: _search,
+                ),
               ),
             ),
           ),
-          SizedBox(height: 16),
+          Expanded(
+            child: _usersStream != null
+                ? StreamBuilder<QuerySnapshot>(
+              stream: _usersStream,
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Errore: ${snapshot.error}');
+                }
+
+                if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                return ListView(
+                  children: snapshot.data!.docs
+                      .map((DocumentSnapshot document) {
+                    Map<String, dynamic> data =
+                    document.data() as Map<String, dynamic>;
+                    return ListTile(
+                      title: Text(data['username']),
+                      subtitle: Text(data['nameShown']),
+                    );
+                  }).toList(),
+                );
+              },
+            )
+                : Container(),
+          ),
           Expanded(
             child: SingleChildScrollView(
               child: Column(
