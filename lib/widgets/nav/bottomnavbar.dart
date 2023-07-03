@@ -5,7 +5,7 @@ import 'package:filmaccio_flutter/widgets/login/RegPrima.dart';
 import 'package:filmaccio_flutter/widgets/login/ricerca.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-
+import 'package:filmaccio_flutter/widgets/other_user_profile.dart';
 import '../login/home.dart';
 
 class BottomNavBar extends StatelessWidget {
@@ -17,7 +17,7 @@ class BottomNavBar extends StatelessWidget {
       return [
         Home(),
         Ricerca(),
-        RegPrima(),
+        OtherUserProfile("ciao"),
         RegTerza(),
         Profilo()
       ];
@@ -39,7 +39,7 @@ class BottomNavBar extends StatelessWidget {
         ),
         PersistentBottomNavBarItem(
           icon: const Icon(Icons.app_registration),
-          title: ("Registrazione"),
+          title: ("OtherUserProfile"),
           activeColorPrimary: Colors.blue,
           inactiveColorPrimary: Colors.grey,
         ),

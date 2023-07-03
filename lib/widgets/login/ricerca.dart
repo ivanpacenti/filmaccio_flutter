@@ -34,16 +34,16 @@ class _RicercaState extends State<Ricerca> {
     }
     setState(() {});
   }
-  void _openOtherUserProfile(String userId, String id) {
-
-    // per aprire la pagina di un utente cercato
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => OtherUserProfile(userId: userId),
-      ),
-    );
-  }
+  // void _openOtherUserProfile(String userId, String id) {
+  //
+  //   // per aprire la pagina di un utente cercato
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => OtherUserProfile( userId),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +103,7 @@ class _RicercaState extends State<Ricerca> {
                       .map((DocumentSnapshot document) {
                     Map<String, dynamic> data =
                     document.data() as Map<String, dynamic>;
-                    String userId = data['uid']; // Utilizzo il campo 'uid' invece di 'userId'
+                    String userId = data['uid']; // Utilizzo il campo 'uid'
                     return ListTile(
                       title: Text(data['username']),
                       subtitle: Text(data['nameShown']),
@@ -111,7 +111,7 @@ class _RicercaState extends State<Ricerca> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => OtherUserProfile(userId: userId),
+                            builder: (context) => OtherUserProfile(userId),
                           ),
                         );
                       },

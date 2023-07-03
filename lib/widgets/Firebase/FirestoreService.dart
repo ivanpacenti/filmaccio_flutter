@@ -10,7 +10,9 @@ class FirestoreService {
   static CollectionReference _collectionProductsReviews = _db.collection('productsReviews');
 
   static Future<dynamic> getUserByUid(String uid) async {
+    print('Getting user with uid: $uid'); // x debug
     DocumentSnapshot snapshot = await _collectionUsers.doc(uid).get();
+    print('Got user data: ${snapshot.data()}');  // Stampa i dati dell'utente x debug
     return snapshot.data();
   }
 
