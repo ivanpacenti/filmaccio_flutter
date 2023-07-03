@@ -73,9 +73,13 @@ class OtherUserProfile extends StatelessWidget {
                                 SizedBox(height: 8),
                                     ElevatedButton(
                                       onPressed: () {
-                                        // Azione del pulsante "SEGUI"
+                                        if (following.contains(currentUserId)) {
+                                          FirestoreService.unfollowUser(currentUserId, userId);
+                                        } else {
+                                          FirestoreService.followUser(currentUserId, userId);
+                                        }
                                       },
-                                      child: Text(following.contains(currentUserId) ? 'NON SEGUIRE' : 'SEGUI'),
+                                      child: Text(following.contains(currentUserId) ? 'NON SEGUIRE' : 'SEGUI'), // per impostare testo
                                     ),
                                 SizedBox(height: 8),
                                 SingleChildScrollView(
