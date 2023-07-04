@@ -1,10 +1,5 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/src/painting/image_provider.dart';
 
-import '../login/Auth.dart';
 import '../models/UserData.dart';
 
 class FirestoreService {
@@ -21,47 +16,6 @@ class FirestoreService {
     DocumentSnapshot snapshot = await _collectionUsers.doc(uid).get();
     print('Got user data: ${snapshot.data()}');  // Stampa i dati dell'utente x debug
     return snapshot.data();
-  }
-  static Future<bool> searchUsersByEmail(String email) async {
-    QuerySnapshot snapshot = await _collectionUsers
-        .where('email', isEqualTo: email)
-        .limit(1)
-        .get();
-
-    return snapshot.size > 0;
-
-  }
-  static Future<void> createUser(UserData userData) async {
-    try {
-      await Auth().createUserWithEmailAndPassword(email: userData.email, password: userData.password);
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: userData.email,
-        password: userData.password,
-      );
-      String uid= userCredential.user!.uid;
-      // Conversione della data di nascita in un Timestamp
-      Timestamp birthDate = Timestamp.fromDate(userData.dataNascita);
-
-      // Creazione dei dati utente da salvare nel documento
-      Map<String, dynamic> userDataMap = {
-        'backdropImage': "https://image.tmdb.org/t/p/w1280//chauy3iJaZtrMbTr72rgNmOZwo3.jpg",
-        'birthDate': birthDate,
-        'email': userData.email,
-        'gender': userData.genere,
-        'nameShown': userData.nomeVisualizzato,
-        'profileImage': "https://firebasestorage.googleapis.com/v0/b/filmaccio.appspot.com/o/propic%2F0okfFM4DpSUp2bQ4IsbOYCtuMok2%2Fprofile.jpg?alt=media&token=b442b399-e582-472a-b708-c00d9dd82dc8",
-        'uid': uid,
-        'username': userData.nomeUtente,
-      };
-      DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(uid);
-
-      // Salvataggio dei dati utente nel documento
-      await userRef.set(userDataMap);
-
-      print('Utente creato con successo');
-    } catch (error) {
-      print('Errore durante la creazione dell\'utente: $error');
-    }
   }
 
   static Future<List<dynamic>> searchUsers(String query) async {
@@ -453,5 +407,23 @@ class FirestoreService {
     return latestReview;
   }
 
-
+  static Future<void> saveUserData(UserData userData) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userData.email)
+          .set({
+        'username': userData.nomeUtente,
+        'gender': userData.genere,
+        'birthDate': userData.dataNascita,
+        'nameShown': userData.nomeVisualizzato,
+        // Aggiungi altri campi dati se necessario
+      });
+      // Caricamento dati completato con successo
+    } catch (error) {
+      // Si è verificato un errore durante il caricamento dei dati
+      print(error);
+      // Gestisci l'errore di conseguenza
+    }
+  }
 }
