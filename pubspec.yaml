@@ -45,6 +45,7 @@ dependencies:
   animated_bottom_navigation_bar: ^1.2.0
   flutter_image_compress: ^2.0.3
   firebase_storage: ^11.2.4
+  path_provider: ^2.0.15
 
 dev_dependencies:
   flutter_test:

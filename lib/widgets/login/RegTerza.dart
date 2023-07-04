@@ -1,7 +1,9 @@
 import 'package:filmaccio_flutter/widgets/Firebase/FirestoreService.dart';
 import 'package:filmaccio_flutter/widgets/login/RegSeconda.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
 import '../models/UserData.dart';
@@ -154,7 +156,15 @@ class _RegTerzaState extends State<RegTerza> {
                     userData.nomeVisualizzato=_nomeVisualizzato.text;
                     if (_image != null) {
                       userData.avatar = File(_image!.path);
-                    }
+                    } else
+                      {
+                        final defaultImagePath = await rootBundle.load('assets/images/default_propic.png');
+                        final defaultImageData = await defaultImagePath.buffer.asUint8List();
+                        final appDir = await getApplicationDocumentsDirectory();
+                        final defaultImageSavePath = '${appDir.path}/default_propic.png';
+                        await File(defaultImageSavePath).writeAsBytes(defaultImageData);
+                        userData.avatar = File(defaultImageSavePath);
+                      }
                     FirestoreService.createUser( userData);
 
 
