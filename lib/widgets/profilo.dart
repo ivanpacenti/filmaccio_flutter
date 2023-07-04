@@ -218,7 +218,7 @@ class _ProfiloState extends State<Profilo> {
                                               return CircularProgressIndicator();
                                             } else if (snapshot.hasError) {
                                               return Text('Errore: ${snapshot.error}');
-                                            } else {
+                                            } else if (snapshot.hasData) {
                                               int followerCount = snapshot.data ?? 0;
                                               return Text(
                                                 followerCount.toString(),
@@ -226,6 +226,8 @@ class _ProfiloState extends State<Profilo> {
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               );
+                                            } else {
+                                              return Text('Nessun dato disponibile');
                                             }
                                           },
                                         ),
@@ -240,11 +242,25 @@ class _ProfiloState extends State<Profilo> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text('NUMERO FOLLOWING'),
-                                        Text(
-                                          '80',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                        FutureBuilder<int>(
+                                          future: getTotalFollowing(uid ?? ''),
+                                          builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                              return CircularProgressIndicator();
+                                            } else if (snapshot.hasError) {
+                                              return Text('Errore: ${snapshot.error}');
+                                            } else if (snapshot.hasData) {
+                                              int followingCount = snapshot.data ?? 0;
+                                              return Text(
+                                                followingCount.toString(),
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              );
+                                            } else {
+                                              return Text('Nessun dato disponibile');
+                                            }
+                                          },
                                         ),
                                       ],
                                     ),
@@ -322,7 +338,15 @@ class _ProfiloState extends State<Profilo> {
 }
 
 Future<int> getTotalFollowers(String uid) async {
-  List<dynamic> peopleFollowed = await FirestoreService.getPeopleFollowed(uid);
+  List<dynamic> peopleFollowed = await FirestoreService.getFollowers(uid);
   int totalFollowers = peopleFollowed.length;
+  print('Numero totale dei follower: $totalFollowers');
   return totalFollowers;
+}
+
+Future<int> getTotalFollowing(String uid) async {
+  List<dynamic> peopleFollowing = await FirestoreService.getFollowing(uid);
+  int totalFollowing = peopleFollowing.length;
+  print('Numero totale dei follower: $totalFollowing');
+  return totalFollowing;
 }
