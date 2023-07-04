@@ -1,92 +1,65 @@
+import 'package:flutter/material.dart';
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+
 import 'package:filmaccio_flutter/widgets/login/RegTerza.dart';
 import 'package:filmaccio_flutter/widgets/login/logout.dart';
 import 'package:filmaccio_flutter/widgets/profilo.dart';
 import 'package:filmaccio_flutter/widgets/login/RegPrima.dart';
-import 'package:filmaccio_flutter/widgets/login/ricerca.dart';
+import 'package:filmaccio_flutter/widgets/ricerca.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:filmaccio_flutter/widgets/public.dart';
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:filmaccio_flutter/widgets/other_user_profile.dart';
 import '../login/home.dart';
 import '../models/UserData.dart';
 
+
+
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({Key? key}) : super(key: key);
-//da cencellare sucesivamente
+
   @override
   Widget build(BuildContext context) {
-    List<Widget> _buildScreens() {
-      return [
-        Home(),
-        Ricerca(),
-        OtherUserProfile("ciao"),
-        Profilo()
-      ];
-    }
-
-    List<PersistentBottomNavBarItem> _navBarsItems(){
-      return [
-        PersistentBottomNavBarItem(
-          icon: const Icon(Icons.home),
-          title: ("Home"),
-          activeColorPrimary: Colors.blue,
-          inactiveColorPrimary: Colors.grey,
+    return DefaultTabController(
+      length: 4,
+      child: Scaffold(
+        body: TabBarView(
+          children: [
+            Home(),
+            Ricerca(),
+            HomeApi(),
+            Profilo(),
+          ],
         ),
-        PersistentBottomNavBarItem(
-          icon: const Icon(Icons.search),
-          title: ("Ricerca"),
-          activeColorPrimary: Colors.blue,
-          inactiveColorPrimary: Colors.grey,
+        bottomNavigationBar: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TabBar(
+              tabs: [
+                Tab(
+                  icon: Icon(Icons.home),
+                  text: 'Home',
+                ),
+                Tab(
+                  icon: Icon(Icons.search),
+                  text: 'Ricerca',
+                ),
+                Tab(
+                  icon: Icon(Icons.whatshot),
+                  text: 'In tendenza',
+                ),
+                Tab(
+                  icon: Icon(Icons.person),
+                  text: 'Profilo',
+                ),
+              ],
+              labelColor: Colors.blue,
+              unselectedLabelColor: Colors.grey,
+              indicatorSize: TabBarIndicatorSize.label,
+            ),
+          ],
         ),
-        PersistentBottomNavBarItem(
-          icon: const Icon(Icons.app_registration),
-          title: ("OtherUserProfile"),
-          activeColorPrimary: Colors.blue,
-          inactiveColorPrimary: Colors.grey,
-        ),
-        PersistentBottomNavBarItem(
-          icon: const Icon(Icons.person),
-          title: ("Profilo"),
-          activeColorPrimary: Colors.blue,
-          inactiveColorPrimary: Colors.grey,
-        ),
-         ];
-
-
-    }
-
-    PersistentTabController controller;
-
-    controller = PersistentTabController(initialIndex: 0);
-    return PersistentTabView(
-      context,
-      screens:_buildScreens(),
-      items: _navBarsItems(),
-      controller: controller,
-      confineInSafeArea: true,
-      backgroundColor: Colors.white,
-      handleAndroidBackButtonPress: true,
-      resizeToAvoidBottomInset: true,
-      stateManagement: true,
-      hideNavigationBarWhenKeyboardShows: true,
-      decoration: NavBarDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        colorBehindNavBar: Colors.white,
       ),
-      popAllScreensOnTapOfSelectedTab: true,
-      popActionScreens: PopActionScreensType.all,
-      itemAnimationProperties: const ItemAnimationProperties(
-        duration: Duration(milliseconds: 200),
-        curve: Curves.ease,
-      ),
-      screenTransitionAnimation: const ScreenTransitionAnimation(
-        animateTabTransition: true,
-        curve: Curves.ease,
-        duration: Duration(milliseconds: 200),
-      ),
-      navBarStyle:
-      NavBarStyle.neumorphic,
-
-
     );
   }
 }
