@@ -1,7 +1,8 @@
-import 'package:filmaccio_flutter/widgets/Firebase/FirestoreService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'Firebase/FirestoreService.dart';
 import 'login/Auth.dart';
 
 class OtherUserProfile extends StatelessWidget {
@@ -13,49 +14,59 @@ class OtherUserProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ci sono due Future Builder uno denetro l'altro uno per ottenere l'utente un altro per onnere i follower dell'utente
     return FutureBuilder(
-        future: FirestoreService.getUserByUid(userId),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Text('Errore: ${snapshot.error}');
-          } else {
-            var user = snapshot.data;
-            return FutureBuilder(
-                future: FirestoreService.getFollowers(userId),
-                builder: (BuildContext context, AsyncSnapshot followingSnapshot) {
-                  if (followingSnapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (followingSnapshot.hasError) {
-                    return Text('Errore: ${followingSnapshot.error}');
-                  } else {
-                    List<String> following = followingSnapshot.data;
-                    print('Follower: $following');
-                    return Scaffold(
-                      body: SingleChildScrollView(
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minHeight: MediaQuery.of(context).size.height,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
+      future: FirestoreService.getUserByUid(userId),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Text('Errore: ${snapshot.error}');
+        } else {
+          var user = snapshot.data;
+          return FutureBuilder(
+            future: FirestoreService.getFollowers(userId),
+            builder: (BuildContext context, AsyncSnapshot followingSnapshot) {
+              if (followingSnapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (followingSnapshot.hasError) {
+                return Text('Errore: ${followingSnapshot.error}');
+              } else {
+                List<String> following = followingSnapshot.data;
+                print('Follower: $following');
+                return Scaffold(
+                  body: SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: MediaQuery.of(context).size.height,
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          Stack(
+                            alignment: Alignment.topCenter,
+                            children: <Widget>[
                               AspectRatio(
                                 aspectRatio: 16 / 9,
-                                child: Image.asset(
-                                  'assets/desert.jpg',
+                                child: Image.network(
+                                  user["backdropImage"],
                                   fit: BoxFit.cover,
                                 ),
                               ),
-                              SizedBox(height: 16),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: [
-                                  Text(
+                              Positioned(
+                                top: (MediaQuery.of(context).size.width / 16 * 9) - 100, // Sposta il cerchio in basso alla metà della sua altezza
+                                child: CircleAvatar(
+                                  radius: 60,
+                                  backgroundImage: NetworkImage(user['profileImage']),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 60),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text(
                                   user['nameShown'],
                                   style: TextStyle(
                                     fontSize: 20,
@@ -71,16 +82,16 @@ class OtherUserProfile extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(height: 8),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        if (following.contains(currentUserId)) {
-                                          FirestoreService.unfollowUser(currentUserId, userId);
-                                        } else {
-                                          FirestoreService.followUser(currentUserId, userId);
-                                        }
-                                      },
-                                      child: Text(following.contains(currentUserId) ? 'NON SEGUIRE' : 'SEGUI'), // per impostare testo
-                                    ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    if (following.contains(currentUserId)) {
+                                      FirestoreService.unfollowUser(currentUserId, userId);
+                                    } else {
+                                      FirestoreService.followUser(currentUserId, userId);
+                                    }
+                                  },
+                                  child: Text(following.contains(currentUserId) ? 'NON SEGUIRE' : 'SEGUI'),
+                                ),
                                 SizedBox(height: 8),
                                 SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
@@ -157,76 +168,70 @@ class OtherUserProfile extends StatelessWidget {
                                     fontWeight: FontWeight.bold,
                                     color: Colors.blue,
                                   ),
-
-                              ),
-                              SizedBox(height: 8),
-                              // RecyclerView per le liste
-                              // ...
-                              SizedBox(height: 8),
-                              Divider(
-                                height: 1,
-                                thickness: 1,
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Serie TV',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue,
                                 ),
-                              ),
-                              SizedBox(height: 8),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Visto',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                SizedBox(height: 8),
+                                // RecyclerView per le liste
+                                // ...
+                                SizedBox(height: 8),
+                                Divider(
+                                  height: 1,
+                                  thickness: 1,
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  'Serie TV',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue,
                                   ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      // Azione del pulsante "Vedi tutto"
-                                    },
-                                    child: Text('VEDI TUTTO'),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 8),
-                              // RecyclerView per le serie TV
-                              // ...
-                              Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                ),
+                                SizedBox(height: 8),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Non c\'è molto da vedere qui',
+                                      'Visto',
                                       style: TextStyle(
-                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    Image.asset(
-                                      'assets/tumbleweed.png',
-                                      width: 70,
-                                      height: 70,
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        // Azione del pulsante "Vedi tutto"
+                                      },
+                                      child: Text('VEDI TUTTO'),
                                     ),
                                   ],
                                 ),
-                              ),
-                            ],
+                                SizedBox(height: 8),
+                                // RecyclerView per le serie TV
+                                // ...
+                                Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Non c\'è molto da vedere qui',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
                         ],
                       ),
                     ),
                   ),
-                  );
-                }
-                }
-            );
-          }
+                );
+              }
+            },
+          );
         }
+      },
     );
   }
 }
