@@ -1,20 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:filmaccio_flutter/widgets/Firebase/FirestoreService.dart';
 import 'package:flutter/material.dart';
-
 import 'other_user_profile.dart';
 
 class Ricerca extends StatefulWidget {
   @override
   _RicercaState createState() => _RicercaState();
-
 }
 
 class _RicercaState extends State<Ricerca> {
   final TextEditingController _searchController = TextEditingController();
   Stream<QuerySnapshot>? _usersStream;
-
-  // implento una variabile booleana per sapere se sto cercando o meno
   bool _isSearching = false;
 
   void _search() {
@@ -22,27 +17,16 @@ class _RicercaState extends State<Ricerca> {
     if (searchText.isNotEmpty) {
       _isSearching = true;
       _usersStream = FirebaseFirestore.instance
-      // query che mi fa la ricerca, mi fa un ceck se inizia o finisce con la stringa cercata
           .collection('users')
           .where('username', isGreaterThanOrEqualTo: searchText)
           .where('username', isLessThanOrEqualTo: searchText + '\uf8ff')
           .snapshots();
     } else {
       _isSearching = false;
-      _usersStream = null; //  questa riga per ripulire lo stream dei dati degli utenti
+      _usersStream = null;
     }
     setState(() {});
   }
-  // void _openOtherUserProfile(String userId, String id) {
-  //
-  //   // per aprire la pagina di un utente cercato
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => OtherUserProfile( userId),
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +35,7 @@ class _RicercaState extends State<Ricerca> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            margin: EdgeInsets.all(16),
+            margin: EdgeInsets.fromLTRB(16, 80, 16, 0),
             child: Text(
               'Ricerca',
               style: TextStyle(
@@ -88,18 +72,16 @@ class _RicercaState extends State<Ricerca> {
                 if (snapshot.hasError) {
                   return Text('Errore: ${snapshot.error}');
                 }
-
                 if (snapshot.connectionState ==
                     ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 }
-
                 return ListView(
                   children: snapshot.data!.docs
                       .map((DocumentSnapshot document) {
                     Map<String, dynamic> data =
                     document.data() as Map<String, dynamic>;
-                    String userId = data['uid']; // Utilizzo il campo 'uid'
+                    String userId = data['uid'];
                     return ListTile(
                       title: Text(data['username']),
                       subtitle: Text(data['nameShown']),
@@ -107,7 +89,8 @@ class _RicercaState extends State<Ricerca> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => OtherUserProfile(userId),
+                            builder: (context) =>
+                                OtherUserProfile(userId),
                           ),
                         );
                       },
