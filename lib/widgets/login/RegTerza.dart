@@ -152,7 +152,9 @@ class _RegTerzaState extends State<RegTerza> {
                 ElevatedButton(
                   onPressed: () async{
                     userData.nomeVisualizzato=_nomeVisualizzato.text;
-                    //userData.avatar=Image.file(_image!).image;
+                    if (_image != null) {
+                      userData.avatar = File(_image!.path);
+                    }
                     FirestoreService.createUser( userData);
 
 

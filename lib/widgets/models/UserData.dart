@@ -9,7 +9,7 @@ class UserData {
   late String _genere;
   late DateTime _dataNascita;
   late String _nomeVisualizzato;
-  late ImageProvider? _avatar;
+  late File _avatar;
 
   String get nomeUtente => _nomeUtente;
 
@@ -47,9 +47,9 @@ class UserData {
     _nomeVisualizzato = value;
   }
 
-  ImageProvider? get avatar => _avatar;
+  File get avatar => _avatar;
 
-  set avatar(ImageProvider? value) {
+  set avatar(File value) {
     _avatar = value;
   }
 }
