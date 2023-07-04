@@ -1,5 +1,13 @@
+import 'dart:io';
+import 'dart:js_interop';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../login/Auth.dart';
 import '../models/UserData.dart';
@@ -28,6 +36,7 @@ class FirestoreService {
     return snapshot.size > 0;
 
   }
+
   static Future<void> createUser(UserData userData) async {
     try {
       await Auth().createUserWithEmailAndPassword(email: userData.email, password: userData.password);
@@ -38,6 +47,30 @@ class FirestoreService {
       String uid= userCredential.user!.uid;
       // Conversione della data di nascita in un Timestamp
       Timestamp birthDate = Timestamp.fromDate(userData.dataNascita);
+      if(userData.avatar.isNull)
+        {
+          final defaultImagePath = await rootBundle.load('assets/images/default_propic.png');
+          final defaultImageData = await defaultImagePath.buffer.asUint8List();
+          final appDir = await getApplicationDocumentsDirectory();
+          final defaultImageSavePath = '${appDir.path}/default_propic.png';
+          await File(defaultImageSavePath).writeAsBytes(defaultImageData);
+          userData.avatar = File(defaultImageSavePath);
+        }
+      // Comprimiamo l'immagine
+      final compressedImage = await userData.avatar.readAsBytes();
+      final compressedImageData = await FlutterImageCompress.compressWithList(
+        compressedImage,
+        minHeight: 500,
+        minWidth: 500,
+        quality: 80,
+      );
+
+      final storageReference = FirebaseStorage.instance.ref();
+      final propicReference = storageReference.child("propic/$uid/profile.jpg");
+      final uploadTask = propicReference.putData(compressedImageData);
+      final snapshot = await uploadTask.whenComplete(() {});
+      final propicURL = await propicReference.getDownloadURL();
+
 
       // Creazione dei dati utente da salvare nel documento
       Map<String, dynamic> userDataMap = {
@@ -46,7 +79,7 @@ class FirestoreService {
         'email': userData.email,
         'gender': userData.genere,
         'nameShown': userData.nomeVisualizzato,
-        'profileImage': "https://firebasestorage.googleapis.com/v0/b/filmaccio.appspot.com/o/propic%2F0okfFM4DpSUp2bQ4IsbOYCtuMok2%2Fprofile.jpg?alt=media&token=b442b399-e582-472a-b708-c00d9dd82dc8",
+        'profileImage': propicURL,
         'uid': uid,
         'username': userData.nomeUtente,
       };
