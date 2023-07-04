@@ -1,3 +1,4 @@
+import 'package:filmaccio_flutter/widgets/Firebase/FirestoreService.dart';
 import 'package:filmaccio_flutter/widgets/login/RegSeconda.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -149,9 +150,11 @@ class _RegTerzaState extends State<RegTerza> {
               ),
             ),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async{
                     userData.nomeVisualizzato=_nomeVisualizzato.text;
-                    userData.avatar=Image.file(_image!).image;
+                    //userData.avatar=Image.file(_image!).image;
+                    FirestoreService.createUser( userData);
+
 
                   },
                   child: const Text('Avanti'),

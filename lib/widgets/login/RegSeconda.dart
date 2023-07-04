@@ -14,9 +14,9 @@ class RegSeconda extends StatefulWidget {
 }
 enum Genere {Maschile,Femminile,Altro}
 class _RegSecondaState extends State<RegSeconda> {
-  int day=0;
-  int month=0;
-  int year=0;
+  int day=1;
+  int month=10;
+  int year=1993;
   bool dateValidator(int year,int month,int day)
   {
     var eta=DateTime(year,month,day);

@@ -1,15 +1,15 @@
+import 'package:filmaccio_flutter/widgets/Firebase/FirestoreService.dart';
 import 'package:filmaccio_flutter/widgets/login/login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../models/UserData.dart';
 import 'RegSeconda.dart';
-import 'auth.dart';
 
 
 
 class RegPrima extends StatefulWidget {
   UserData userData=UserData();
+
   @override
   _RegPrimaState createState() => _RegPrimaState();
 }
@@ -53,20 +53,6 @@ class _RegPrimaState extends State<RegPrima> {
     return(_password2.text==_password1.text);
   }
 
-
-  Future<bool> createUser() async
-  {
-    try{
-      await Auth().createUserWithEmailAndPassword(email: _email.text, password: _password2.text);
-      return true;
-    }
-    on FirebaseAuthException catch (e){
-      setState(() {
-        emailEsistente=true;
-      });
-      return false;
-    }
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -277,8 +263,17 @@ class _RegPrimaState extends State<RegPrima> {
                         userData.email=_email.text;
                         userData.nomeUtente=_utente.text;
                         userData.password=_password1.text;
-
-                        if(await createUser()) {
+                        if(await FirestoreService.searchUsersByEmail(_email.text)){
+                          setState(() {
+                            emailEsistente=true;
+                          });
+                        }
+                        else{
+                          setState(() {
+                            emailEsistente=false;
+                          });
+                        }
+                        if(!emailEsistente) {
                           Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => RegSeconda(userData: userData)),
