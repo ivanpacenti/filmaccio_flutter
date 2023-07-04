@@ -1,3 +1,4 @@
+import 'package:filmaccio_flutter/widgets/Firebase/FirestoreService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'modificaUtente.dart';
@@ -19,7 +20,10 @@ class _ProfiloState extends State<Profilo> {
     super.initState();
     final User? currentUser = Auth().currentUser;
     if (currentUser != null) {
-      userDocFuture = FirebaseFirestore.instance.collection('users').doc(currentUser.uid).get();
+      userDocFuture = FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser.uid)
+          .get();
     }
   }
 
@@ -27,8 +31,7 @@ class _ProfiloState extends State<Profilo> {
   Widget build(BuildContext context) {
     return FutureBuilder<DocumentSnapshot>(
       future: userDocFuture,
-      builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot)
-      {
+      builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
@@ -36,7 +39,7 @@ class _ProfiloState extends State<Profilo> {
         } else {
           final DocumentSnapshot? userDoc = snapshot.data;
           final String? nameShown = userDoc?.get('nameShown');
-          final String? email = userDoc?.get('email');
+          final String? uid = userDoc?.get('uid');
           final String? username = userDoc?.get('username');
           final String? profileImage = userDoc?.get('profileImage');
           final String? backdropImage = userDoc?.get('backdropImage');
@@ -94,19 +97,21 @@ class _ProfiloState extends State<Profilo> {
                             children: [
                               ElevatedButton(
                                 onPressed: () async {
-                                  // Aggiungi qui la logica per la modifica del profilo
-                                  final result = await  Navigator.push(
+                                  final result = await Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => ModificaUtente(),
                                     ),
                                   );
-                                  if (result == true){
+                                  if (result == true) {
                                     final User? currentUser = Auth().currentUser;
                                     if (currentUser != null) {
-                                      userDocFuture = FirebaseFirestore.instance.collection('users').doc(currentUser.uid).get();
+                                      userDocFuture = FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(currentUser.uid)
+                                          .get();
                                       setState(() {});
-                                    } // Forza il FutureBuilder a ricostruire con il nuovo Future
+                                    }
                                   }
                                 },
                                 child: Text('Modifica'),
@@ -132,55 +137,119 @@ class _ProfiloState extends State<Profilo> {
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children: [
-                                Card(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .center,
-                                    children: [
-                                      Text('TEMPO FILM'),
-                                      Row(
-                                        children: [
-                                          Column(
-                                            children: [
-                                              Text(
-                                                '2',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
+                                Container(
+                                  height: 80,
+                                  child: Card(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text('TEMPO FILM'),
+                                        Row(
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Text(
+                                                  '2',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
-                                              ),
-                                              Text('mesi'),
-                                            ],
-                                          ),
-                                          SizedBox(width: 8),
-                                          Column(
-                                            children: [
-                                              Text(
-                                                '15',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
+                                                Text('mesi'),
+                                              ],
+                                            ),
+                                            SizedBox(width: 8),
+                                            Column(
+                                              children: [
+                                                Text(
+                                                  '15',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
-                                              ),
-                                              Text('giorni'),
-                                            ],
-                                          ),
-                                          SizedBox(width: 8),
-                                          Column(
-                                            children: [
-                                              Text(
-                                                '10',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
+                                                Text('giorni'),
+                                              ],
+                                            ),
+                                            SizedBox(width: 8),
+                                            Column(
+                                              children: [
+                                                Text(
+                                                  '10',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
-                                              ),
-                                              Text('ore'),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                                Text('ore'),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                                // Add other cards here...
+                                Container(
+                                  height: 80,
+                                  child: Card(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text('NUMERO FILM VISTI'),
+                                        Text(
+                                          '50',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  height: 80,
+                                  child: Card(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text('NUMERO FOLLOWER'),
+                                        FutureBuilder<int>(
+                                          future: getTotalFollowers(uid ?? ''),
+                                          builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                              return CircularProgressIndicator();
+                                            } else if (snapshot.hasError) {
+                                              return Text('Errore: ${snapshot.error}');
+                                            } else {
+                                              int followerCount = snapshot.data ?? 0;
+                                              return Text(
+                                                followerCount.toString(),
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  height: 80,
+                                  child: Card(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text('NUMERO FOLLOWING'),
+                                        Text(
+                                          '80',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -240,6 +309,7 @@ class _ProfiloState extends State<Profilo> {
       },
     );
   }
+
   void logoutFunction() async {
     try {
       await Auth().signOut();
@@ -249,4 +319,10 @@ class _ProfiloState extends State<Profilo> {
       print('Errore durante il logout: $e');
     }
   }
+}
+
+Future<int> getTotalFollowers(String uid) async {
+  List<dynamic> peopleFollowed = await FirestoreService.getPeopleFollowed(uid);
+  int totalFollowers = peopleFollowed.length;
+  return totalFollowers;
 }

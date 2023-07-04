@@ -64,7 +64,7 @@ class _HomeApiState extends State<HomeApi> {
             ),
             SizedBox(height: 16),
             Container(
-              margin: EdgeInsets.all(16),
+              margin: EdgeInsets.all(1),
               child: Text(
                 'Serie consigliate',
                 style: TextStyle(
