@@ -10,24 +10,19 @@ import 'package:flutter/services.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-
-
   @override
   State<LoginPage> createState() => _LoginPageState();
+
 }
 class _LoginPageState extends State<LoginPage> {
+  @override
+  void initState() {
+    super.initState();
+    Auth().signOut(); // Esegue il logout dell'utente quando si carica la pagina di login
+  }
   bool visibilitaPassword=false;
   bool erroreLogin=false;
+  bool isLoggedOut=true;
   Color _color= Colors.black;
   final TextEditingController _email=TextEditingController();
   final TextEditingController _password=TextEditingController();
@@ -108,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if(erroreLogin) Text(
+                if(erroreLogin) const Text(
                   "Indirizzo email o password errati",
                   style: TextStyle(
                       fontSize: 12,
@@ -156,6 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                     if(erroreLogin)
                       {_color=Colors.red;}
                   });
+
                 },
                 child: const Text('Entra'),
               ),

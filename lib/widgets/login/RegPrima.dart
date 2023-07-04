@@ -2,7 +2,9 @@ import 'package:filmaccio_flutter/widgets/Firebase/FirestoreService.dart';
 import 'package:filmaccio_flutter/widgets/login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../main.dart';
 import '../models/UserData.dart';
+import 'Auth.dart';
 import 'RegSeconda.dart';
 
 
@@ -180,7 +182,7 @@ class _RegPrimaState extends State<RegPrima> {
                       },
                     ),
                   ),
-                  obscureText: visibilitaPassword1,
+                  obscureText: !visibilitaPassword1,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -210,7 +212,7 @@ class _RegPrimaState extends State<RegPrima> {
                       },
                     ),
                   ),
-                  obscureText: visibilitaPassword2,
+                  obscureText: !visibilitaPassword2,
                   onChanged: (String hasChange){
                     if(hasChange.isNotEmpty){
                       passwordUguali=isPasswordUguali(_password1.text, _password2.text);
@@ -294,10 +296,15 @@ class _RegPrimaState extends State<RegPrima> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {
+          onPressed: () async{
+            try {
+              await Auth().signOut();
+            } catch (e) {
+              print('Errore durante il logout: $e');
+            }
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const LoginPage()),
+              MaterialPageRoute(builder: (context) => MyApp()),
             );
 
           },
