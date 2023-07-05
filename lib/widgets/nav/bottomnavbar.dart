@@ -6,6 +6,7 @@ import 'package:filmaccio_flutter/widgets/login/logout.dart';
 import 'package:filmaccio_flutter/widgets/profilo.dart';
 import 'package:filmaccio_flutter/widgets/login/RegPrima.dart';
 import 'package:filmaccio_flutter/widgets/ricerca.dart';
+import 'package:filmaccio_flutter/widgets/prova2.dart';
 import 'package:flutter/material.dart';
 import 'package:filmaccio_flutter/widgets/public.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
@@ -28,8 +29,9 @@ class BottomNavBar extends StatelessWidget {
           children: [
             Home(),
             Ricerca(),
-            HomeApi(),
-            MovieListScreen(),
+           // HomeApi1(),
+           // MovieListScreen(),
+            HomeApi2(),
             Profilo(),
           ],
         ),
@@ -52,7 +54,7 @@ class BottomNavBar extends StatelessWidget {
                 ),
                 Tab(
                   icon: Icon(Icons.whatshot),
-                  text: 'prova',
+                  text: 'prova2',
                 ),
                 Tab(
                   icon: Icon(Icons.person),
