@@ -2,6 +2,7 @@ import 'package:filmaccio_flutter/widgets/login/RegPrima.dart';
 import 'package:filmaccio_flutter/widgets/models/UserData.dart';
 import 'package:flutter/material.dart';
 import 'package:datepicker_dropdown/datepicker_dropdown.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'RegTerza.dart';
 
@@ -193,9 +194,15 @@ class _RegSecondaState extends State<RegSeconda> {
                 );
               }
               else {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) => _buildPopupDialog(context));
+                Fluttertoast.showToast(
+                    msg: "Inserisci una data di nascita valida (almeno 14 anni)",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 2,
+                    backgroundColor: Colors.grey,
+                    textColor: Colors.white,
+                    fontSize: 16.0
+                );
                 };
             },
             child: const Text('Avanti'),
@@ -207,24 +214,4 @@ class _RegSecondaState extends State<RegSeconda> {
       ),
     );
   }
-}
-Widget _buildPopupDialog(BuildContext context) {
-  return AlertDialog(
-    title: const Text('Errore'),
-    content: const Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text("Inserisci una data di nascita valida (almeno 14 anni)"),
-      ],
-    ),
-    actions: <Widget>[
-      TextButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        child: const Text('Chiudi'),
-      ),
-    ],
-  );
 }

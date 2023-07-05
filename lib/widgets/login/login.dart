@@ -1,3 +1,4 @@
+import 'package:filmaccio_flutter/widgets/login/PasswordDimenticata.dart';
 import 'package:filmaccio_flutter/widgets/login/auth.dart';
 import 'package:filmaccio_flutter/widgets/login/home.dart';
 import 'package:filmaccio_flutter/widgets/login/RegPrima.dart';
@@ -80,10 +81,7 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               margin: const EdgeInsets.only(top: 10),
               width: 300,
-              decoration:
-              BoxDecoration(
-                  border: Border.all(color: _color)
-              ),
+
               child: TextFormField(
                 onChanged: (String newValue) {
                     // test for your condition
@@ -93,9 +91,19 @@ class _LoginPageState extends State<LoginPage> {
                     });
                 },
                 controller: _email,
-                decoration: const InputDecoration(
+                decoration:  InputDecoration(
                   labelText: 'Nome utente o email',
                   prefixIcon: Icon(Icons.person),
+                  prefixIconColor: erroreLogin?Colors.red:Colors.grey,
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.clear),
+                    onPressed: (){
+                      _email.text="";
+                      setState(() {
+                        erroreLogin=false;
+                      });
+                    },
+                  )
                 ),
                 keyboardType: TextInputType.emailAddress,
               ),
@@ -113,10 +121,7 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               margin: const EdgeInsets.only(top: 10),
               width: 300,
-              decoration:
-                BoxDecoration(
-                  border: Border.all(color: _color)
-              ) ,
+
               child: TextFormField(
                 onChanged: (String newValue) {
                   // test for your condition
@@ -129,6 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: InputDecoration(
                   labelText: 'Password',
                   prefixIcon: const Icon(Icons.lock),
+                  prefixIconColor: erroreLogin?Colors.red:Colors.grey,
                   suffixIcon: IconButton(
                     icon: Icon(visibilitaPassword ? Icons.visibility_off : Icons.visibility),
                     onPressed: () {
@@ -157,7 +163,12 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>  PasswordDimenticata()),
+                );
+              },
               child: const Text(
                 'Password dimenticata',
                 style: TextStyle(fontSize: 12),

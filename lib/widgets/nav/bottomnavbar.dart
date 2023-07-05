@@ -1,3 +1,4 @@
+import 'package:filmaccio_flutter/widgets/login/PasswordDimenticata.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 
@@ -23,14 +24,13 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 5,
+      length: 6,
       child: Scaffold(
         body: TabBarView(
           children: [
             Home(),
             Ricerca(),
             HomeApi(),
-           // MovieListScreen(),
             HomeApi2(),
             Profilo(),
           ],
