@@ -12,6 +12,7 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:filmaccio_flutter/widgets/other_user_profile.dart';
 import '../login/home.dart';
 import '../models/UserData.dart';
+import '../popolarfilm.dart';
 
 
 
@@ -21,13 +22,14 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4,
+      length: 5,
       child: Scaffold(
         body: TabBarView(
           children: [
             Home(),
             Ricerca(),
             HomeApi(),
+            MovieListScreen(),
             Profilo(),
           ],
         ),
@@ -46,7 +48,11 @@ class BottomNavBar extends StatelessWidget {
                 ),
                 Tab(
                   icon: Icon(Icons.whatshot),
-                  text: 'In tendenza',
+                  text: 'Tendenza',
+                ),
+                Tab(
+                  icon: Icon(Icons.whatshot),
+                  text: 'prova',
                 ),
                 Tab(
                   icon: Icon(Icons.person),

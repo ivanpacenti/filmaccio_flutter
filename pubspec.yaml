@@ -46,10 +46,19 @@ dependencies:
   flutter_image_compress: ^2.0.3
   firebase_storage: ^11.2.4
   path_provider: ^2.0.15
+  retrofit: ^4.0.1
+  json_annotation: '^4.8.1'
+  dio: ^5.2.1+1
+  flutter_dotenv: ^5.1.0
+  build_runner: ^2.4.6
+
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
