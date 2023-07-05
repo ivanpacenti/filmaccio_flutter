@@ -29,7 +29,7 @@ class BottomNavBar extends StatelessWidget {
           children: [
             Home(),
             Ricerca(),
-           // HomeApi1(),
+            HomeApi(),
            // MovieListScreen(),
             HomeApi2(),
             Profilo(),

@@ -16,6 +16,14 @@ abstract class TmdbApiClient {
       @Query('language') String language,
       @Query('region') String region,
       );
+
+  @GET("/tv/top_rated")
+  Future<DiscoverMoviesResponse> getTopRatedTv(
+      @Query('api_key') String apiKey,
+      @Query('page') int page,
+      @Query('language') String language,
+      @Query('region') String region,
+      );
 }
 
 @JsonSerializable()
