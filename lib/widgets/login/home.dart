@@ -1,12 +1,27 @@
-
-import 'package:filmaccio_flutter/widgets/login/auth.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import '../data/api/TmdbApiClient.dart';
+import '../data/api/api_key.dart';
+import '../data/api/TmdbApiClient.dart';
+import '../data/api/api_key.dart';
 
-class Home extends StatelessWidget {
-  Future<void> SignOut( ) async
-  {
-    await Auth().signOut();
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  final Dio _dio = Dio();
+  late TmdbApiClient _apiClient;
+  List<Movie>? _movieNowPlaying;
+
+  @override
+  void initState() {
+    super.initState();
+    _apiClient = TmdbApiClient(_dio);
+    fetchTopTrending();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,14 +53,21 @@ class Home extends StatelessWidget {
               height: 165,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: 3,
+                itemCount: _movieNowPlaying?.length ?? 0,
                 itemBuilder: (context, index) {
+                  final movie = _movieNowPlaying?[index];
                   return Container(
                     width: 110,
                     margin: EdgeInsets.only(left: 16.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.0),
                       color: Colors.grey,
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          'https://image.tmdb.org/t/p/w185/${movie?.posterPath}',
+                        ),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   );
                 },
@@ -123,5 +145,20 @@ class Home extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> fetchTopTrending() async {
+    try {
+      final response = await _apiClient.getTrandingMovie(tmdbApiKey, 'it-IT');
+      setState(() {
+        if (response.results != null) {
+          _movieNowPlaying = response.results!.take(3).toList();
+        } else {
+          _movieNowPlaying = [];
+        }
+      });
+    } catch (error) {
+      print('Error fetching top trending movies: $error');
+    }
   }
 }

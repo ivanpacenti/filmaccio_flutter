@@ -38,6 +38,15 @@ abstract class TmdbApiClient {
       @Query('api_key') String apiKey,
       @Query('language') String language,
       );
+
+
+  @GET("movie/now_playing")
+  Future<DiscoverMoviesResponse> getMovieNowPlaying(
+    @Query('api_key') String apiKey,
+    @Query('page') int page,
+    @Query('language') String language,
+    @Query('region') String region,
+      );
 }
 
 @JsonSerializable()
