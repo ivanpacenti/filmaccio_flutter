@@ -24,7 +24,7 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 6,
+      length: 5,
       child: Scaffold(
         body: TabBarView(
           children: [
@@ -35,7 +35,7 @@ class BottomNavBar extends StatelessWidget {
             Profilo(),
           ],
         ),
-        bottomNavigationBar: Column(
+        bottomNavigationBar: const Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TabBar(

@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:filmaccio_flutter/widgets/models/Movie.dart';
+import 'package:filmaccio_flutter/widgets/models/TvShow.dart';
 import 'package:flutter/material.dart';
 import '../data/api/TmdbApiClient.dart';
 import '../data/api/api_key.dart';
@@ -14,12 +16,16 @@ class _HomeState extends State<Home> {
   final Dio _dio = Dio();
   late TmdbApiClient _apiClient;
   List<Movie>? _movieNowPlaying;
+  List<Movie>? _movieTopRating;
+  List<TvShow>? _topRatedTV;
 
   @override
   void initState() {
     super.initState();
     _apiClient = TmdbApiClient(_dio);
     fetchTopTrending();
+    fetchTopRatedTV();
+    fetchTopRating();
   }
 
   @override
@@ -35,7 +41,7 @@ class _HomeState extends State<Home> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Latest Releases',
+                    'Ultime uscite',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -44,7 +50,7 @@ class _HomeState extends State<Home> {
                   ),
                   TextButton(
                     onPressed: () {},
-                    child: Text('See All'),
+                    child: Text('Vedi tutto'),
                   ),
                 ],
               ),
@@ -80,7 +86,7 @@ class _HomeState extends State<Home> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Feed',
+                    'Film più votati',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -89,19 +95,30 @@ class _HomeState extends State<Home> {
                   ),
                   TextButton(
                     onPressed: () {},
-                    child: Text('See All'),
+                    child: Text('Vedi tutto'),
                   ),
                 ],
               ),
             ),
-            Expanded(
+            SizedBox(
+              height: 140,
               child: ListView.builder(
-                itemCount: 3,
+                scrollDirection: Axis.horizontal,
+                itemCount: _movieTopRating?.length ?? 0,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Container(
-                      height: 60,
+                  final movie = _movieTopRating?[index];
+                  return Container(
+                    width: 110,
+                    margin: EdgeInsets.only(left: 16.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0),
                       color: Colors.grey,
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          'https://image.tmdb.org/t/p/w185/${movie?.posterPath}',
+                        ),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   );
                 },
@@ -114,7 +131,7 @@ class _HomeState extends State<Home> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Episodes',
+                    'Serie TV più votate',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -123,19 +140,30 @@ class _HomeState extends State<Home> {
                   ),
                   TextButton(
                     onPressed: () {},
-                    child: Text('See All'),
+                    child: Text('Vedi tutto'),
                   ),
                 ],
               ),
             ),
-            Expanded(
+            SizedBox(
+              height: 140,
               child: ListView.builder(
-                itemCount: 3,
+                scrollDirection: Axis.horizontal,
+                itemCount: _topRatedTV?.length ?? 0,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Container(
-                      height: 60,
+                  final tvShows = _topRatedTV?[index];
+                  return Container(
+                    width: 110,
+                    margin: EdgeInsets.only(left: 16.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0),
                       color: Colors.grey,
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          'https://image.tmdb.org/t/p/w185/${tvShows?.posterPath}',
+                        ),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   );
                 },
@@ -152,13 +180,46 @@ class _HomeState extends State<Home> {
       final response = await _apiClient.getTrandingMovie(tmdbApiKey, 'it-IT');
       setState(() {
         if (response.results != null) {
-          _movieNowPlaying = response.results!.take(3).toList();
+          _movieNowPlaying = response.results!.take(6).toList();
+          print(_movieNowPlaying);
         } else {
           _movieNowPlaying = [];
         }
       });
     } catch (error) {
       print('Error fetching top trending movies: $error');
+    }
+  }
+  Future<void> fetchTopRating() async {
+    try {
+      final response = await _apiClient.getTopRatedMovies(tmdbApiKey, 1,'it-IT',"IT");
+      setState(() {
+        if (response.results != null) {
+
+          _movieTopRating = response.results!.take(6).toList();
+
+
+        } else {
+          _movieTopRating = [];
+
+        }
+      });
+    } catch (error) {
+      print('Error fetching top rated movies: $error');
+    }
+  }
+  Future<void> fetchTopRatedTV() async {
+    try {
+      final response = await _apiClient.getTopRatedTv(tmdbApiKey, 6,'it-IT',"IT");
+      setState(() {
+        if (response.results != null) {
+          _topRatedTV = response.results!.take(6).toList();
+        } else {
+          _topRatedTV = [];
+        }
+      });
+    } catch (error) {
+      print('Error fetching top rated movies: $error');
     }
   }
 }

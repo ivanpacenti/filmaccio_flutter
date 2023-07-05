@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:filmaccio_flutter/widgets/models/Movie.dart';
+import 'package:filmaccio_flutter/widgets/models/TvShow.dart';
 import 'package:flutter/material.dart';
 import 'data/api/TmdbApiClient.dart';
 import 'data/api/api_key.dart';
