@@ -97,7 +97,7 @@ class _RegPrimaState extends State<RegPrima> {
                     labelText: 'Indirizzo email',
                     prefixIcon: const Icon(Icons.email),
                     suffixIcon: IconButton(
-                      icon: const Icon(Icons.clear),
+                      icon:  Icon(emailValida?Icons.clear:Icons.warning_amber),
                       onPressed: () {
                         _email.text="";
                         setState(() {
@@ -134,7 +134,7 @@ class _RegPrimaState extends State<RegPrima> {
                     labelText: 'Nome utente',
                     prefixIcon: const Icon(Icons.person),
                     suffixIcon: IconButton(
-                      icon: const Icon(Icons.clear),
+                      icon:  Icon(utenteValido?Icons.clear:Icons.warning_amber),
                       onPressed: () {
                         _utente.text="";
                         setState(() {
@@ -268,11 +268,13 @@ class _RegPrimaState extends State<RegPrima> {
                         if(await FirestoreService.searchUsersByEmail(_email.text)){
                           setState(() {
                             emailEsistente=true;
+                            emailValida=false;
                           });
                         }
                         else{
                           setState(() {
                             emailEsistente=false;
+                            emailValida=true;
                           });
                         }
                         if(!emailEsistente) {

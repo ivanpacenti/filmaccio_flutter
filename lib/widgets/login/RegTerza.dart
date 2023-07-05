@@ -14,6 +14,7 @@ import '../nav/bottomnavbar.dart';
 class RegTerza extends StatefulWidget {
 
   final UserData userData;
+
   const RegTerza( {Key? key,required this.userData}) : super(key: key);
   @override
   _RegTerzaState createState() => _RegTerzaState();
@@ -21,13 +22,17 @@ class RegTerza extends StatefulWidget {
 }
 
 class _RegTerzaState extends State<RegTerza> {
+  int lunghezza=0;
+  final TextEditingController _nomeVisualizzato=TextEditingController();
   bool signupSuccess=false;
   late UserData userData;
-
+  bool nomeCorretto=true;
   @override
   void initState() {
     super.initState();
     userData = widget.userData;
+    _nomeVisualizzato.text = userData.nomeUtente;
+    lunghezza=userData.nomeUtente.length;
   }
   // This is the file that will be used to store the image
   File? _image;
@@ -45,8 +50,8 @@ class _RegTerzaState extends State<RegTerza> {
        });
     }
   }
-  int lunghezza=0;
-  final TextEditingController _nomeVisualizzato=TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,16 +127,33 @@ class _RegTerzaState extends State<RegTerza> {
                       setState(() {
                         _nomeVisualizzato.text="";
                         lunghezza=0;
+                        nomeCorretto=true;
                       });
                     },
-                    icon: const Icon(Icons.clear),
+                    icon:  Icon(nomeCorretto ? Icons.clear:Icons.warning_amber),
 
                   ),
                 ),
-                maxLength: 50,
+                maxLength: 80,
                 keyboardType: TextInputType.text,
 
             )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [  if(!nomeCorretto)
+                    Container(
+                        width: 300,
+                        child: const Text("Il nome visualizzato deve essere lungo tra 3 e 50 caratteri",
+                            softWrap: true,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 3,
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.red))
+                    )
+
+                  ],
+                ),
                 const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
@@ -159,34 +181,43 @@ class _RegTerzaState extends State<RegTerza> {
             ),
                 ElevatedButton(
                   onPressed: () async{
-                    userData.nomeVisualizzato=_nomeVisualizzato.text;
-                    if (_image != null) {
-                      userData.avatar = File(_image!.path);
-                    } else
-                      {
-                        final defaultImagePath = await rootBundle.load('assets/images/default_propic.png');
-                        final defaultImageData = await defaultImagePath.buffer.asUint8List();
-                        final appDir = await getApplicationDocumentsDirectory();
-                        final defaultImageSavePath = '${appDir.path}/default_propic.png';
-                        await File(defaultImageSavePath).writeAsBytes(defaultImageData);
-                        userData.avatar = File(defaultImageSavePath);
-                      }
-                    try {
-                      FirestoreService.createUser(userData);
-                      signupSuccess=true;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) =>  MyApp()),
-                      );
-                    }
-                    catch(e){
+                    if(lunghezza<3||lunghezza>50){
                       setState(() {
-                        signupSuccess = false;
+                        nomeCorretto=false;
                       });
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) => _buildPopupDialogErrore(context));
-                    }
+                    }else {
+                  userData.nomeVisualizzato = _nomeVisualizzato.text;
+                  if (_image != null) {
+                    userData.avatar = File(_image!.path);
+                  } else {
+                    final defaultImagePath = await rootBundle
+                        .load('assets/images/default_propic.png');
+                    final defaultImageData =
+                        await defaultImagePath.buffer.asUint8List();
+                    final appDir = await getApplicationDocumentsDirectory();
+                    final defaultImageSavePath =
+                        '${appDir.path}/default_propic.png';
+                    await File(defaultImageSavePath)
+                        .writeAsBytes(defaultImageData);
+                    userData.avatar = File(defaultImageSavePath);
+                  }
+                  try {
+                    FirestoreService.createUser(userData);
+                    signupSuccess = true;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyApp()),
+                    );
+                  } catch (e) {
+                    setState(() {
+                      signupSuccess = false;
+                    });
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                            _buildPopupDialogErrore(context));
+                  }
+                }
               },
                   child: const Text('Avanti'),
                   style: ElevatedButton.styleFrom(
