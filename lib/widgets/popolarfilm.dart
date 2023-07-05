@@ -16,7 +16,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
     super.initState();
     final dio = Dio();
     final client = TmdbApiClient(dio);
-    _futureMovies = client.getPopularMovies('la chiave ');
+    _futureMovies = client.getPopularMovies('');
   }
 
   @override
