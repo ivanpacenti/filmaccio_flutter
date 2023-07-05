@@ -18,9 +18,7 @@ class _MovieListScreenState extends State<MovieListScreen> {
     final dio = Dio();
     final client = TmdbApiClient(dio);
     _futureMovies = client.getPopularMovies(tmdbApiKey);
-    // Non hai più bisogno di _loadSecrets() quindi ho rimosso quella parte
-    setState(() {}); // Call setState to trigger a rebuild of the widget after the future completes.
-  }
+    setState(() {});
 
 
 

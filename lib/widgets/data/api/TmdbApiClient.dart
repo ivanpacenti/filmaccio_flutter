@@ -9,9 +9,8 @@ abstract class TmdbApiClient {
   factory TmdbApiClient(Dio dio, {String baseUrl}) = _TmdbApiClient;
 
   @GET("/movie/popular")
-  Future<MovieResponse> getPopularMovies(@Query("api_key") String apiKey);
+  Future<MovieResponse> getPopularMovies(@Query('api_key') String apiKey);
 }
-
 
 @JsonSerializable()
 class MovieResponse {
@@ -36,7 +35,3 @@ class Movie {
 
   Map<String, dynamic> toJson() => _$MovieToJson(this);
 }
-
-
-
-//Path: lib\widgets\data\api\TmdbApiClient.dart; lib\widgets\data\api\TmdbApiClient.g.dart
