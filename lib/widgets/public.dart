@@ -15,6 +15,7 @@ class _HomeApiState extends State<HomeApi> {
   List<Movie>? _topMovies;
   List<Movie>? _topMoviesWeek;
   List<TvShow>? _topTvShows;
+  List<TvShow>?_topTrandingTvShows;
 
 
   @override
@@ -24,6 +25,7 @@ class _HomeApiState extends State<HomeApi> {
     fetchTopMovies();
     fetchTopTvShows();
     fetchTrandingMovie();
+    fetchTrandingTvShows();
   }
 
   @override
@@ -160,36 +162,26 @@ class _HomeApiState extends State<HomeApi> {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: [
-                  SizedBox(width: 16),
-                  Container(
-                    width: 110,
-                    height: 165,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(8),
+                children: _topTrandingTvShows?.map((tvShow) {
+                  return Padding(
+                    padding: EdgeInsets.only(right: 16.0),
+                    child: SizedBox(
+                      width: 110,
+                      height: 165,
+                      child: Card(
+                        clipBehavior: Clip.antiAlias,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Image.network(
+                          'https://image.tmdb.org/t/p/w185/${tvShow.posterPath}',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 16),
-                  Container(
-                    width: 110,
-                    height: 165,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  SizedBox(width: 16),
-                  Container(
-                    width: 110,
-                    height: 165,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  SizedBox(width: 16),
-                ],
+                  );
+                }).toList() ??
+                    [],
               ),
             ),
             SizedBox(height: 16),
@@ -213,6 +205,7 @@ class _HomeApiState extends State<HomeApi> {
   }
 
   Future<void> fetchTrandingMovie() async {
+    // funzione per prendere i tranding  rated movies
     try {
       final response = await _apiClient.getTrandingMovie(tmdbApiKey, 'IT');
       setState(() {
@@ -223,14 +216,29 @@ class _HomeApiState extends State<HomeApi> {
     }
   }
 
-
-
   Future<void> fetchTopTvShows() async {
+    // funzione per prendere i le serie tv  rated movies
     try {
       final response = await _apiClient.getTopRatedTv(tmdbApiKey, 1, 'it', 'IT');
       setState(() {
         if (response.results != null) {
           _topTvShows = response.results!.take(3).toList();
+        } else {
+          _topTvShows = [];
+        }
+      });
+    } catch (error) {
+      print('Error fetching top TV shows: $error');
+    }
+  }
+
+  Future<void> fetchTrandingTvShows() async {
+    // funzione per prendere i le serie tv  in tranding
+    try {
+      final response = await _apiClient.getTrandingTV(tmdbApiKey, 'IT');
+      setState(() {
+        if (response.results != null) {
+          _topTrandingTvShows = response.results!.take(3).toList();
         } else {
           _topTvShows = [];
         }

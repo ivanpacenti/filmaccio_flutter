@@ -32,6 +32,12 @@ abstract class TmdbApiClient {
       @Query('language') String language,
       @Query('region') String region,
       );
+
+  @GET("trending/tv/week")
+  Future<DiscoverTvShowsResponse> getTrandingTV(
+      @Query('api_key') String apiKey,
+      @Query('language') String language,
+      );
 }
 
 @JsonSerializable()
