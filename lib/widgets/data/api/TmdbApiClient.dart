@@ -17,6 +17,14 @@ abstract class TmdbApiClient {
       @Query('region') String region,
       );
 
+
+  @GET("trending/movie/week")
+  Future<DiscoverMoviesResponse> getTrandingMovie(
+      @Query('api_key') String apiKey,
+      @Query('language') String language,
+      );
+
+
   @GET("/tv/top_rated")
   Future<DiscoverTvShowsResponse> getTopRatedTv(
       @Query('api_key') String apiKey,

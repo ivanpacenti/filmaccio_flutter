@@ -13,7 +13,9 @@ class _HomeApiState extends State<HomeApi> {
   final Dio _dio = Dio();
   late TmdbApiClient _apiClient;
   List<Movie>? _topMovies;
+  List<Movie>? _topMoviesWeek;
   List<TvShow>? _topTvShows;
+
 
   @override
   void initState() {
@@ -21,6 +23,7 @@ class _HomeApiState extends State<HomeApi> {
     _apiClient = TmdbApiClient(_dio);
     fetchTopMovies();
     fetchTopTvShows();
+    fetchTrandingMovie();
   }
 
   @override
@@ -67,7 +70,7 @@ class _HomeApiState extends State<HomeApi> {
                 }).toList() ??
                     [],
               ),
-            ),
+    ),
 // QUI INIZIANO I POSTER DELLE SERIE TV
             SizedBox(height: 16),
             Container(
@@ -116,39 +119,31 @@ class _HomeApiState extends State<HomeApi> {
                 ),
               ),
             ),
+
+//qui iniziano i poster dei film in tendenza
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: [
-                  SizedBox(width: 16),
-                  Container(
-                    width: 110,
-                    height: 165,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(8),
+                children: _topMoviesWeek?.map((movie) {
+                  return Padding(
+                    padding: EdgeInsets.only(right: 16.0),
+                    child: SizedBox(
+                      width: 110,
+                      height: 165,
+                      child: Card(
+                        clipBehavior: Clip.antiAlias,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Image.network(
+                          'https://image.tmdb.org/t/p/w185/${movie.posterPath}',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 16),
-                  Container(
-                    width: 110,
-                    height: 165,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  SizedBox(width: 16),
-                  Container(
-                    width: 110,
-                    height: 165,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  SizedBox(width: 16),
-                ],
+                  );
+                }).toList() ??
+                    [],
               ),
             ),
             SizedBox(height: 16),
@@ -206,6 +201,7 @@ class _HomeApiState extends State<HomeApi> {
 
 
   Future<void> fetchTopMovies() async {
+    // funzione per prendere i top rated movies
     try {
       final response = await _apiClient.getTopRatedMovies(tmdbApiKey, 1, 'it', 'IT');
       setState(() {
@@ -215,6 +211,20 @@ class _HomeApiState extends State<HomeApi> {
       print('Error fetching top movies: $error');
     }
   }
+
+  Future<void> fetchTrandingMovie() async {
+    try {
+      final response = await _apiClient.getTrandingMovie(tmdbApiKey, 'IT');
+      setState(() {
+        _topMoviesWeek = response.results.take(3).toList();
+      });
+    } catch (error) {
+      print('Error fetching top trending movies: $error');
+    }
+  }
+
+
+
   Future<void> fetchTopTvShows() async {
     try {
       final response = await _apiClient.getTopRatedTv(tmdbApiKey, 1, 'it', 'IT');
