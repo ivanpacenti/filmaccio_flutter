@@ -13,14 +13,14 @@ class _HomeApiState extends State<HomeApi> {
   final Dio _dio = Dio();
   late TmdbApiClient _apiClient;
   List<Movie>? _topMovies;
-  List<Movie>? _topSeries;
+  List<TvShow>? _topTvShows;
 
   @override
   void initState() {
     super.initState();
     _apiClient = TmdbApiClient(_dio);
     fetchTopMovies();
-    fetchTopSeries();
+    fetchTopTvShows();
   }
 
   @override
@@ -83,7 +83,7 @@ class _HomeApiState extends State<HomeApi> {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: _topSeries?.map((movie) {
+                children: _topTvShows?.map((tvShow) {
                   return Padding(
                     padding: EdgeInsets.only(right: 16.0),
                     child: SizedBox(
@@ -95,16 +95,16 @@ class _HomeApiState extends State<HomeApi> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Image.network(
-                          'https://image.tmdb.org/t/p/w185/${movie.posterPath}',
+                          'https://image.tmdb.org/t/p/w185/${tvShow.posterPath}',
                           fit: BoxFit.cover,
                         ),
                       ),
                     ),
                   );
-                }).toList() ??
-                    [],
+                }).toList() ?? [],
               ),
             ),
+
             SizedBox(height: 16),
             Container(
               margin: EdgeInsets.all(16),
@@ -215,14 +215,19 @@ class _HomeApiState extends State<HomeApi> {
       print('Error fetching top movies: $error');
     }
   }
-  Future<void> fetchTopSeries() async {
+  Future<void> fetchTopTvShows() async {
     try {
       final response = await _apiClient.getTopRatedTv(tmdbApiKey, 1, 'it', 'IT');
       setState(() {
-        _topMovies = response.results.take(3).toList();
+        if (response.results != null) {
+          _topTvShows = response.results!.take(3).toList();
+        } else {
+          _topTvShows = [];
+        }
       });
     } catch (error) {
-      print('Error fetching top movies: $error');
+      print('Error fetching top TV shows: $error');
     }
   }
+
 }

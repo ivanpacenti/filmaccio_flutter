@@ -12,7 +12,7 @@ class HomeApi2 extends StatefulWidget {
 class _HomeApiState2 extends State<HomeApi2> {
   final Dio _dio = Dio();
   late TmdbApiClient _apiClient;
-  List<Movie>? _topTvShows;
+  List<TvShow>? _topTvShows;
 
   @override
   void initState() {

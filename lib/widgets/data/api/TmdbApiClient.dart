@@ -18,7 +18,7 @@ abstract class TmdbApiClient {
       );
 
   @GET("/tv/top_rated")
-  Future<DiscoverMoviesResponse> getTopRatedTv(
+  Future<DiscoverTvShowsResponse> getTopRatedTv(
       @Query('api_key') String apiKey,
       @Query('page') int page,
       @Query('language') String language,
@@ -51,3 +51,30 @@ class Movie {
 
   Map<String, dynamic> toJson() => _$MovieToJson(this);
 }
+@JsonSerializable()
+class DiscoverTvShowsResponse {
+  List<TvShow> results;
+
+  DiscoverTvShowsResponse({required this.results});
+
+  factory DiscoverTvShowsResponse.fromJson(Map<String, dynamic> json) =>
+      _$DiscoverTvShowsResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DiscoverTvShowsResponseToJson(this);
+}
+
+@JsonSerializable()
+class TvShow {
+  String name;
+  @JsonKey(name: 'poster_path')
+  String? posterPath;
+
+  TvShow({required this.name, this.posterPath});
+
+  factory TvShow.fromJson(Map<String, dynamic> json) =>
+      _$TvShowFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TvShowToJson(this);
+}
+
+
