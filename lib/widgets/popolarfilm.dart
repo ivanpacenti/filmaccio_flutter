@@ -1,8 +1,9 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-
 import 'data/api/TmdbApiClient.dart';
-
+import 'data/api/api_key.dart';
 class MovieListScreen extends StatefulWidget {
   @override
   _MovieListScreenState createState() => _MovieListScreenState();
@@ -16,8 +17,12 @@ class _MovieListScreenState extends State<MovieListScreen> {
     super.initState();
     final dio = Dio();
     final client = TmdbApiClient(dio);
-    _futureMovies = client.getPopularMovies('');
+    _futureMovies = client.getPopularMovies(tmdbApiKey);
+    // Non hai più bisogno di _loadSecrets() quindi ho rimosso quella parte
+    setState(() {}); // Call setState to trigger a rebuild of the widget after the future completes.
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +30,9 @@ class _MovieListScreenState extends State<MovieListScreen> {
       appBar: AppBar(
         title: Text('Popular Movies'),
       ),
-      body: FutureBuilder<MovieResponse>(
+      body: _futureMovies == null
+          ? Center(child: CircularProgressIndicator())
+          : FutureBuilder<MovieResponse>(
         future: _futureMovies,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
