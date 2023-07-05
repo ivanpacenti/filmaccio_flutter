@@ -95,7 +95,9 @@ class _RegPrimaState extends State<RegPrima> {
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: 'Indirizzo email',
+                    labelStyle: TextStyle(color: !emailValida?Colors.red:null),
                     prefixIcon: const Icon(Icons.email),
+                    prefixIconColor: !emailValida?Colors.red:null,
                     suffixIcon: IconButton(
                       icon:  Icon(emailValida?Icons.clear:Icons.warning_amber),
                       onPressed: () {
@@ -105,6 +107,7 @@ class _RegPrimaState extends State<RegPrima> {
                         });
                       },
                     ),
+                    suffixIconColor: !emailValida?Colors.red:null
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -132,7 +135,9 @@ class _RegPrimaState extends State<RegPrima> {
                   controller:_utente,
                   decoration: InputDecoration(
                     labelText: 'Nome utente',
+                    labelStyle: TextStyle(color: !utenteValido?Colors.red:null),
                     prefixIcon: const Icon(Icons.person),
+                    prefixIconColor: !utenteValido?Colors.red:null,
                     suffixIcon: IconButton(
                       icon:  Icon(utenteValido?Icons.clear:Icons.warning_amber),
                       onPressed: () {
@@ -143,6 +148,7 @@ class _RegPrimaState extends State<RegPrima> {
                         });
                       },
                     ),
+                    suffixIconColor: !utenteValido?Colors.red:null,
                     counter:  Text('$lunghezza / 30'),
                   ),
                   keyboardType: TextInputType.text,
@@ -168,11 +174,18 @@ class _RegPrimaState extends State<RegPrima> {
                   ],
                 ),
                 TextFormField(
-
+                  onChanged: (hasChange)
+                  {
+                    if(hasChange.isNotEmpty) setState(() {
+                      passwordValida=true;
+                    });
+                  },
                   controller: _password1,
                   decoration: InputDecoration(
                     labelText: 'Password',
+                      labelStyle: TextStyle(color: !passwordValida?Colors.red:null),
                     prefixIcon: const Icon(Icons.lock),
+                    prefixIconColor: !passwordValida?Colors.red:null,
                     suffixIcon: IconButton(
                       icon: Icon(visibilitaPassword1 ? Icons.visibility_off : Icons.visibility),
                       onPressed: () {
@@ -181,6 +194,7 @@ class _RegPrimaState extends State<RegPrima> {
                         });
                       },
                     ),
+                    suffixIconColor: !passwordValida?Colors.red:null
                   ),
                   obscureText: !visibilitaPassword1,
                 ),
@@ -202,7 +216,9 @@ class _RegPrimaState extends State<RegPrima> {
                   controller: _password2,
                   decoration: InputDecoration(
                     labelText: 'Conferma password',
+                      labelStyle: TextStyle(color: !passwordValida?Colors.red:null),
                     prefixIcon: const Icon(Icons.lock),
+                    prefixIconColor: !passwordValida?Colors.red:null,
                     suffixIcon: IconButton(
                       icon: Icon(visibilitaPassword2 ? Icons.visibility_off : Icons.visibility),
                       onPressed: () {
@@ -211,6 +227,7 @@ class _RegPrimaState extends State<RegPrima> {
                         });
                       },
                     ),
+                    suffixIconColor: !passwordValida?Colors.red:null
                   ),
                   obscureText: !visibilitaPassword2,
                   onChanged: (String hasChange){

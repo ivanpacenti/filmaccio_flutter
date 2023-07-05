@@ -93,6 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                 controller: _email,
                 decoration:  InputDecoration(
                   labelText: 'Nome utente o email',
+                    labelStyle: TextStyle(color: erroreLogin?Colors.red:null),
                   prefixIcon: Icon(Icons.person),
                   prefixIconColor: erroreLogin?Colors.red:Colors.grey,
                   suffixIcon: IconButton(
@@ -133,6 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                 controller: _password,
                 decoration: InputDecoration(
                   labelText: 'Password',
+                  labelStyle: TextStyle(color: erroreLogin?Colors.red:null),
                   prefixIcon: const Icon(Icons.lock),
                   prefixIconColor: erroreLogin?Colors.red:Colors.grey,
                   suffixIcon: IconButton(

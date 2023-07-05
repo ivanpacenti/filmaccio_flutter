@@ -4,6 +4,7 @@ import 'package:filmaccio_flutter/widgets/login/RegSeconda.dart';
 import 'package:filmaccio_flutter/widgets/login/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
@@ -79,29 +80,33 @@ class _RegTerzaState extends State<RegTerza> {
             )),
       ),
       body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-              Row(
+            Container(
+              margin: const EdgeInsets.only(top: 16),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
                     'Registrati a ',
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20
+                      fontFamily: 'serif',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
                     ),
                   ),
                   Text(
                     'Filmaccio',
                     style: TextStyle(
+                      fontFamily: 'serif',
                       fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic,
                       fontSize: 20,
                       color: Theme.of(context).primaryColor,
+                      fontStyle: FontStyle.italic,
                     ),
                   ),
                 ],
               ),
+            ),
             Container(
               height: 50,
 
@@ -116,12 +121,15 @@ class _RegTerzaState extends State<RegTerza> {
                 onChanged: (hasValue){
                   setState(() {
                     lunghezza=hasValue.length;
+                    nomeCorretto=true;
                   });
                 },
                 decoration: InputDecoration(
                   labelText: 'Nome visualizzato',
+                  labelStyle: TextStyle(color: !nomeCorretto?Colors.red:null),
                   counterText: '$lunghezza / 50',
-                  prefixIcon: const Icon(Icons.contact_page),
+                  prefixIcon: const Icon(Icons.person),
+                  prefixIconColor: !nomeCorretto?Colors.red:null,
                   suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {
@@ -130,7 +138,7 @@ class _RegTerzaState extends State<RegTerza> {
                         nomeCorretto=true;
                       });
                     },
-                    icon:  Icon(nomeCorretto ? Icons.clear:Icons.warning_amber),
+                    icon:  Icon(nomeCorretto ? Icons.clear:Icons.warning_amber,color: !nomeCorretto?Colors.red:null),
 
                   ),
                 ),
@@ -138,22 +146,6 @@ class _RegTerzaState extends State<RegTerza> {
                 keyboardType: TextInputType.text,
 
             )),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [  if(!nomeCorretto)
-                    Container(
-                        width: 300,
-                        child: const Text("Il nome visualizzato deve essere lungo tra 3 e 50 caratteri",
-                            softWrap: true,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 3,
-                            style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.red))
-                    )
-
-                  ],
-                ),
                 const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
@@ -184,6 +176,15 @@ class _RegTerzaState extends State<RegTerza> {
                     if(lunghezza<3||lunghezza>50){
                       setState(() {
                         nomeCorretto=false;
+                        Fluttertoast.showToast(
+                            msg: "Il nome visualizzato deve essere tra i 3 e i 50 caratteri",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 2,
+                            backgroundColor: Colors.grey,
+                            textColor: Colors.white,
+                            fontSize: 16.0
+                        );
                       });
                     }else {
                   userData.nomeVisualizzato = _nomeVisualizzato.text;

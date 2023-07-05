@@ -42,7 +42,6 @@ class _RegSecondaState extends State<RegSeconda> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) =>  RegPrima()),
@@ -58,33 +57,36 @@ class _RegSecondaState extends State<RegSeconda> {
                 fontFamily: 'sans-serif',
                 color: Theme.of(context).secondaryHeaderColor,
                 fontSize: 24,
-
               ),
             )),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Registrati a ',
-                style: TextStyle(
+          Container(
+            margin: const EdgeInsets.only(top: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Registrati a ',
+                  style: TextStyle(
+                    fontFamily: 'serif',
                     fontWeight: FontWeight.bold,
-                    fontSize: 20
+                    fontSize: 20,
+                  ),
                 ),
-              ),
-              Text(
-                'Filmaccio',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic,
-                  fontSize: 20,
-                  color: Theme.of(context).primaryColor,
+                Text(
+                  'Filmaccio',
+                  style: TextStyle(
+                    fontFamily: 'serif',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Theme.of(context).primaryColor,
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
            Container(
             height: 50,
@@ -197,7 +199,7 @@ class _RegSecondaState extends State<RegSeconda> {
                 Fluttertoast.showToast(
                     msg: "Inserisci una data di nascita valida (almeno 14 anni)",
                     toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
+                    gravity: ToastGravity.CENTER,
                     timeInSecForIosWeb: 2,
                     backgroundColor: Colors.grey,
                     textColor: Colors.white,
