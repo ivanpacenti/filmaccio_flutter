@@ -12,7 +12,7 @@ class RegSeconda extends StatefulWidget {
   @override
   _RegSecondaState createState() => _RegSecondaState();
 }
-enum Genere {Maschile,Femminile,Altro}
+enum Genere {M,F,A}
 class _RegSecondaState extends State<RegSeconda> {
   int day=1;
   int month=10;
@@ -26,7 +26,7 @@ class _RegSecondaState extends State<RegSeconda> {
     else return true;
   }
 
-  Genere? _genere= Genere.Maschile;
+  Genere? _genere= Genere.M;
   late UserData userData;
 
   @override
@@ -101,7 +101,7 @@ class _RegSecondaState extends State<RegSeconda> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Radio<Genere>(
-                value: Genere.Maschile,
+                value: Genere.M,
                 groupValue: _genere,
                 onChanged: (Genere? value) {
                   setState(() {
@@ -111,7 +111,7 @@ class _RegSecondaState extends State<RegSeconda> {
               ),
               const Text('Maschile'),
               Radio<Genere>(
-                value: Genere.Femminile,
+                value: Genere.F,
                 groupValue: _genere,
                 onChanged: (Genere? value) {
                   setState(() {
@@ -121,7 +121,7 @@ class _RegSecondaState extends State<RegSeconda> {
               ),
               const Text('Femminile'),
               Radio<Genere>(
-                value: Genere.Altro,
+                value: Genere.A,
                 groupValue: _genere,
                 onChanged: (Genere? value) {
                   setState(() {
@@ -147,7 +147,6 @@ class _RegSecondaState extends State<RegSeconda> {
           Container(
             width: 420,
             child: DropdownDatePicker(
-
               inputDecoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(8),
                   enabledBorder: const OutlineInputBorder(
@@ -165,17 +164,17 @@ class _RegSecondaState extends State<RegSeconda> {
               onChangedDay: (value) => setState(() {
                 if(value!.isNotEmpty){
                   day=int.parse(value);
-                } else day=14;
+                }
               }),
               onChangedMonth: (value) => setState(() {
                 if(value!.isNotEmpty){
                   month=int.parse(value);
-                } else month=10;
+                }
               }),
               onChangedYear: (value) => setState(() {
                 if(value!.isNotEmpty){
                   year=int.parse(value);
-                } else year=1993;
+                }
               }),
               locale: "it_IT",// optional
             ),
@@ -187,8 +186,7 @@ class _RegSecondaState extends State<RegSeconda> {
             onPressed: () {
               if(dateValidator(year, month, day)) {
                 userData.dataNascita=DateTime(year,month,day);
-                userData.genere=_genere.toString();
-
+                userData.genere = _genere.toString().split('.').last;
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) =>  RegTerza(userData: userData)),

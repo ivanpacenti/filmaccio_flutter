@@ -64,6 +64,10 @@ class FirestoreService {
         'profileImage': propicURL,
         'uid': uid,
         'username': userData.nomeUtente,
+        'movieMinutes': 0,
+        'moviesNumber':0,
+        'tvMinutes':0,
+        'tvNumber':0
       };
       DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(uid);
 

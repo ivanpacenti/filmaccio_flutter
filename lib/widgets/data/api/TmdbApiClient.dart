@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
-import 'api_key.dart';
+
 part 'TmdbApiClient.g.dart';
 
 @RestApi(baseUrl: "https://api.themoviedb.org/3/")

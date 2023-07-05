@@ -1,3 +1,4 @@
+import 'package:filmaccio_flutter/widgets/login/RegTerza.dart';
 import 'package:filmaccio_flutter/widgets/nav/bottomnavbar.dart';
 
 import 'package:filmaccio_flutter/widgets/login/auth.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
