@@ -14,6 +14,7 @@ abstract class TmdbApiClient {
   factory TmdbApiClient(Dio dio, {String baseUrl}) = _TmdbApiClient;
 
   @GET("/movie/top_rated")
+  // endpoint per trovare li film più votati
   Future<DiscoverMoviesResponse> getTopRatedMovies(
       @Query('api_key') String apiKey,
       @Query('page') int page,
@@ -23,6 +24,7 @@ abstract class TmdbApiClient {
 
 
   @GET("trending/movie/week")
+  //endpoint per trovare i film in evidenza sta settimana (trending)
   Future<DiscoverMoviesResponse> getTrandingMovie(
       @Query('api_key') String apiKey,
       @Query('language') String language,
@@ -30,6 +32,7 @@ abstract class TmdbApiClient {
 
 
   @GET("/tv/top_rated")
+  // endpoint per trovare le serie tv più votati
   Future<DiscoverTvShowsResponse> getTopRatedTv(
       @Query('api_key') String apiKey,
       @Query('page') int page,
@@ -38,6 +41,7 @@ abstract class TmdbApiClient {
       );
 
   @GET("trending/tv/week")
+  // endpoint per trovare le serie tv in evidenza sta settimana (trending)
   Future<DiscoverTvShowsResponse> getTrandingTV(
       @Query('api_key') String apiKey,
       @Query('language') String language,
@@ -45,6 +49,7 @@ abstract class TmdbApiClient {
 
 
   @GET("movie/now_playing")
+  // endpoint per trovare i film in sala
   Future<DiscoverMoviesResponse> getMovieNowPlaying(
     @Query('api_key') String apiKey,
     @Query('page') int page,
@@ -53,11 +58,22 @@ abstract class TmdbApiClient {
       );
 
   @GET("movie/{movie_id}")
+// endpoint per trovare i dettagli di un film
   Future<Movie> getMovieDetails({
     @Query('api_key') required String apiKey,
     @Path('movie_id') required String movieId,
     @Query('language') required  String language,
     @Query('region') required String region,
+    @Query('append_to_response') String appendToResponse = '',
+  });
+  @GET("tv/{series_id}")
+// endpoint per trovare i dettagli di un film
+  Future<Movie> getTvDetails({
+    @Query('api_key') required String apiKey,
+    @Path('series_id') required String movieId,
+    @Query('language') required  String language,
+    @Query('region') required String region,
+    @Query('append_to_response') String appendToResponse = '',
   });
 
 }
