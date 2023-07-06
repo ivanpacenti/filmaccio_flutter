@@ -410,7 +410,7 @@ class _ProfiloState extends State<Profilo> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Film Preferiti',
+                                          'Film Finiti',
                                           style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
@@ -421,7 +421,7 @@ class _ProfiloState extends State<Profilo> {
                                           width: 130,  // Imposta la larghezza desiderata per il rettangolo
                                           height: 120,  // Altezza fissa
                                           child: FutureBuilder<List<String>>(
-                                            future: getPosters(userDoc?.get('uid'), "favorite_m"),
+                                            future: getPosters(userDoc?.get('uid'), "watched_m"),
                                             builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
                                               if (snapshot.connectionState == ConnectionState.waiting) {
                                                 return CircularProgressIndicator();
@@ -454,7 +454,57 @@ class _ProfiloState extends State<Profilo> {
                                     ),
                                   ),
                                 ),
-
+                                Card(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 8),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Film in watchlist',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(height: 8),
+                                        SizedBox(
+                                          width: 130,  // Imposta la larghezza desiderata per il rettangolo
+                                          height: 120,  // Altezza fissa
+                                          child: FutureBuilder<List<String>>(
+                                            future: getPosters(userDoc?.get('uid'), "watchlist_m"),
+                                            builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                                return CircularProgressIndicator();
+                                              } else if (snapshot.hasError) {
+                                                return Text('Errore: ${snapshot.error}');
+                                              } else {
+                                                final posterPaths = snapshot.data ?? [];
+                                                return ListView.builder(
+                                                  scrollDirection: Axis.horizontal,
+                                                  itemCount: posterPaths.length,
+                                                  itemBuilder: (BuildContext context, int index) {
+                                                    return Padding(
+                                                      padding: EdgeInsets.only(right: 8),
+                                                      child: SizedBox(
+                                                        width: 40,  // Imposta la larghezza desiderata per il rettangolo
+                                                        height: 100,  // Altezza fissa
+                                                        child: Image.network(
+                                                          posterPaths[index],
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                                 // Aggiungi altre carte qui...
                               ],
                             ),
@@ -537,6 +587,36 @@ class _ProfiloState extends State<Profilo> {
     }
 
     return posterPaths;
+  }
+  Future<List<String>> getPostersTv(String uid, String listName) async {
+    List<dynamic> list = await FirestoreService.getList(uid, listName);
+    if (list.isEmpty) {
+      print("La lista è vuota");
+      print(list[0].toString());
+    } else {
+      print("La lista non è vuota");
+    }
+    List<String> posterPathsTv = [];
+    String baseUrl = "https://image.tmdb.org/t/p/w185/";
+
+    TmdbApiClient tmdbApiClient = TmdbApiClient(Dio());
+
+    int maxIndex = (list.length <= 3) ? list.length : 3;
+    for (int i = 0; i < maxIndex; i++) {
+      String movieId = list[i].toString();
+      Movie movieDetails = await tmdbApiClient.getMovieDetails(
+        apiKey: tmdbApiKey,
+        movieId: movieId,
+        language: 'it-IT',
+        region: 'IT',
+      );
+      if (movieDetails.posterPath != null) {
+        String fullPosterPath = "$baseUrl${movieDetails.posterPath}";
+        posterPathsTv.add(fullPosterPath);
+      }
+    }
+
+    return posterPathsTv;
   }
 }
 
