@@ -55,15 +55,14 @@ class _HomeState extends State<Home> {
                 ],
               ),
             ),
-            SizedBox(
-              height: 165,
+            Expanded(
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: _movieNowPlaying?.length ?? 0,
                 itemBuilder: (context, index) {
                   final movie = _movieNowPlaying?[index];
                   return Container(
-                    width: 110,
+                    width: 140,
                     margin: EdgeInsets.only(left: 16.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.0),
@@ -100,15 +99,14 @@ class _HomeState extends State<Home> {
                 ],
               ),
             ),
-            SizedBox(
-              height: 140,
+            Expanded(
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: _movieTopRating?.length ?? 0,
                 itemBuilder: (context, index) {
                   final movie = _movieTopRating?[index];
                   return Container(
-                    width: 110,
+                    width: 140,
                     margin: EdgeInsets.only(left: 16.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.0),
@@ -145,15 +143,14 @@ class _HomeState extends State<Home> {
                 ],
               ),
             ),
-            SizedBox(
-              height: 140,
+            Expanded(
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: _topRatedTV?.length ?? 0,
                 itemBuilder: (context, index) {
                   final tvShows = _topRatedTV?[index];
                   return Container(
-                    width: 110,
+                    width: 140,
                     margin: EdgeInsets.only(left: 16.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.0),
@@ -181,7 +178,6 @@ class _HomeState extends State<Home> {
       setState(() {
         if (response.results != null) {
           _movieNowPlaying = response.results!.take(6).toList();
-          print(_movieNowPlaying);
         } else {
           _movieNowPlaying = [];
         }
