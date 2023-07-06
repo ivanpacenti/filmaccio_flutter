@@ -48,17 +48,14 @@ class _HomeState extends State<Home> {
                       color: Theme.of(context).primaryColor,
                     ),
                   ),
-                  TextButton(
-                    onPressed: () {},
-                    child: Text('Vedi tutto'),
-                  ),
+
                 ],
               ),
             ),
             Expanded(
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: _movieNowPlaying?.length ?? 0,
+                itemCount: _movieNowPlaying?.length??0,
                 itemBuilder: (context, index) {
                   final movie = _movieNowPlaying?[index];
                   return GestureDetector(
@@ -101,17 +98,13 @@ class _HomeState extends State<Home> {
                       color: Theme.of(context).primaryColor,
                     ),
                   ),
-                  TextButton(
-                    onPressed: () {},
-                    child: Text('Vedi tutto'),
-                  ),
                 ],
               ),
             ),
             Expanded(
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: _movieTopRating?.length ?? 0,
+                itemCount: _movieTopRating?.length??0,
                 itemBuilder: (context, index) {
                   final movie = _movieTopRating?[index];
                   return Container(
@@ -144,10 +137,6 @@ class _HomeState extends State<Home> {
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).primaryColor,
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    child: Text('Vedi tutto'),
                   ),
                 ],
               ),
@@ -186,7 +175,7 @@ class _HomeState extends State<Home> {
       final response = await _apiClient.getTrandingMovie(tmdbApiKey, 'it-IT');
       setState(() {
         if (response.results != null) {
-          _movieNowPlaying = response.results!.take(6).toList();
+          _movieNowPlaying = response.results!.toList();
         } else {
           _movieNowPlaying = [];
         }
@@ -201,7 +190,7 @@ class _HomeState extends State<Home> {
       setState(() {
         if (response.results != null) {
 
-          _movieTopRating = response.results!.take(6).toList();
+          _movieTopRating = response.results!.toList();
 
 
         } else {
@@ -218,7 +207,7 @@ class _HomeState extends State<Home> {
       final response = await _apiClient.getTopRatedTv(tmdbApiKey, 6,'it-IT',"IT");
       setState(() {
         if (response.results != null) {
-          _topRatedTV = response.results!.take(6).toList();
+          _topRatedTV = response.results!.toList();
         } else {
           _topRatedTV = [];
         }
