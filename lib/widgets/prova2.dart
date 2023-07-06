@@ -37,7 +37,15 @@ class _HomeApi2State extends State<HomeApi2> {
         } else {
           final posterPaths = snapshot.data ?? [];
           return Row(
-            children: posterPaths.map((posterPath) => Image.network(posterPath)).toList(),
+            children: posterPaths.map((posterPath) => Container(
+              width: 60,
+              height: 80,
+              child: Image.network(
+                posterPath,
+                fit: BoxFit.cover,
+              ),
+            ))
+                .toList(),
           );
         }
       },
