@@ -3,6 +3,7 @@ part 'Character.g.dart';
 @JsonSerializable()
 class Character {
   int id;
+  @JsonKey(name: 'name')
   String name;
   @JsonKey(name: 'profile_path')
   String? profilePath;
@@ -16,6 +17,5 @@ class Character {
   });
 
   factory Character.fromJson(Map<String, dynamic> json) => _$CharacterFromJson(json);
-
   Map<String, dynamic> toJson() => _$CharacterToJson(this);
 }

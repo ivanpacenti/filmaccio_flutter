@@ -7,9 +7,9 @@ part 'Credits.g.dart';
 
 @JsonSerializable()
 class Credits {
-  @JsonKey(name: 'actors')
+  @JsonKey(name: 'cast')
   List<Character> cast;
-  @JsonKey(name: 'directors')
+  @JsonKey(name: 'crew')
   List<Director> crew;
 
   Credits({
@@ -18,6 +18,5 @@ class Credits {
   });
 
   factory Credits.fromJson(Map<String, dynamic> json) => _$CreditsFromJson(json);
-
   Map<String, dynamic> toJson() => _$CreditsToJson(this);
 }

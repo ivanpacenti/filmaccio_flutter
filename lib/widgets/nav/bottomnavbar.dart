@@ -24,7 +24,7 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 5,
+      length: 4,
       child: Scaffold(
         body: TabBarView(
           children: [
@@ -52,10 +52,7 @@ class BottomNavBar extends StatelessWidget {
                   icon: Icon(Icons.whatshot),
                   text: 'Tendenza',
                 ),
-                Tab(
-                  icon: Icon(Icons.whatshot),
-                  text: 'prova2',
-                ),
+
                 Tab(
                   icon: Icon(Icons.person),
                   text: 'Profilo',

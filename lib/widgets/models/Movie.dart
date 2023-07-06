@@ -16,6 +16,7 @@ class Movie {
   final String backdropPath;
   @JsonKey(name: 'runtime')
   final int? duration;
+  @JsonKey(name: 'credits')
   final Credits? credits;
 
   Movie({

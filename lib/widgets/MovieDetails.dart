@@ -15,22 +15,42 @@ class MovieDetails extends StatefulWidget {
 }
 
 class _MovieDetailsState extends State<MovieDetails> {
+
+
   late Movie _movie;
+  late Movie _movieDetails;
   final Dio _dio = Dio();
   late TmdbApiClient _apiClient;
-  List<Movie>? _movieNowPlaying;
-
 
   @override
   void initState() {
     super.initState();
     _movie = widget.movie;
+    fetchMovieDetails();
+    _movieDetails=widget.movie;
 
+  }
+  @override
+  void didUpdateWidget(covariant MovieDetails oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.movie != oldWidget.movie) {
+      _movie = widget.movie;
+      fetchMovieDetails();
 
+    }
+  }
+  String? get directorNames {
+    final directors = _movieDetails.credits?.crew
+        .where((crewMember) => crewMember.job == "Director")
+        .map((director) => director.name)
+        .toList();
+    return directors?.join(",\n ");
   }
 
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,7 +72,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                 bottomRight: Radius.circular(70),
               ),
               child: Image.network(
-                'https://image.tmdb.org/t/p/original/${_movie.backdropPath}',
+                'https://image.tmdb.org/t/p/original/${_movieDetails.backdropPath}',
                 fit: BoxFit.cover,
               ),
             ),
@@ -71,7 +91,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                     borderRadius: BorderRadius.circular(8),
                     image: DecorationImage(
                       image: NetworkImage(
-                        'https://image.tmdb.org/t/p/original/${_movie.posterPath}',
+                        'https://image.tmdb.org/t/p/original/${_movieDetails.posterPath}',
                       ),
                       fit: BoxFit.cover,
                     ),
@@ -99,18 +119,17 @@ class _MovieDetailsState extends State<MovieDetails> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("${_movie.releaseDate.split("-").first} | Diretto da:"),
+                            Text("${_movieDetails.releaseDate.split("-").first} | Diretto da:"),
                             SizedBox(height: 10,),
-
-
+                            Text("${directorNames ?? ''}")
                           ],
                         ),
 
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            SizedBox(width: 100,),
-                            Text("${_movie.duration}")
+                            SizedBox(width: 80,),
+                            Text("${_movieDetails.duration} min")
                           ],
                         )
                       ],
@@ -126,7 +145,7 @@ class _MovieDetailsState extends State<MovieDetails> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  '${_movie.releaseDate} | Diretto da',
+                  'boh',
                   style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black,
@@ -215,16 +234,22 @@ class _MovieDetailsState extends State<MovieDetails> {
       ),
     );
   }
-  Future<void> fetchTopTrending() async {
+  Future<void> fetchMovieDetails() async {
     try {
-      final response = await _apiClient.getTrandingMovie(tmdbApiKey, 'it-IT');
+      TmdbApiClient _apiClient = TmdbApiClient(Dio());
+      _movieDetails = await _apiClient.getMovieDetails(
+        apiKey: tmdbApiKey,
+        movieId: _movie.id.toString(),
+        language: 'it-IT',
+        region: 'IT',
+        appendToResponse: 'credits',
+      );
+      final directors = _movieDetails.credits?.crew
+          .where((crewMember) => crewMember.job == "Director")
+          .map((director) => director.name)
+          .toList();
+      final directorNames = directors?.join(", ");
       setState(() {
-        if (response.results != null) {
-          _movieNowPlaying = response.results!.take(6).toList();
-          print(_movieNowPlaying?[0].credits);
-        } else {
-          _movieNowPlaying = [];
-        }
       });
     } catch (error) {
       print('Error fetching top trending movies: $error');

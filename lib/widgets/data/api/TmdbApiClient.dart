@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:filmaccio_flutter/widgets/models/DiscoverMoviesResponse.dart';
 import 'package:filmaccio_flutter/widgets/models/DiscoverTvShowsResponse.dart';
+import 'package:filmaccio_flutter/widgets/models/Movie.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:retrofit/retrofit.dart';
-import '../../models/Movie.dart';
-import 'api_key.dart';
 
+import 'api_key.dart';
 
 part 'TmdbApiClient.g.dart';
 
@@ -56,7 +56,6 @@ abstract class TmdbApiClient {
     @Query('language') String language,
     @Query('region') String region,
       );
-
   @GET("movie/{movie_id}")
 // endpoint per trovare i dettagli di un film
   Future<Movie> getMovieDetails({
@@ -64,7 +63,7 @@ abstract class TmdbApiClient {
     @Path('movie_id') required String movieId,
     @Query('language') required  String language,
     @Query('region') required String region,
-    @Query('append_to_response') String appendToResponse = '',
+    @Query('append_to_response') String appendToResponse = 'credits',
   });
   @GET("tv/{series_id}")
 // endpoint per trovare i dettagli di un film
