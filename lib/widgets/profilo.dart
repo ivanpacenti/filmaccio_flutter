@@ -1,5 +1,5 @@
 import 'dart:ffi';
-
+import 'package:tuple/tuple.dart';
 import 'package:filmaccio_flutter/widgets/Firebase/FirestoreService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +46,7 @@ class _ProfiloState extends State<Profilo> {
           final String? profileImage = userDoc?.get('profileImage');
           final String? backdropImage = userDoc?.get('backdropImage');
           final int? moviesNumber = userDoc?.get('moviesNumber');
+          final int? movieMinutes = userDoc?.get('movieMinutes');
           return Scaffold(
             body: SingleChildScrollView(
               child: ConstrainedBox(
@@ -152,7 +153,7 @@ class _ProfiloState extends State<Profilo> {
                                             Column(
                                               children: [
                                                 Text(
-                                                  '2',
+                                                  convertMinutesToMonthsDaysHours(movieMinutes ?? 0).item1.toString(),
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                   ),
@@ -164,7 +165,7 @@ class _ProfiloState extends State<Profilo> {
                                             Column(
                                               children: [
                                                 Text(
-                                                  '15',
+                                                  convertMinutesToMonthsDaysHours(movieMinutes ?? 0).item2.toString(),
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                   ),
@@ -176,7 +177,7 @@ class _ProfiloState extends State<Profilo> {
                                             Column(
                                               children: [
                                                 Text(
-                                                  '10',
+                                                  convertMinutesToMonthsDaysHours(movieMinutes ?? 0).item3.toString(),
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                   ),
@@ -364,3 +365,15 @@ Future<int> getTotalMovies( String uid, String listName ) async {
   return totalMovies;
 }
 
+
+
+Tuple3<String, String, String> convertMinutesToMonthsDaysHours(int minutes) {
+  // Questo metodo converte i minuti in mesi, giorni e ore
+  var months = (minutes ~/ 43200).toString();
+  var days = ((minutes % 43200) ~/ 1440).toString();
+  var hours = ((minutes % 1440) ~/ 60).toString();
+  if (months.length == 1) months = '0$months';
+  if (days.length == 1) days = '0$days';
+  if (hours.length == 1) hours = '0$hours';
+  return Tuple3(months, days, hours);
+}
