@@ -187,7 +187,6 @@ class _HomeState extends State<Home> {
       setState(() {
         if (response.results != null) {
           _movieNowPlaying = response.results!.take(6).toList();
-          print(_movieNowPlaying?[0].credits);
         } else {
           _movieNowPlaying = [];
         }

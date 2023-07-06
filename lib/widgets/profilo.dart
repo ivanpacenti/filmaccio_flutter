@@ -860,9 +860,9 @@ class _ProfiloState extends State<Profilo> {
     int maxIndex = (list.length <= 3) ? list.length : 3;
     for (int i = 0; i < maxIndex; i++) {
       String serieId = list[i].toString();
-      TvShow TvDetails = await tmdbApiClient.getTvDetails(
+      Movie TvDetails = await tmdbApiClient.getTvDetails(
         apiKey: tmdbApiKey,
-        serieId: serieId,
+        movieId: serieId,
         language: 'it-IT',
         region: 'IT',
       );

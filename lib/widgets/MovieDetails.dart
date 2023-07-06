@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:filmaccio_flutter/main.dart';
 import 'package:filmaccio_flutter/widgets/models/Movie.dart';
 import 'package:flutter/material.dart';
 
@@ -15,24 +16,43 @@ class MovieDetails extends StatefulWidget {
 }
 
 class _MovieDetailsState extends State<MovieDetails> {
+
+
   late Movie _movie;
+  late Movie _movieDetails;
   final Dio _dio = Dio();
   late TmdbApiClient _apiClient;
-  List<Movie>? _movieNowPlaying;
-
 
   @override
   void initState() {
     super.initState();
     _movie = widget.movie;
+    fetchMovieDetails();
+    _movieDetails=widget.movie;
 
+  }
+  @override
+  void didUpdateWidget(covariant MovieDetails oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.movie != oldWidget.movie) {
+      _movie = widget.movie;
+      fetchMovieDetails();
 
+    }
+  }
+  String? get directorNames {
+    final directors = _movieDetails.credits?.crew
+        .where((crewMember) => crewMember.job == "Director")
+        .map((director) => director.name)
+        .toList();
+    return directors?.join(",\n ");
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: SingleChildScrollView
+      (child:Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
@@ -52,7 +72,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                 bottomRight: Radius.circular(70),
               ),
               child: Image.network(
-                'https://image.tmdb.org/t/p/original/${_movie.backdropPath}',
+                'https://image.tmdb.org/t/p/original/${_movieDetails.backdropPath}',
                 fit: BoxFit.cover,
               ),
             ),
@@ -71,7 +91,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                     borderRadius: BorderRadius.circular(8),
                     image: DecorationImage(
                       image: NetworkImage(
-                        'https://image.tmdb.org/t/p/original/${_movie.posterPath}',
+                        'https://image.tmdb.org/t/p/original/${_movieDetails.posterPath}',
                       ),
                       fit: BoxFit.cover,
                     ),
@@ -99,18 +119,17 @@ class _MovieDetailsState extends State<MovieDetails> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("${_movie.releaseDate.split("-").first} | Diretto da:"),
+                            Text("${_movieDetails.releaseDate.split("-").first} | Diretto da:"),
                             SizedBox(height: 10,),
-
-
+                            Text("${directorNames ?? ''}")
                           ],
                         ),
 
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            SizedBox(width: 100,),
-                            Text("${_movie.duration}")
+                            SizedBox(width: 80,),
+                            Text("${_movieDetails.duration} min")
                           ],
                         )
                       ],
@@ -123,41 +142,6 @@ class _MovieDetailsState extends State<MovieDetails> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  '${_movie.releaseDate} | Diretto da',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  '${_movie.credits?.crew.map((director) => director.name)?.toString() ?? []}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: Divider(),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  '150 minuti',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
@@ -199,35 +183,104 @@ class _MovieDetailsState extends State<MovieDetails> {
                   ),
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  'Descrizione del film',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black,
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(0.1),
+                  child: ExpandableText(
+                    text: '${_movieDetails.overview}',
+                    maxLines: 3,
                   ),
-                ),
+                )
               ),
+
             ],
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+
+            ],
+          )
         ],
-      ),
+      )),
     );
   }
-  Future<void> fetchTopTrending() async {
+
+
+
+  Future<void> fetchMovieDetails() async {
     try {
-      final response = await _apiClient.getTrandingMovie(tmdbApiKey, 'it-IT');
+      TmdbApiClient _apiClient = TmdbApiClient(Dio());
+      _movieDetails = await _apiClient.getMovieDetails(
+        apiKey: tmdbApiKey,
+        movieId: _movie.id.toString(),
+        language: 'it-IT',
+        region: 'IT',
+        appendToResponse: 'credits',
+      );
+
       setState(() {
-        if (response.results != null) {
-          _movieNowPlaying = response.results!.take(6).toList();
-          print(_movieNowPlaying?[0].credits);
-        } else {
-          _movieNowPlaying = [];
-        }
       });
     } catch (error) {
       print('Error fetching top trending movies: $error');
     }
   }
 }
+class ExpandableText extends StatefulWidget {
+  final String text;
+  final int maxLines;
+
+  ExpandableText({required this.text, this.maxLines = 3});
+
+  @override
+  _ExpandableTextState createState() => _ExpandableTextState();
+}
+
+class _ExpandableTextState extends State<ExpandableText> {
+  bool isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        final textSpan = TextSpan(text: widget.text);
+        final textPainter = TextPainter(
+          text: textSpan,
+          maxLines: widget.maxLines,
+          textDirection: TextDirection.ltr,
+        );
+        textPainter.layout(maxWidth: constraints.maxWidth);
+
+        final isTextOverflowed = textPainter.didExceedMaxLines;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SingleChildScrollView(
+              child: Text(
+                widget.text,
+                maxLines: isExpanded ? null : widget.maxLines,
+                overflow: TextOverflow.clip,
+              ),
+            ),
+            if (isTextOverflowed)
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    isExpanded = !isExpanded;
+                  });
+                },
+                child: Text(
+                  isExpanded ? 'Mostra meno' : 'Mostra altro',
+                  style: TextStyle(color: Colors.blue),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+
