@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:filmaccio_flutter/widgets/Firebase/FirestoreService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +45,7 @@ class _ProfiloState extends State<Profilo> {
           final String? username = userDoc?.get('username');
           final String? profileImage = userDoc?.get('profileImage');
           final String? backdropImage = userDoc?.get('backdropImage');
+          final int? moviesNumber = userDoc?.get('moviesNumber');
           return Scaffold(
             body: SingleChildScrollView(
               child: ConstrainedBox(
@@ -195,7 +198,7 @@ class _ProfiloState extends State<Profilo> {
                                       children: [
                                         Text('NUMERO FILM VISTI'),
                                         Text(
-                                          '50',
+                                          moviesNumber.toString() ?? '0' ,
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -338,15 +341,26 @@ class _ProfiloState extends State<Profilo> {
 }
 
 Future<int> getTotalFollowers(String uid) async {
+  // ritorna il numero totale dei followers
   List<dynamic> peopleFollowed = await FirestoreService.getFollowers(uid);
   int totalFollowers = peopleFollowed.length;
-  print('Numero totale dei follower: $totalFollowers');
+ // print('Numero totale dei follower: $totalFollowers');
   return totalFollowers;
 }
 
 Future<int> getTotalFollowing(String uid) async {
+  //ritorna il numero totale dei following
   List<dynamic> peopleFollowing = await FirestoreService.getFollowing(uid);
   int totalFollowing = peopleFollowing.length;
-  print('Numero totale dei follower: $totalFollowing');
+  //print('Numero totale dei follower: $totalFollowing');
   return totalFollowing;
 }
+
+Future<int> getTotalMovies( String uid, String listName ) async {
+  //ritorna il numero totale dei film visti
+  List<dynamic> moviesWatched = await FirestoreService.getList(uid,listName);
+  int totalMovies = moviesWatched.length;
+  print('Numero totale dei film visti: $totalMovies');
+  return totalMovies;
+}
+
