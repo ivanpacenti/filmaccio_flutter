@@ -31,7 +31,7 @@ class BottomNavBar extends StatelessWidget {
             Home(),
             Ricerca(),
             HomeApi(),
-            HomeApi2(),
+            //HomeApi2(),
             Profilo(),
           ],
         ),

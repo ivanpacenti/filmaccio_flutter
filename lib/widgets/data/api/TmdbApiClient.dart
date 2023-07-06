@@ -56,6 +56,8 @@ abstract class TmdbApiClient {
   Future<Movie> getMovieDetails({
     @Query('api_key') required String apiKey,
     @Path('movie_id') required String movieId,
+    @Query('language') required  String language,
+    @Query('region') required String region,
   });
 
 }
