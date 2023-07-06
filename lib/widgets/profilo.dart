@@ -660,60 +660,7 @@ class _ProfiloState extends State<Profilo> {
                                     ),
                                   ),
                                 ),
-                                Card(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 8),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Serie Tv da prova',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 8),
-                                        SizedBox(
-                                          width: 130,  // Imposta la larghezza desiderata per il rettangolo
-                                          height: 120,  // Altezza fissa
-                                          child: FutureBuilder<List<TvShow>>(
-                                            future: getPostersTvF(userDoc?.get('uid'), "finished_t"),
-                                            builder: (BuildContext context, AsyncSnapshot<List<TvShow>> snapshot) {
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                                return CircularProgressIndicator();
-                                              } else if (snapshot.hasError) {
-                                                return Text('Errore: ${snapshot.error}');
-                                              } else {
-                                                final tvShows = snapshot.data ?? [];
-                                                return ListView.builder(
-                                                  scrollDirection: Axis.horizontal,
-                                                  itemCount: tvShows.length,
-                                                  itemBuilder: (BuildContext context, int index) {
-                                                    final tvShow = tvShows[index];
-                                                    return Padding(
-                                                      padding: EdgeInsets.only(right: 8),
-                                                      child: SizedBox(
-                                                        width: 40,  // Imposta la larghezza desiderata per il rettangolo
-                                                        height: 100,  // Altezza fissa
-                                                        child: Image.network(
-                                                          tvShow.posterPath ?? '',
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                );
-                                              }
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-
-                                // Aggiungi altre carte qui...
+                                // se si vuole aggiungere altre card qua
                               ],
                             ),
                           ),
@@ -731,7 +678,6 @@ class _ProfiloState extends State<Profilo> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-
                                         SizedBox(height: 8),
                                         SizedBox(
                                           width: MediaQuery.of(context).size.width - (16 * 2),
@@ -745,37 +691,46 @@ class _ProfiloState extends State<Profilo> {
                                                 return Text('Errore: ${snapshot.error}');
                                               } else {
                                                 final tvShows = snapshot.data ?? [];
-                                                return ListView.builder(
-                                                  scrollDirection: Axis.vertical,
-                                                  itemCount: tvShows.length,
-                                                  itemBuilder: (BuildContext context, int index) {
-                                                    final tvShow = tvShows[index];
-                                                    return Padding(
-                                                      padding: EdgeInsets.only(bottom: 8),
-                                                      child: Row(
-                                                        children: [
-                                                          ClipOval(
-                                                            child: SizedBox(
-                                                              width: 55,
-                                                              height: 55,
-                                                              child: Image.network(
-                                                                tvShow.posterPath ?? '',
-                                                                fit: BoxFit.cover,
+                                                if (tvShows.isEmpty) { // Se l'elenco delle serie TV è vuoto
+                                                  return Center( // Centra il testo nel widget
+                                                    child: Text(
+                                                      'Ancora nessun film aggiunto', // Il tuo messaggio
+                                                      style: TextStyle(fontSize: 16),
+                                                    ),
+                                                  );
+                                                } else {
+                                                  return ListView.builder(
+                                                    scrollDirection: Axis.vertical,
+                                                    itemCount: tvShows.length,
+                                                    itemBuilder: (BuildContext context, int index) {
+                                                      final tvShow = tvShows[index];
+                                                      return Padding(
+                                                        padding: EdgeInsets.only(bottom: 8),
+                                                        child: Row(
+                                                          children: [
+                                                            ClipOval(
+                                                              child: SizedBox(
+                                                                width: 55,
+                                                                height: 55,
+                                                                child: Image.network(
+                                                                  tvShow.posterPath ?? '',
+                                                                  fit: BoxFit.cover,
+                                                                ),
                                                               ),
                                                             ),
-                                                          ),
-                                                          SizedBox(width: 8), // Spazio tra l'immagine e il titolo
-                                                          Expanded( // Per evitare overflow di testo
-                                                            child: Text(
-                                                              tvShow.name, // Titolo della serie TV
-                                                              style: TextStyle(fontSize: 16),
+                                                            SizedBox(width: 8), // Spazio tra l'immagine e il titolo
+                                                            Expanded( // Per evitare overflow di testo
+                                                              child: Text(
+                                                                tvShow.name, // Titolo della serie TV
+                                                                style: TextStyle(fontSize: 16),
+                                                              ),
                                                             ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                  },
-                                                );
+                                                          ],
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
+                                                }
                                               }
                                             },
                                           ),
@@ -784,7 +739,6 @@ class _ProfiloState extends State<Profilo> {
                                     ),
                                   ),
                                 ),
-
 
                                 // Add other cards here...
                               ],
@@ -816,7 +770,7 @@ class _ProfiloState extends State<Profilo> {
     List<dynamic> list = await FirestoreService.getList(uid, listName);
     if (list.isEmpty) {
       print("La lista è vuota");
-      print(list[0].toString());
+      return [];  // ritorna una lista vuota
     } else {
       print("La lista non è vuota");
     }
@@ -848,7 +802,7 @@ class _ProfiloState extends State<Profilo> {
     List<dynamic> list = await FirestoreService.getList(uid, listName);
     if (list.isEmpty) {
       print("La lista è vuota");
-      print(list[0].toString());
+      return [];  // ritorna una lista vuota
     } else {
       print("La lista non è vuota");
     }
@@ -881,7 +835,7 @@ class _ProfiloState extends State<Profilo> {
     List<dynamic> list = await FirestoreService.getList(uid, listName);
     if (list.isEmpty) {
       print("La lista è vuota");
-      print(list[0].toString());
+      return [];  // ritorna una lista vuota
     } else {
       print("La lista non è vuota");
     }
