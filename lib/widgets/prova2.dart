@@ -73,7 +73,7 @@ class _HomeApi2State extends State<HomeApi2> {
 
     TmdbApiClient tmdbApiClient = TmdbApiClient(Dio());
 
-    int maxIndex = (list.length <= 2) ? list.length : 3;
+    int maxIndex = (list.length <= 3) ? list.length : 3;
     for (int i = 0; i < maxIndex; i++) {
       String movieId = list[i].toString();
       Movie movieDetails = await tmdbApiClient.getMovieDetails(
