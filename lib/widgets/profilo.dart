@@ -660,6 +660,59 @@ class _ProfiloState extends State<Profilo> {
                                     ),
                                   ),
                                 ),
+                                Card(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 8),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Serie Tv da prova',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(height: 8),
+                                        SizedBox(
+                                          width: 130,  // Imposta la larghezza desiderata per il rettangolo
+                                          height: 120,  // Altezza fissa
+                                          child: FutureBuilder<List<TvShow>>(
+                                            future: getPostersTvF(userDoc?.get('uid'), "finished_t"),
+                                            builder: (BuildContext context, AsyncSnapshot<List<TvShow>> snapshot) {
+                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                                return CircularProgressIndicator();
+                                              } else if (snapshot.hasError) {
+                                                return Text('Errore: ${snapshot.error}');
+                                              } else {
+                                                final tvShows = snapshot.data ?? [];
+                                                return ListView.builder(
+                                                  scrollDirection: Axis.horizontal,
+                                                  itemCount: tvShows.length,
+                                                  itemBuilder: (BuildContext context, int index) {
+                                                    final tvShow = tvShows[index];
+                                                    return Padding(
+                                                      padding: EdgeInsets.only(right: 8),
+                                                      child: SizedBox(
+                                                        width: 40,  // Imposta la larghezza desiderata per il rettangolo
+                                                        height: 100,  // Altezza fissa
+                                                        child: Image.network(
+                                                          tvShow.posterPath ?? '',
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
                                 // Aggiungi altre carte qui...
                               ],
                             ),
@@ -667,26 +720,72 @@ class _ProfiloState extends State<Profilo> {
                           SizedBox(height: 8),
                           Divider(),
                           Text('Serie TV viste'),
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: Text('Visualizza tutte'),
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          ),
+                         SizedBox(height: 8),
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children: [
                                 Card(
-                                  child: Container(
-                                    width: 100,
-                                    height: 150,
-                                    child: Container(),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 8),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+
+                                        SizedBox(height: 8),
+                                        SizedBox(
+                                          width: MediaQuery.of(context).size.width - (16 * 2),
+                                          height: MediaQuery.of(context).size.height,
+                                          child: FutureBuilder<List<TvShow>>(
+                                            future: getPostersTvF(userDoc?.get('uid'), "finished_t"),
+                                            builder: (BuildContext context, AsyncSnapshot<List<TvShow>> snapshot) {
+                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                                return CircularProgressIndicator();
+                                              } else if (snapshot.hasError) {
+                                                return Text('Errore: ${snapshot.error}');
+                                              } else {
+                                                final tvShows = snapshot.data ?? [];
+                                                return ListView.builder(
+                                                  scrollDirection: Axis.vertical,
+                                                  itemCount: tvShows.length,
+                                                  itemBuilder: (BuildContext context, int index) {
+                                                    final tvShow = tvShows[index];
+                                                    return Padding(
+                                                      padding: EdgeInsets.only(bottom: 8),
+                                                      child: Row(
+                                                        children: [
+                                                      ClipOval(
+                                                      child: SizedBox(
+                                                      width: 55,
+                                                        height: 55,
+                                                        child: Image.network(
+                                                            tvShow.posterPath ?? '',
+                                                            fit: BoxFit.cover,
+                                                            ),
+                                                          ),
+                                                      ),
+                                                          SizedBox(width: 8), // Spazio tra l'immagine e il titolo
+                                                          Expanded( // Per evitare overflow di testo
+                                                            child: Text(
+                                                              tvShow.name, // Titolo della serie TV
+                                                              style: TextStyle(fontSize: 16),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
+
+
                                 // Add other cards here...
                               ],
                             ),
@@ -775,6 +874,43 @@ class _ProfiloState extends State<Profilo> {
 
     return posterPathsTv;
   }
+
+
+  Future<List<TvShow>> getPostersTvF(String uid, String listName) async {
+    // PER LE SERIE TV FINITE
+    List<dynamic> list = await FirestoreService.getList(uid, listName);
+    if (list.isEmpty) {
+      print("La lista è vuota");
+      print(list[0].toString());
+    } else {
+      print("La lista non è vuota");
+    }
+    List<TvShow> tvShows = [];
+    String baseUrl = "https://image.tmdb.org/t/p/w185/";
+
+    TmdbApiClient tmdbApiClient = TmdbApiClient(Dio());
+
+    int maxIndex = list.length;
+    for (int i = 0; i < maxIndex; i++) {
+      String seriesId = list[i].toString();
+      TvShow tvDetails = await tmdbApiClient.getTvDetails(
+        apiKey: tmdbApiKey,
+        serieId: seriesId,
+        language: 'it-IT',
+        region: 'IT',
+      );
+      if (tvDetails.posterPath != null) {
+        String fullPosterPath = "$baseUrl${tvDetails.posterPath}";
+        TvShow tvShow = TvShow(
+          name: tvDetails.name,
+          posterPath: fullPosterPath,
+          // Aggiungi altri attributi se necessario
+        );
+        tvShows.add(tvShow);
+      }
+    }
+    return tvShows;
+    }
 }
 
 Future<int> getTotalFollowers(String uid) async {
