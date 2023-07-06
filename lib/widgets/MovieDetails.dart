@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:filmaccio_flutter/main.dart';
+import 'package:filmaccio_flutter/widgets/models/Director.dart';
 import 'package:filmaccio_flutter/widgets/models/Movie.dart';
 import 'package:flutter/material.dart';
 
 import 'data/api/TmdbApiClient.dart';
 import 'data/api/api_key.dart';
+import 'models/Character.dart';
 
 class MovieDetails extends StatefulWidget {
   final Movie movie;
@@ -47,6 +49,7 @@ class _MovieDetailsState extends State<MovieDetails> {
         .toList();
     return directors?.join(",\n ");
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -193,15 +196,89 @@ class _MovieDetailsState extends State<MovieDetails> {
                   ),
                 )
               ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'Cast',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(color: Colors.transparent),
+                width: 500,
+                height: 150,
+                child: ListView.builder(
+
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 20 ,
+                  itemBuilder: (context, index) {
+                    final castMember = _movieDetails.credits?.cast[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MyApp(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: 150,
+                        height: 200,
+
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              transform: Matrix4.translationValues(10, -10, 0),
+                              width:80,
+                              height: 80,
+                              child:Image.network(
+                                "https://image.tmdb.org/t/p/w185${castMember?.profilePath}",
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                '${castMember?.name}',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                width: 200, // Larghezza del container
+                                child: Text(
+                                  '${castMember?.character}',
+                                  softWrap: true,
+                                  style:TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                  ) ,// Abilita l'andare a capo
+                                ),
+                              )
+                            ),
+                          ],
+                        ),
+                      ),
+
+                    );
+                  },
+                ),
+              ),
 
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
 
-            ],
-          )
         ],
       )),
     );
@@ -219,6 +296,7 @@ class _MovieDetailsState extends State<MovieDetails> {
         region: 'IT',
         appendToResponse: 'credits',
       );
+      print(_movieDetails.credits?.cast.length );
 
       setState(() {
       });
