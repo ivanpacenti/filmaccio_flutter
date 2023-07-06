@@ -67,19 +67,20 @@ class _HomeApi2State extends State<HomeApi2> {
 
     int maxIndex = (list.length <= 2) ? list.length : 3;
     for (int i = 0; i < maxIndex; i++) {
-      movie movieDetails = await tmdbApiClient.getMovieDetails(
-          apiKey: tmdbApiKey, movieId: list[i].toString());
-      if (movieDetails.results.isNotEmpty) {
-        Movie movie = movieDetails.results[0];
-        if (movie.posterPath != null) {
-          String fullPosterPath = "$baseUrl${movie.posterPath}";
-          posterPaths.add(fullPosterPath);
-        }
+      String movieId = list[i].toString();
+      Movie movieDetails = await tmdbApiClient.getMovieDetails(
+        apiKey: tmdbApiKey,
+        movieId: movieId,
+      );
+      if (movieDetails.posterPath != null) {
+        String fullPosterPath = "$baseUrl${movieDetails.posterPath}";
+        posterPaths.add(fullPosterPath);
       }
     }
 
     return posterPaths;
   }
+
 
 
 }
