@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:filmaccio_flutter/widgets/models/DiscoverMoviesResponse.dart';
 import 'package:filmaccio_flutter/widgets/models/DiscoverTvShowsResponse.dart';
 import 'package:filmaccio_flutter/widgets/models/Movie.dart';
+import 'package:filmaccio_flutter/widgets/models/TvShow.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -67,9 +68,9 @@ abstract class TmdbApiClient {
   });
   @GET("tv/{series_id}")
 // endpoint per trovare i dettagli di un film
-  Future<Movie> getTvDetails({
+  Future<TvShow> getTvDetails({
     @Query('api_key') required String apiKey,
-    @Path('series_id') required String movieId,
+    @Path('series_id') required String serieId,
     @Query('language') required  String language,
     @Query('region') required String region,
     @Query('append_to_response') String appendToResponse = '',

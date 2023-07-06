@@ -720,7 +720,7 @@ class _ProfiloState extends State<Profilo> {
                           SizedBox(height: 8),
                           Divider(),
                           Text('Serie TV viste'),
-                         SizedBox(height: 8),
+                          SizedBox(height: 8),
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
@@ -754,16 +754,16 @@ class _ProfiloState extends State<Profilo> {
                                                       padding: EdgeInsets.only(bottom: 8),
                                                       child: Row(
                                                         children: [
-                                                      ClipOval(
-                                                      child: SizedBox(
-                                                      width: 55,
-                                                        height: 55,
-                                                        child: Image.network(
-                                                            tvShow.posterPath ?? '',
-                                                            fit: BoxFit.cover,
+                                                          ClipOval(
+                                                            child: SizedBox(
+                                                              width: 55,
+                                                              height: 55,
+                                                              child: Image.network(
+                                                                tvShow.posterPath ?? '',
+                                                                fit: BoxFit.cover,
+                                                              ),
                                                             ),
                                                           ),
-                                                      ),
                                                           SizedBox(width: 8), // Spazio tra l'immagine e il titolo
                                                           Expanded( // Per evitare overflow di testo
                                                             child: Text(
@@ -860,9 +860,9 @@ class _ProfiloState extends State<Profilo> {
     int maxIndex = (list.length <= 3) ? list.length : 3;
     for (int i = 0; i < maxIndex; i++) {
       String serieId = list[i].toString();
-      Movie TvDetails = await tmdbApiClient.getTvDetails(
+      TvShow TvDetails = await tmdbApiClient.getTvDetails(
         apiKey: tmdbApiKey,
-        movieId: serieId,
+        serieId: serieId,
         language: 'it-IT',
         region: 'IT',
       );
@@ -910,14 +910,14 @@ class _ProfiloState extends State<Profilo> {
       }
     }
     return tvShows;
-    }
+  }
 }
 
 Future<int> getTotalFollowers(String uid) async {
   // ritorna il numero totale dei followers
   List<dynamic> peopleFollowed = await FirestoreService.getFollowers(uid);
   int totalFollowers = peopleFollowed.length;
- // print('Numero totale dei follower: $totalFollowers');
+  // print('Numero totale dei follower: $totalFollowers');
   return totalFollowers;
 }
 
@@ -947,5 +947,5 @@ Tuple3<String, String, String> convertMinutesToMonthsDaysHours(int minutes) {
   if (months.length == 1) months = '0$months';
   if (days.length == 1) days = '0$days';
   if (hours.length == 1) hours = '0$hours';
-  return Tuple3(months, days, hours);
+  return Tuple3(months,days,hours);
 }
