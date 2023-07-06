@@ -1,11 +1,15 @@
-import 'package:filmaccio_flutter/widgets/models/Character.dart';
-import 'package:filmaccio_flutter/widgets/models/Director.dart';
+
 import 'package:json_annotation/json_annotation.dart';
+
+import 'Character.dart';
+import 'Director.dart';
 part 'Credits.g.dart';
 
 @JsonSerializable()
 class Credits {
+  @JsonKey(name: 'actors')
   List<Character> cast;
+  @JsonKey(name: 'directors')
   List<Director> crew;
 
   Credits({
