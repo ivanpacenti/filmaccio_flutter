@@ -14,7 +14,8 @@ class Movie {
   final String releaseDate;
   @JsonKey(name: 'backdrop_path')
   final String backdropPath;
-  final int? runtime;
+  @JsonKey(name: 'runtime')
+  final int? duration;
   final Credits? credits;
 
   Movie({
@@ -24,7 +25,7 @@ class Movie {
     required this.overview,
     required this.releaseDate,
     required this.backdropPath,
-    this.runtime,
+    this.duration,
     this.credits,
   });
 

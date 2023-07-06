@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:filmaccio_flutter/widgets/MovieDetails.dart';
 import 'package:filmaccio_flutter/widgets/models/Movie.dart';
 import 'package:filmaccio_flutter/widgets/models/TvShow.dart';
 import 'package:flutter/material.dart';
 import '../data/api/TmdbApiClient.dart';
 import '../data/api/api_key.dart';
-import '../data/api/TmdbApiClient.dart';
-import '../data/api/api_key.dart';
+
 
 class Home extends StatefulWidget {
   @override
@@ -61,21 +61,30 @@ class _HomeState extends State<Home> {
                 itemCount: _movieNowPlaying?.length ?? 0,
                 itemBuilder: (context, index) {
                   final movie = _movieNowPlaying?[index];
-                  return Container(
-                    width: 140,
-                    margin: EdgeInsets.only(left: 16.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                      color: Colors.grey,
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          'https://image.tmdb.org/t/p/w185/${movie?.posterPath}',
-                        ),
-                        fit: BoxFit.cover,
+                  return GestureDetector(
+                      onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MovieDetails(movie: movie!),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                  child: Container(
+                  width: 140,
+                  margin: EdgeInsets.only(left: 16.0),
+                  decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  color: Colors.grey,
+                  image: DecorationImage(
+                  image: NetworkImage(
+                  'https://image.tmdb.org/t/p/w185/${movie?.posterPath}',
+                  ),
+                  fit: BoxFit.cover,
+                  ),
+                  ),
+                  ),
+                  );},
               ),
             ),
             Divider(),
@@ -178,6 +187,7 @@ class _HomeState extends State<Home> {
       setState(() {
         if (response.results != null) {
           _movieNowPlaying = response.results!.take(6).toList();
+          print(_movieNowPlaying?[0].credits);
         } else {
           _movieNowPlaying = [];
         }
