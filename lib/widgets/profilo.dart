@@ -198,7 +198,7 @@ class _ProfiloState extends State<Profilo> {
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        Text('TEMPO SERIE TV'),
+                                        Text('TEMPO TV'),
                                         Row(
                                           children: [
                                             Column(
@@ -249,6 +249,23 @@ class _ProfiloState extends State<Profilo> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text('NUMERO FILM VISTI'),
+                                        Text(
+                                          moviesNumber.toString() ?? '0' ,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  height: 80,
+                                  child: Card(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text('NUMERO EPISODI VISTI'),
                                         Text(
                                           moviesNumber.toString() ?? '0' ,
                                           style: TextStyle(

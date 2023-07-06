@@ -3,7 +3,9 @@ import 'package:filmaccio_flutter/widgets/models/DiscoverMoviesResponse.dart';
 import 'package:filmaccio_flutter/widgets/models/DiscoverTvShowsResponse.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:retrofit/retrofit.dart';
+import '../../models/Movie.dart';
 import 'api_key.dart';
+
 
 part 'TmdbApiClient.g.dart';
 
@@ -49,5 +51,12 @@ abstract class TmdbApiClient {
     @Query('language') String language,
     @Query('region') String region,
       );
+
+  @GET("movie/{movie_id}")
+  Future<Movie> getMovieDetails({
+    @Query('api_key') required String apiKey,
+    @Path('movie_id') required String movieId,
+  });
+
 }
 
