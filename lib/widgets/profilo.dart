@@ -47,6 +47,7 @@ class _ProfiloState extends State<Profilo> {
           final String? backdropImage = userDoc?.get('backdropImage');
           final int? moviesNumber = userDoc?.get('moviesNumber');
           final int? movieMinutes = userDoc?.get('movieMinutes');
+          final int? tvMinutes = userDoc?.get('tvMinutes');
           return Scaffold(
             body: SingleChildScrollView(
               child: ConstrainedBox(
@@ -178,6 +179,56 @@ class _ProfiloState extends State<Profilo> {
                                               children: [
                                                 Text(
                                                   convertMinutesToMonthsDaysHours(movieMinutes ?? 0).item3.toString(),
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text('ore'),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  height: 80,
+                                  child: Card(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text('TEMPO SERIE TV'),
+                                        Row(
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Text(
+                                                  convertMinutesToMonthsDaysHours(tvMinutes ?? 0).item1.toString(),
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text('mesi'),
+                                              ],
+                                            ),
+                                            SizedBox(width: 8),
+                                            Column(
+                                              children: [
+                                                Text(
+                                                  convertMinutesToMonthsDaysHours(tvMinutes ?? 0).item2.toString(),
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text('giorni'),
+                                              ],
+                                            ),
+                                            SizedBox(width: 8),
+                                            Column(
+                                              children: [
+                                                Text(
+                                                  convertMinutesToMonthsDaysHours(tvMinutes ?? 0).item3.toString(),
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                   ),
