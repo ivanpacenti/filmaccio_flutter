@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tuple/tuple.dart';
 
 import 'Firebase/FirestoreService.dart';
 import 'login/Auth.dart';
@@ -15,8 +16,22 @@ class OtherUserProfile extends StatefulWidget {
 }
 
 class _OtherUserProfileState extends State<OtherUserProfile> {
+
   final User? currentUser = Auth().currentUser;
   final String currentUserId = Auth().currentUser!.uid;
+
+  Map<String, dynamic>? userData; // Dati dell'utente che sto cercando li prendo dalla fu
+  // funzione sotto loadUserData() e li salvo in questa variabile di tipo Map una specie di oggetto
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserData();
+  }
+  Future<void> loadUserData() async {
+    userData = await FirestoreService.getUserByUid(widget.userId);
+    setState(() {});
+  }
 
   bool isRefreshing = false;
 
@@ -32,6 +47,10 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
   @override
   Widget build(BuildContext context) {
+    final int? movieMinutes = userData?['movieMinutes'];
+    final int? moviesNumber = userData?['moviesNumber'];
+    final int? tvMinutes = userData?['tvMinutes'];
+    final int? tvNumber  = userData?['tvNumber'];
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -135,7 +154,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                   Column(
                                                     children: [
                                                       Text(
-                                                        '2',
+                                                         convertMinutesToMonthsDaysHours(movieMinutes ?? 0).item1.toString(),
                                                         style: TextStyle(
                                                           fontWeight: FontWeight.bold,
                                                         ),
@@ -147,7 +166,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                   Column(
                                                     children: [
                                                       Text(
-                                                        '15',
+                                                      convertMinutesToMonthsDaysHours(movieMinutes ?? 0).item2.toString(),
                                                         style: TextStyle(
                                                           fontWeight: FontWeight.bold,
                                                         ),
@@ -159,7 +178,58 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                   Column(
                                                     children: [
                                                       Text(
-                                                        '10',
+                                                      convertMinutesToMonthsDaysHours(movieMinutes ?? 0).item3.toString(),
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      Text('ore'),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                       // iNIZIA IL CONTAINER CHE CONTIENE IL TEMPO DELLE SERIE TV
+                                      Container(
+                                        height: 80,
+                                        child: Card(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text('TEMPO TV'),
+                                              Row(
+                                                children: [
+                                                  Column(
+                                                    children: [
+                                                      Text(
+                                                        convertMinutesToMonthsDaysHours(tvMinutes ?? 0).item1.toString(),
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      Text('mesi'),
+                                                    ],
+                                                  ),
+                                                  SizedBox(width: 8),
+                                                  Column(
+                                                    children: [
+                                                      Text(
+                                                        convertMinutesToMonthsDaysHours(tvMinutes ?? 0).item2.toString(),
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      Text('giorni'),
+                                                    ],
+                                                  ),
+                                                  SizedBox(width: 8),
+                                                  Column(
+                                                    children: [
+                                                      Text(
+                                                        convertMinutesToMonthsDaysHours(tvMinutes ?? 0).item3.toString(),
                                                         style: TextStyle(
                                                           fontWeight: FontWeight.bold,
                                                         ),
@@ -181,7 +251,24 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                             children: [
                                               Text('NUMERO FILM VISTI'),
                                               Text(
-                                                '50',
+                                                moviesNumber.toString(),
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        height: 80,
+                                        child: Card(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text('NUMERO EPISODI VISTI'),
+                                              Text(
+                                              tvNumber.toString(),
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                 ),
@@ -347,3 +434,15 @@ Future<int> getTotalFollowing(String uid) async {
   print('Numero totale dei follower: $totalFollowing');
   return totalFollowing;
 }
+
+Tuple3<String, String, String> convertMinutesToMonthsDaysHours(int minutes) {
+  // Questo metodo converte i minuti in mesi, giorni e ore
+  var months = (minutes ~/ 43200).toString();
+  var days = ((minutes % 43200) ~/ 1440).toString();
+  var hours = ((minutes % 1440) ~/ 60).toString();
+  if (months.length == 1) months = '0$months';
+  if (days.length == 1) days = '0$days';
+  if (hours.length == 1) hours = '0$hours';
+  return Tuple3(months,days,hours);
+}
+

@@ -54,6 +54,7 @@ class _ProfiloState extends State<Profilo> {
           final int? moviesNumber = userDoc?.get('moviesNumber');
           final int? movieMinutes = userDoc?.get('movieMinutes');
           final int? tvMinutes = userDoc?.get('tvMinutes');
+          final int? tvNumber = userDoc?.get('tvNumber');
           return Scaffold(
             body: SingleChildScrollView(
               child: ConstrainedBox(
@@ -198,6 +199,7 @@ class _ProfiloState extends State<Profilo> {
                                     ),
                                   ),
                                 ),
+             // iNIZIA IL CONTAINER CHE CONTIENE IL TEMPO DELLE SERIE TV
                                 Container(
                                   height: 80,
                                   child: Card(
@@ -273,7 +275,7 @@ class _ProfiloState extends State<Profilo> {
                                       children: [
                                         Text('NUMERO EPISODI VISTI'),
                                         Text(
-                                          moviesNumber.toString() ?? '0' ,
+                                          tvNumber.toString() ?? '0' ,
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                           ),
