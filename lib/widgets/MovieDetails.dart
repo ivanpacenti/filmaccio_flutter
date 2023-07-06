@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:filmaccio_flutter/main.dart';
 import 'package:filmaccio_flutter/widgets/models/Movie.dart';
 import 'package:flutter/material.dart';
 
@@ -49,10 +50,9 @@ class _MovieDetailsState extends State<MovieDetails> {
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
-      body: Column(
+      body: SingleChildScrollView
+      (child:Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
@@ -144,41 +144,6 @@ class _MovieDetailsState extends State<MovieDetails> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  'boh',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  '${_movie.credits?.crew.map((director) => director.name)?.toString() ?? []}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: Divider(),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  '150 minuti',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
                 child: Row(
                   children: [
                     Expanded(
@@ -218,22 +183,32 @@ class _MovieDetailsState extends State<MovieDetails> {
                   ),
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  'Descrizione del film',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black,
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(0.1),
+                  child: ExpandableText(
+                    text: '${_movieDetails.overview}',
+                    maxLines: 3,
                   ),
-                ),
+                )
               ),
+
             ],
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+
+            ],
+          )
         ],
-      ),
+      )),
     );
   }
+
+
+
   Future<void> fetchMovieDetails() async {
     try {
       TmdbApiClient _apiClient = TmdbApiClient(Dio());
@@ -244,11 +219,7 @@ class _MovieDetailsState extends State<MovieDetails> {
         region: 'IT',
         appendToResponse: 'credits',
       );
-      final directors = _movieDetails.credits?.crew
-          .where((crewMember) => crewMember.job == "Director")
-          .map((director) => director.name)
-          .toList();
-      final directorNames = directors?.join(", ");
+
       setState(() {
       });
     } catch (error) {
@@ -256,3 +227,60 @@ class _MovieDetailsState extends State<MovieDetails> {
     }
   }
 }
+class ExpandableText extends StatefulWidget {
+  final String text;
+  final int maxLines;
+
+  ExpandableText({required this.text, this.maxLines = 3});
+
+  @override
+  _ExpandableTextState createState() => _ExpandableTextState();
+}
+
+class _ExpandableTextState extends State<ExpandableText> {
+  bool isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        final textSpan = TextSpan(text: widget.text);
+        final textPainter = TextPainter(
+          text: textSpan,
+          maxLines: widget.maxLines,
+          textDirection: TextDirection.ltr,
+        );
+        textPainter.layout(maxWidth: constraints.maxWidth);
+
+        final isTextOverflowed = textPainter.didExceedMaxLines;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SingleChildScrollView(
+              child: Text(
+                widget.text,
+                maxLines: isExpanded ? null : widget.maxLines,
+                overflow: TextOverflow.clip,
+              ),
+            ),
+            if (isTextOverflowed)
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    isExpanded = !isExpanded;
+                  });
+                },
+                child: Text(
+                  isExpanded ? 'Mostra meno' : 'Mostra altro',
+                  style: TextStyle(color: Colors.blue),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+
