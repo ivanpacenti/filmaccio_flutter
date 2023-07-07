@@ -4,9 +4,11 @@ import 'package:filmaccio_flutter/widgets/models/Movie.dart';
 import 'package:filmaccio_flutter/widgets/models/TvShow.dart';
 import 'package:flutter/material.dart';
 import 'MovieDetails.dart';
+import 'SeriesDetails.dart';
 import 'data/api/TmdbApiClient.dart';
 import 'data/api/api_key.dart';
 
+// quella che viene chiamata Tendenza
 
 class HomeApi extends StatefulWidget {
   @override
@@ -103,19 +105,29 @@ class _HomeApiState extends State<HomeApi> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: _topTvShows?.map((tvShow) {
-                  return Padding(
-                    padding: EdgeInsets.only(right: 16.0),
-                    child: SizedBox(
-                      width: 110,
-                      height: 165,
-                      child: Card(
-                        clipBehavior: Clip.antiAlias,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TvShowDetails(tvShow: tvShow),
                         ),
-                        child: Image.network(
-                          'https://image.tmdb.org/t/p/w185/${tvShow.posterPath}',
-                          fit: BoxFit.cover,
+                      );
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 16.0),
+                      child: SizedBox(
+                        width: 110,
+                        height: 165,
+                        child: Card(
+                          clipBehavior: Clip.antiAlias,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Image.network(
+                            'https://image.tmdb.org/t/p/w185/${tvShow.posterPath}',
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
@@ -123,6 +135,7 @@ class _HomeApiState extends State<HomeApi> {
                 }).toList() ?? [],
               ),
             ),
+
 
             SizedBox(height: 16),
             Container(
@@ -183,32 +196,40 @@ class _HomeApiState extends State<HomeApi> {
                 ),
               ),
             ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: _topTrandingTvShows?.map((TvShow) {
-                  return Padding(
-                    padding: EdgeInsets.only(right: 16.0),
-                    child: SizedBox(
-                      width: 110,
-                      height: 165,
-                      child: Card(
-                        clipBehavior: Clip.antiAlias,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Image.network(
-                          'https://image.tmdb.org/t/p/w185/${TvShow.posterPath}',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+      SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: _topTrandingTvShows?.map((tvShow) {
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TvShowDetails(tvShow: tvShow),
+                  ),
+                );
+              },
+              child: Padding(
+                padding: EdgeInsets.only(right: 16.0),
+                child: SizedBox(
+                  width: 110,
+                  height: 165,
+                  child: Card(
+                    clipBehavior: Clip.antiAlias,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                  );
-                }).toList() ??
-                    [],
+                    child: Image.network(
+                      'https://image.tmdb.org/t/p/w185/${tvShow.posterPath}',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
               ),
-            ),
-            SizedBox(height: 16),
+            );
+          }).toList() ?? [],
+        ),
+      ),
           ],
         ),
       ),

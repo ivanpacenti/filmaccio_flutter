@@ -46,11 +46,13 @@ class _TvShowDetailsState extends State<TvShowDetails> {
 
   String get directorNames {
     final directors = _tvShowDetails.credits?.crew
-        .where((crewMember) => crewMember.job == "Creator")
-        .map((director) => director.job== "Series Creator")
+        .where((crewMember) =>
+    crewMember.job == "Creator" || crewMember.job == "Series Director")
+        .map((director) => director.name)
         .toList();
     return directors?.join(", ") ?? '';
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -204,13 +206,18 @@ class _TvShowDetailsState extends State<TvShowDetails> {
                         children: [
                           Container(
                             transform: Matrix4.translationValues(10, -10, 0),
-                            width:80,
+                            width: 80,
                             height: 80,
-                            child:Image.network(
+                            child: castMember?.profilePath != null
+                                ? Image.network(
                               "https://image.tmdb.org/t/p/w185${castMember?.profilePath}",
                               fit: BoxFit.contain,
-                            ),
+                            )
+                                : Placeholder(), // Puoi utilizzare un'immagine di fallback o lasciare uno spazio vuoto
                           ),
+
+
+
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
