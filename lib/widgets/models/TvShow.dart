@@ -1,4 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
+
+import 'Credits.dart';
 part 'TvShow.g.dart';
 
 @JsonSerializable()
@@ -14,6 +16,8 @@ class TvShow {
   final String? backdropPath;
   @JsonKey(name: 'runtime')
   final int? duration;
+  @JsonKey(name: 'credits')
+  final Credits? credits;
 
   TvShow({
     required this.id,
@@ -23,6 +27,7 @@ class TvShow {
     required this.releaseDate,
     required this.backdropPath,
     this.duration,
+    this.credits,
   });
 
   factory TvShow.fromJson(Map<String, dynamic> json) =>

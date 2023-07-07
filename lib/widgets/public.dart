@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:filmaccio_flutter/widgets/models/Movie.dart';
-import 'package:filmaccio_flutter/widgets/models/Series.dart';
+
 import 'package:filmaccio_flutter/widgets/models/TvShow.dart';
 import 'package:flutter/material.dart';
 import 'MovieDetails.dart';

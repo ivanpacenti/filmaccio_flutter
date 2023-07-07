@@ -5,7 +5,7 @@ import 'package:filmaccio_flutter/widgets/models/TvShow.dart';
 import 'package:flutter/material.dart';
 import '../data/api/TmdbApiClient.dart';
 import '../data/api/api_key.dart';
-
+import '../SeriesDetails.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -157,24 +157,37 @@ class _HomeState extends State<Home> {
                 scrollDirection: Axis.horizontal,
                 itemCount: _topRatedTV?.length ?? 0,
                 itemBuilder: (context, index) {
-                  final tvShows = _topRatedTV?[index];
-                  return Container(
-                    width: 140,
-                    margin: EdgeInsets.only(left: 16.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                      color: Colors.grey,
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          'https://image.tmdb.org/t/p/w185/${tvShows?.posterPath}',
+                  final tvShow = _topRatedTV?[index];
+                  return GestureDetector(
+                    onTap: () {
+                      if (tvShow != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TvShowDetails(tvShow: tvShow),
+                          ),
+                        );
+                      }
+                    },
+                    child: Container(
+                      width: 140,
+                      margin: EdgeInsets.only(left: 16.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        color: Colors.grey,
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            'https://image.tmdb.org/t/p/w185/${tvShow?.posterPath}',
+                          ),
+                          fit: BoxFit.cover,
                         ),
-                        fit: BoxFit.cover,
                       ),
                     ),
                   );
                 },
               ),
             ),
+
           ],
         ),
       ),
