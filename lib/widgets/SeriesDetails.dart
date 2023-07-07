@@ -44,20 +44,17 @@ class _TvShowDetailsState extends State<TvShowDetails> {
     }
   }
 
-  // String get directorNames {
-  //   final directors = _tvShowDetails.credits?.crew
-  //       .where((crewMember) => crewMember.job == "Director")
-  //       .map((director) => director.name)
-  //       .toList();
-  //   return directors?.join(", ") ?? '';
-  // }
+  String get directorNames {
+    final directors = _tvShowDetails.credits?.crew
+        .where((crewMember) => crewMember.job == "Creator")
+        .map((director) => director.job== "Series Creator")
+        .toList();
+    return directors?.join(", ") ?? '';
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_tvShow.name ?? 'No title'),
-      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,54 +81,81 @@ class _TvShowDetailsState extends State<TvShowDetails> {
                 ),
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          _isWatched = !_isWatched;
-                        });
-                      },
-                      icon: Icon(
-                        _isWatched ? Icons.check_box : Icons.check_box_outline_blank,
+                  Transform.scale(
+                    scale: 1.5, // scala dell'ingrandimento
+                    alignment: Alignment.bottomLeft,
+                    child: Container(
+                      transform: Matrix4.translationValues(10, -10, 0),
+                      width: 110,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            'https://image.tmdb.org/t/p/original/${_tvShowDetails.posterPath}',
+                          ),
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                      label: Text(_isWatched ? 'Guardato' : 'Da guardare'),
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          _isFavorite = !_isFavorite;
-                        });
-                      },
-                      icon: Icon(
-                        _isFavorite ? Icons.favorite : Icons.favorite_border,
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            setState(() {
+                              _isWatched = !_isWatched;
+                            });
+                          },
+                          icon: Icon(
+                            _isWatched ? Icons.check_box : Icons.check_box_outline_blank,
+                          ),
+                          label: Text(_isWatched ? 'Guardato' : 'Da guardare'),
+                        ),
                       ),
-                      label: Text(_isFavorite ? 'Preferito' : 'Aggiungi ai preferiti'),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          _isAddedToWatchlist = !_isAddedToWatchlist;
-                        });
-                      },
-                      icon: Icon(
-                        _isAddedToWatchlist ? Icons.playlist_add_check : Icons.playlist_add,
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            setState(() {
+                              _isFavorite = !_isFavorite;
+                            });
+                          },
+                          icon: Icon(
+                            _isFavorite ? Icons.favorite : Icons.favorite_border,
+                          ),
+                          label: Text(_isFavorite ? 'Preferito' : 'Aggiungi ai preferiti'),
+                        ),
                       ),
-                      label: Text(_isAddedToWatchlist ? 'Nella watchlist' : 'Aggiungi alla watchlist'),
-                    ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            setState(() {
+                              _isAddedToWatchlist = !_isAddedToWatchlist;
+                            });
+                          },
+                          icon: Icon(
+                            _isAddedToWatchlist ? Icons.playlist_add_check : Icons.playlist_add,
+                          ),
+                          label: Text(_isAddedToWatchlist ? 'Nella watchlist' : 'Aggiungi alla watchlist'),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
+
+
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
@@ -250,11 +274,4 @@ class _TvShowDetailsState extends State<TvShowDetails> {
     }
   }
 
-  String? get directorNames {
-    final directors = _tvShowDetails.credits?.crew
-        .where((crewMember) => crewMember.job == "Director")
-        .map((director) => director.name)
-        .toList();
-    return directors?.join(",\n ");
-  }
 }
