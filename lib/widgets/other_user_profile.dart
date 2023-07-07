@@ -134,14 +134,38 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                 SizedBox(height: 8),
                                 ElevatedButton(
                                   onPressed: () {
-                                    if (following.contains(currentUserId)) {
-                                      FirestoreService.unfollowUser(currentUserId, widget.userId);
+                                    if (userData != null && userData!['uid'].toString() == currentUserId) {
+                                      // L'utente sta cercando di seguire se stesso
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text('Attenzione'),
+                                            content: Text('Non puoi seguire te stesso.'),
+                                            actions: [
+                                              TextButton(
+                                                child: Text('OK'),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
                                     } else {
-                                      FirestoreService.followUser(currentUserId, widget.userId);
+                                      // L'utente può eseguire l'azione di follow/unfollow
+                                      if (following.contains(currentUserId)) {
+                                        FirestoreService.unfollowUser(currentUserId, widget.userId);
+                                      } else {
+                                        FirestoreService.followUser(currentUserId, widget.userId);
+                                      }
                                     }
                                   },
                                   child: Text(following.contains(currentUserId) ? 'NON SEGUIRE' : 'SEGUI'),
                                 ),
+
+
                                 SizedBox(height: 8),
                                 SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
