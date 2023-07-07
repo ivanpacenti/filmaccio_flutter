@@ -1,10 +1,15 @@
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 
 import 'Firebase/FirestoreService.dart';
+import 'data/api/TmdbApiClient.dart';
+import 'data/api/api_key.dart';
 import 'login/Auth.dart';
+import 'models/Movie.dart';
+import 'models/TvShow.dart';
 
 class OtherUserProfile extends StatefulWidget {
   final String userId;
@@ -342,11 +347,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                     ],
                                   ),
                                 ),
-                                Divider(
-                                  height: 1,
-                                  thickness: 1,
-                                ),
-                                SizedBox(height: 8),
+                                Divider(),
                                 Text(
                                   'Liste',
                                   style: TextStyle(
@@ -355,55 +356,404 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                   ),
                                 ),
                                 SizedBox(height: 8),
-                                // RecyclerView per le liste
-                                // ...
-                                SizedBox(height: 8),
-                                Divider(
-                                  height: 1,
-                                  thickness: 1,
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  'Serie TV',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Visto',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        // Azione del pulsante "Vedi tutto"
-                                      },
-                                      child: Text('VEDI TUTTO'),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 8),
-                                // RecyclerView per le serie TV
-                                // ...
-                                Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
                                     children: [
-                                      Text(
-                                        'Non c\'è molto da vedere qui',
-                                        style: TextStyle(
-                                          fontSize: 16,
+                                      Card(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 8),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Film Preferiti',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              SizedBox(height: 8),
+                                              SizedBox(
+                                                width: 130,  // Imposta la larghezza desiderata per il rettangolo
+                                                height: 120,  // Altezza fissa
+                                                child: FutureBuilder<List<String>>(
+                                                  future: getPosters(userData?['uid'], "favorite_m"),
+                                                  builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+                                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                                      return CircularProgressIndicator();
+                                                    } else if (snapshot.hasError) {
+                                                      return Text('Errore: ${snapshot.error}');
+                                                    } else {
+                                                      final posterPaths = snapshot.data ?? [];
+                                                      return ListView.builder(
+                                                        scrollDirection: Axis.horizontal,
+                                                        itemCount: posterPaths.length,
+                                                        itemBuilder: (BuildContext context, int index) {
+                                                          return Padding(
+                                                            padding: EdgeInsets.only(right: 8),
+                                                            child: SizedBox(
+                                                              width: 40,  // Imposta la larghezza desiderata per il rettangolo
+                                                              height: 100,  // Altezza fissa
+                                                              child: Image.network(
+                                                                posterPaths[index],
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
+                                      Card(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 8),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Film Finiti',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              SizedBox(height: 8),
+                                              SizedBox(
+                                                width: 130,  // Imposta la larghezza desiderata per il rettangolo
+                                                height: 120,  // Altezza fissa
+                                                child: FutureBuilder<List<String>>(
+                                                  future: getPosters(userData?['uid'], "watched_m"),
+                                                  builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+                                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                                      return CircularProgressIndicator();
+                                                    } else if (snapshot.hasError) {
+                                                      return Text('Errore: ${snapshot.error}');
+                                                    } else {
+                                                      final posterPaths = snapshot.data ?? [];
+                                                      return ListView.builder(
+                                                        scrollDirection: Axis.horizontal,
+                                                        itemCount: posterPaths.length,
+                                                        itemBuilder: (BuildContext context, int index) {
+                                                          return Padding(
+                                                            padding: EdgeInsets.only(right: 8),
+                                                            child: SizedBox(
+                                                              width: 40,  // Imposta la larghezza desiderata per il rettangolo
+                                                              height: 100,  // Altezza fissa
+                                                              child: Image.network(
+                                                                posterPaths[index],
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Card(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 8),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Film in watchlist',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              SizedBox(height: 8),
+                                              SizedBox(
+                                                width: 130,  // Imposta la larghezza desiderata per il rettangolo
+                                                height: 120,  // Altezza fissa
+                                                child: FutureBuilder<List<String>>(
+                                                  future: getPosters(userData?['uid'], "watchlist_m"),
+                                                  builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+                                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                                      return CircularProgressIndicator();
+                                                    } else if (snapshot.hasError) {
+                                                      return Text('Errore: ${snapshot.error}');
+                                                    } else {
+                                                      final posterPaths = snapshot.data ?? [];
+                                                      return ListView.builder(
+                                                        scrollDirection: Axis.horizontal,
+                                                        itemCount: posterPaths.length,
+                                                        itemBuilder: (BuildContext context, int index) {
+                                                          return Padding(
+                                                            padding: EdgeInsets.only(right: 8),
+                                                            child: SizedBox(
+                                                              width: 40,  // Imposta la larghezza desiderata per il rettangolo
+                                                              height: 100,  // Altezza fissa
+                                                              child: Image.network(
+                                                                posterPaths[index],
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Card(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 8),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Serie Tv Favorite',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              SizedBox(height: 8),
+                                              SizedBox(
+                                                width: 130,  // Imposta la larghezza desiderata per il rettangolo
+                                                height: 120,  // Altezza fissa
+                                                child: FutureBuilder<List<String>>(
+                                                  future: getPostersTv(userData?['uid'], "favorite_t"),
+                                                  builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+                                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                                      return CircularProgressIndicator();
+                                                    } else if (snapshot.hasError) {
+                                                      return Text('Errore: ${snapshot.error}');
+                                                    } else {
+                                                      final posterPaths = snapshot.data ?? [];
+                                                      return ListView.builder(
+                                                        scrollDirection: Axis.horizontal,
+                                                        itemCount: posterPaths.length,
+                                                        itemBuilder: (BuildContext context, int index) {
+                                                          return Padding(
+                                                            padding: EdgeInsets.only(right: 8),
+                                                            child: SizedBox(
+                                                              width: 40,  // Imposta la larghezza desiderata per il rettangolo
+                                                              height: 100,  // Altezza fissa
+                                                              child: Image.network(
+                                                                posterPaths[index],
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Card(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 8),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Serie Tv in visione',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              SizedBox(height: 8),
+                                              SizedBox(
+                                                width: 130,  // Imposta la larghezza desiderata per il rettangolo
+                                                height: 120,  // Altezza fissa
+                                                child: FutureBuilder<List<String>>(
+                                                  future: getPostersTv(userData?['uid'], "watching_t"),
+                                                  builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+                                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                                      return CircularProgressIndicator();
+                                                    } else if (snapshot.hasError) {
+                                                      return Text('Errore: ${snapshot.error}');
+                                                    } else {
+                                                      final posterPaths = snapshot.data ?? [];
+                                                      return ListView.builder(
+                                                        scrollDirection: Axis.horizontal,
+                                                        itemCount: posterPaths.length,
+                                                        itemBuilder: (BuildContext context, int index) {
+                                                          return Padding(
+                                                            padding: EdgeInsets.only(right: 8),
+                                                            child: SizedBox(
+                                                              width: 40,  // Imposta la larghezza desiderata per il rettangolo
+                                                              height: 100,  // Altezza fissa
+                                                              child: Image.network(
+                                                                posterPaths[index],
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Card(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 8),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Serie Tv da vedere',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              SizedBox(height: 8),
+                                              SizedBox(
+                                                width: 130,  // Imposta la larghezza desiderata per il rettangolo
+                                                height: 120,  // Altezza fissa
+                                                child: FutureBuilder<List<String>>(
+                                                  future: getPostersTv(userData?['uid'], "watchlist_t"),
+                                                  builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+                                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                                      return CircularProgressIndicator();
+                                                    } else if (snapshot.hasError) {
+                                                      return Text('Errore: ${snapshot.error}');
+                                                    } else {
+                                                      final posterPaths = snapshot.data ?? [];
+                                                      return ListView.builder(
+                                                        scrollDirection: Axis.horizontal,
+                                                        itemCount: posterPaths.length,
+                                                        itemBuilder: (BuildContext context, int index) {
+                                                          return Padding(
+                                                            padding: EdgeInsets.only(right: 8),
+                                                            child: SizedBox(
+                                                              width: 40,  // Imposta la larghezza desiderata per il rettangolo
+                                                              height: 100,  // Altezza fissa
+                                                              child: Image.network(
+                                                                posterPaths[index],
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      // se si vuole aggiungere altre card qua
                                     ],
                                   ),
                                 ),
+                                // RecyclerView per le liste
+                                // ...
+                                SizedBox(height: 8),
+                                Divider(),
+                                SizedBox(height: 8),
+                                Text('Serie TV viste'),
+                                SizedBox(height: 8),
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      Card(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 8),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(height: 8),
+                                              SizedBox(
+                                                width: MediaQuery.of(context).size.width - (16 * 2),
+                                                height: MediaQuery.of(context).size.height,
+                                                child: FutureBuilder<List<TvShow>>(
+                                                  future: getPostersTvF(userData?['uid'], "finished_t"),
+                                                  builder: (BuildContext context, AsyncSnapshot<List<TvShow>> snapshot) {
+                                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                                      return CircularProgressIndicator();
+                                                    } else if (snapshot.hasError) {
+                                                      return Text('Errore: ${snapshot.error}');
+                                                    } else {
+                                                      final tvShows = snapshot.data ?? [];
+                                                      if (tvShows.isEmpty) { // Se l'elenco delle serie TV è vuoto
+                                                        return Center( // Centra il testo nel widget
+                                                          child: Text(
+                                                            'Ancora nessun film aggiunto', // Il tuo messaggio
+                                                            style: TextStyle(fontSize: 16),
+                                                          ),
+                                                        );
+                                                      } else {
+                                                        return ListView.builder(
+                                                          scrollDirection: Axis.vertical,
+                                                          itemCount: tvShows.length,
+                                                          itemBuilder: (BuildContext context, int index) {
+                                                            final tvShow = tvShows[index];
+                                                            return Padding(
+                                                              padding: EdgeInsets.only(bottom: 8),
+                                                              child: Row(
+                                                                children: [
+                                                                  ClipOval(
+                                                                    child: SizedBox(
+                                                                      width: 55,
+                                                                      height: 55,
+                                                                      child: Image.network(
+                                                                        tvShow.posterPath ?? '',
+                                                                        fit: BoxFit.cover,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(width: 8), // Spazio tra l'immagine e il titolo
+                                                                  Expanded( // Per evitare overflow di testo
+                                                                    child: Text(
+                                                                      tvShow.name, // Titolo della serie TV
+                                                                      style: TextStyle(fontSize: 16),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            );
+                                                          },
+                                                        );
+                                                      }
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+
+                                      // Add other cards here...
+                                    ],
+                                  ),
+                                ),
+
                               ],
                             ),
                           ),
@@ -419,6 +769,108 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
       ),
     );
   }
+  Future<List<String>> getPosters(String uid, String listName) async {
+    List<dynamic> list = await FirestoreService.getList(uid, listName);
+    if (list.isEmpty) {
+      print("La lista è vuota");
+      return [];  // ritorna una lista vuota
+    } else {
+      print("La lista non è vuota");
+    }
+    List<String> posterPaths = [];
+    String baseUrl = "https://image.tmdb.org/t/p/w185/";
+
+    TmdbApiClient tmdbApiClient = TmdbApiClient(Dio());
+
+    int maxIndex = (list.length <= 3) ? list.length : 3;
+    for (int i = 0; i < maxIndex; i++) {
+      String movieId = list[i].toString();
+      Movie movieDetails = await tmdbApiClient.getMovieDetails(
+        apiKey: tmdbApiKey,
+        movieId: movieId,
+        language: 'it-IT',
+        region: 'IT',
+      );
+      if (movieDetails.posterPath != null) {
+        String fullPosterPath = "$baseUrl${movieDetails.posterPath}";
+        posterPaths.add(fullPosterPath);
+      }
+    }
+
+    return posterPaths;
+  }
+
+  Future<List<String>> getPostersTv(String uid, String listName) async {
+    // PER LE SERIE TV NON CI SBAGLIAMO
+    List<dynamic> list = await FirestoreService.getList(uid, listName);
+    if (list.isEmpty) {
+      print("La lista è vuota");
+      return [];  // ritorna una lista vuota
+    } else {
+      print("La lista non è vuota");
+    }
+    List<String> posterPathsTv = [];
+    String baseUrl = "https://image.tmdb.org/t/p/w185/";
+
+    TmdbApiClient tmdbApiClient = TmdbApiClient(Dio());
+
+    int maxIndex = (list.length <= 3) ? list.length : 3;
+    for (int i = 0; i < maxIndex; i++) {
+      String serieId = list[i].toString();
+      TvShow TvDetails = await tmdbApiClient.getTvDetails(
+        apiKey: tmdbApiKey,
+        serieId: serieId,
+        language: 'it-IT',
+        region: 'IT',
+      );
+      if (TvDetails.posterPath != null) {
+        String fullPosterPath = "$baseUrl${TvDetails.posterPath}";
+        posterPathsTv.add(fullPosterPath);
+      }
+    }
+
+    return posterPathsTv;
+  }
+  Future<List<TvShow>> getPostersTvF(String uid, String listName) async {
+    // PER LE SERIE TV FINITE
+    List<dynamic> list = await FirestoreService.getList(uid, listName);
+    if (list.isEmpty) {
+      print("La lista è vuota");
+      return [];  // ritorna una lista vuota
+    } else {
+      print("La lista non è vuota");
+    }
+    List<TvShow> tvShows = [];
+    String baseUrl = "https://image.tmdb.org/t/p/w185/";
+
+    TmdbApiClient tmdbApiClient = TmdbApiClient(Dio());
+
+    int maxIndex = list.length;
+    for (int i = 0; i < maxIndex; i++) {
+      String seriesId = list[i].toString();
+      TvShow tvDetails = await tmdbApiClient.getTvDetails(
+        apiKey: tmdbApiKey,
+        serieId: seriesId,
+        language: 'it-IT',
+        region: 'IT',
+      );
+      if (tvDetails.posterPath != null) {
+        String fullPosterPath = "$baseUrl${tvDetails.posterPath}";
+        TvShow tvShow = TvShow(
+          name: tvDetails.name,
+          posterPath: fullPosterPath,
+          // Aggiungi altri attributi se necessario
+        );
+        tvShows.add(tvShow);
+      }
+    }
+    return tvShows;
+  }
+
+
+
+
+
 }
 
 Future<int> getTotalFollowers(String uid) async {
