@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import '../main.dart';
 import 'data/api/TmdbApiClient.dart';
 import 'data/api/api_key.dart';
 import 'models/TvShow.dart';
@@ -43,13 +44,13 @@ class _TvShowDetailsState extends State<TvShowDetails> {
     }
   }
 
-  String get directorNames {
-    final directors = _tvShowDetails.credits?.crew
-        .where((crewMember) => crewMember.job == "Director")
-        .map((director) => director.name)
-        .toList();
-    return directors?.join(", ") ?? '';
-  }
+  // String get directorNames {
+  //   final directors = _tvShowDetails.credits?.crew
+  //       .where((crewMember) => crewMember.job == "Director")
+  //       .map((director) => director.name)
+  //       .toList();
+  //   return directors?.join(", ") ?? '';
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +79,7 @@ class _TvShowDetailsState extends State<TvShowDetails> {
                   bottomRight: Radius.circular(70),
                 ),
                 child: Image.network(
-                  'https://image.tmdb.org/t/p/original/${_tvShowDetails.backdropPath}',
+                  'https://image.tmdb.org/t/p/w185/${_tvShowDetails.backdropPath}',
                   fit: BoxFit.cover,
                 ),
               ),
@@ -150,20 +151,78 @@ class _TvShowDetailsState extends State<TvShowDetails> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                'Registi:',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
+            Container(
+              decoration: BoxDecoration(color: Colors.transparent),
+              width: 500,
+              height: 150,
+              child: ListView.builder(
+
+                scrollDirection: Axis.horizontal,
+                itemCount: 20 ,
+                itemBuilder: (context, index) {
+                  final castMember = _tvShowDetails.credits?.cast[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MyApp(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: 150,
+                      height: 200,
+
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            transform: Matrix4.translationValues(10, -10, 0),
+                            width:80,
+                            height: 80,
+                            child:Image.network(
+                              "https://image.tmdb.org/t/p/w185${castMember?.profilePath}",
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              '${castMember?.name}',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                width: 200, // Larghezza del container
+                                child: Text(
+                                  '${castMember?.character}',
+                                  softWrap: true,
+                                  style:TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                  ) ,// Abilita l'andare a capo
+                                ),
+                              )
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  );
+                },
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
-                directorNames,
+                "${directorNames ?? ''}",
                 style: TextStyle(
                   fontSize: 14,
                 ),
@@ -189,5 +248,13 @@ class _TvShowDetailsState extends State<TvShowDetails> {
     } catch (error) {
       print('Error fetching TV show details: $error');
     }
+  }
+
+  String? get directorNames {
+    final directors = _tvShowDetails.credits?.crew
+        .where((crewMember) => crewMember.job == "Director")
+        .map((director) => director.name)
+        .toList();
+    return directors?.join(",\n ");
   }
 }
