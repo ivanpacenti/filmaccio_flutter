@@ -32,14 +32,17 @@ class FirestoreService {
   }
   static Future<void> createUser(UserData userData) async {
     try {
+		//qui creo l'utente con mail e password
       await Auth().createUserWithEmailAndPassword(email: userData.email, password: userData.password);
       UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: userData.email,
         password: userData.password,
       );
+		//prendo id dell'utente creato
       String uid= userCredential.user!.uid;
       // Conversione della data di nascita in un Timestamp
       Timestamp birthDate = Timestamp.fromDate(userData.dataNascita);
+		//questa parte serve per l'immagine profilo
       final compressedImage = await userData.avatar.readAsBytes();
       final compressedImageData = await FlutterImageCompress.compressWithList(
         compressedImage,
@@ -47,14 +50,19 @@ class FirestoreService {
         minWidth: 500,
         quality: 80,
       );
-
+			//prende il riferimento a Firebase storage
       final storageReference = FirebaseStorage.instance.ref();
+			//crea il riferimento all'immagine che verrà caricata
       final propicReference = storageReference.child("propic/$uid/profile.jpg");
+			//la carica
       final uploadTask = propicReference.putData(compressedImageData);
       final snapshot = await uploadTask.whenComplete(() {});
+			//prende il link all'immagine sul server
       final propicURL = await propicReference.getDownloadURL();
 
       // Creazione dei dati utente da salvare nel documento
+			//creo una mappa che verrà caricata sul db
+			//nello specifico questa è per gli attributi dell'utente
       Map<String, dynamic> userDataMap = {
         'backdropImage': "https://image.tmdb.org/t/p/w1280//chauy3iJaZtrMbTr72rgNmOZwo3.jpg",
         'birthDate': birthDate,
@@ -69,10 +77,12 @@ class FirestoreService {
         'tvMinutes':0,
         'tvNumber':0
       };
+			//prende l id utente (perché due volte?)
       DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(uid);
 
-      // Salvataggio dei dati utente nel documento
+      // Salvataggio della mappa con i dati utente nel documento
       await userRef.set(userDataMap);
+//ai dovrai fare lo stesso per gli altri dati, devi fare le maps e caricarle 
 
       print('Utente creato con successo');
     } catch (error) {
