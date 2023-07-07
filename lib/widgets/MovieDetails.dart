@@ -1,11 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:filmaccio_flutter/main.dart';
 import 'package:filmaccio_flutter/widgets/models/Director.dart';
 import 'package:filmaccio_flutter/widgets/models/Movie.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
+import 'Firebase/FirestoreService.dart';
 import 'data/api/TmdbApiClient.dart';
 import 'data/api/api_key.dart';
+import 'login/Auth.dart';
 import 'models/Character.dart';
 
 class MovieDetails extends StatefulWidget {
@@ -19,20 +23,52 @@ class MovieDetails extends StatefulWidget {
 
 class _MovieDetailsState extends State<MovieDetails> {
 
+  final User? currentUser = Auth().currentUser;
+  final String currentUserId = Auth().currentUser!.uid;
+  DocumentSnapshot? userData;
+  int? movieMinutes;
+
+  Future<void> loadUserData() async {
+    userData = await FirestoreService.getUserByUid(currentUserId);
+    if (userData != null && userData!.data() != null) {
+      Map<String, dynamic> data = userData!.data() as Map<String, dynamic>;
+      movieMinutes = data['movieMinutes'] as int?;
+    }
+    setState(() {});
+  }
 
   late Movie _movie;
   late Movie _movieDetails;
   final Dio _dio = Dio();
   late TmdbApiClient _apiClient;
+  List<dynamic>? filmvisti;
 
-  @override
+
+  bool _isWatched = false;
+  bool _isFavorite = false;
+  bool _isAddedToWatchlist = false;
+
+    Future<void> checkIsWatched() async {
+      _isWatched = false;
+      filmvisti = await FirestoreService.getList(currentUserId, 'watched_m');
+      if (filmvisti != null && filmvisti!.contains(_movieDetails.id)) {
+        _isWatched = true;
+      }
+      setState(() {});
+    }
+
+
+    @override
+  // ci vanno le funzione che devono partire all'inizio
   void initState() {
     super.initState();
     _movie = widget.movie;
     fetchMovieDetails();
     _movieDetails=widget.movie;
-
+    loadUserData();
+    checkIsWatched();
   }
+
   @override
   void didUpdateWidget(covariant MovieDetails oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -151,25 +187,49 @@ class _MovieDetailsState extends State<MovieDetails> {
                   children: [
                     Expanded(
                       child: ElevatedButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(Icons.remove_red_eye),
-                        label: const Text('Guardato'),
+                        onPressed: () {
+                          setState(() {
+                            if(_isWatched) {
+                              // movieMinutes =
+                              //     movieMinutes! - _movieDetails.duration!;
+                              FirestoreService.removeFromList(currentUserId, 'watched_m', _movieDetails.id);
+                              //FirestoreService.updateUserField(currentUserId, 'movieMinutes', movieMinutes,myCallback);
+                              _isWatched = !_isWatched;
+                            } else {
+                              // movieMinutes =
+                              //     movieMinutes! + _movieDetails.duration!;
+
+                              FirestoreService.addToList(currentUserId, 'watched_m', _movieDetails.id,);
+                              _isWatched = !_isWatched;
+                            }
+                          });
+                        },
+                        icon: Icon(_isWatched ? Icons.check_box : Icons.check_box_outline_blank),
+                        label: Text(_isWatched ? 'Guardato' : 'Guardato',style: TextStyle(fontSize: 12)),
                       ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: ElevatedButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(Icons.favorite),
-                        label: const Text('Preferiti'),
+                        onPressed: () {
+                          setState(() {
+                            _isFavorite = !_isFavorite;
+                          });
+                        },
+                        icon: Icon(_isFavorite ? Icons.favorite : Icons.favorite_border),
+                        label: Text(_isFavorite ? 'Preferiti' : 'Aggiungi ai preferiti',style: TextStyle(fontSize: 12)),
                       ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: ElevatedButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(Icons.more_time),
-                        label: const Text('Watchlist'),
+                        onPressed: () {
+                          setState(() {
+                            _isAddedToWatchlist = !_isAddedToWatchlist;
+                          });
+                        },
+                        icon: Icon(_isAddedToWatchlist ? Icons.playlist_add_check : Icons.playlist_add),
+                        label: Text(_isAddedToWatchlist ? 'Watchlist' : 'Aggiungi alla watchlist',style: TextStyle(fontSize: 11)),
                       ),
                     ),
                   ],
@@ -362,3 +422,10 @@ class _ExpandableTextState extends State<ExpandableText> {
 }
 
 
+void myCallback(bool success) {
+  if (success) {
+    print("Aggiornamento riuscito!");
+  } else {
+    print("Aggiornamento non riuscito.");
+  }
+}
