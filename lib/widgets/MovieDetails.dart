@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:filmaccio_flutter/main.dart';
@@ -28,14 +30,6 @@ class _MovieDetailsState extends State<MovieDetails> {
   DocumentSnapshot? userData;
   int? movieMinutes;
 
-  Future<void> loadUserData() async {
-    userData = await FirestoreService.getUserByUid(currentUserId);
-    if (userData != null && userData!.data() != null) {
-      Map<String, dynamic> data = userData!.data() as Map<String, dynamic>;
-      movieMinutes = data['movieMinutes'] as int?;
-    }
-    setState(() {});
-  }
 
   late Movie _movie;
   late Movie _movieDetails;
@@ -65,7 +59,6 @@ class _MovieDetailsState extends State<MovieDetails> {
     _movie = widget.movie;
     fetchMovieDetails();
     _movieDetails=widget.movie;
-    loadUserData();
     checkIsWatched();
   }
 
@@ -190,16 +183,12 @@ class _MovieDetailsState extends State<MovieDetails> {
                         onPressed: () {
                           setState(() {
                             if(_isWatched) {
-                              // movieMinutes =
-                              //     movieMinutes! - _movieDetails.duration!;
                               FirestoreService.removeFromList(currentUserId, 'watched_m', _movieDetails.id);
-                              //FirestoreService.updateUserField(currentUserId, 'movieMinutes', movieMinutes,myCallback);
+                              AggiungiMinutes(_movieDetails.duration!*-1);
                               _isWatched = !_isWatched;
                             } else {
-                              // movieMinutes =
-                              //     movieMinutes! + _movieDetails.duration!;
-
-                              FirestoreService.addToList(currentUserId, 'watched_m', _movieDetails.id,);
+                              FirestoreService.addToList(currentUserId, 'watched_m', _movieDetails.id);
+                              AggiungiMinutes(_movieDetails.duration!);
                               _isWatched = !_isWatched;
                             }
                           });
@@ -421,11 +410,22 @@ class _ExpandableTextState extends State<ExpandableText> {
   }
 }
 
-
 void myCallback(bool success) {
   if (success) {
     print("Aggiornamento riuscito!");
   } else {
     print("Aggiornamento non riuscito.");
+  }
+}
+
+void AggiungiMinutes(int minFilm) async {
+  final String currentUserId = Auth().currentUser!.uid;
+  Map<String, dynamic>? userData;
+  userData = await FirestoreService.getUserByUid(currentUserId);
+  if (userData != null) {
+    var movieMinutes = userData['movieMinutes'] as int?;
+    int movieFinale = movieMinutes! + minFilm;  // Ho cambiato da - a +, dato il nome della funzione "AggiungiMinutes"
+    FirestoreService.updateUserField(currentUserId, 'movieMinutes', movieFinale, myCallback)
+        .catchError((error) => myCallback(false));
   }
 }
