@@ -66,6 +66,8 @@ abstract class TmdbApiClient {
     @Query('region') required String region,
     @Query('append_to_response') String appendToResponse = 'credits',
   });
+
+
   @GET("tv/{series_id}")
 // endpoint per trovare i dettagli di un film
   Future<TvShow> getTvDetails({
@@ -75,6 +77,15 @@ abstract class TmdbApiClient {
     @Query('region') required String region,
     @Query('append_to_response') String appendToResponse = '',
   });
+  //
+  // @GET("/tv/top_rated")
+  // // endpoint per trovare le serie tv più votati
+  // Future<DiscoverTvShowsResponse> getTopRatedTv(
+  //     @Query('api_key') String apiKey,
+  //     @Query('page') int page,
+  //     @Query('language') String language,
+  //     @Query('region') String region,
+  //     );
 
 }
 

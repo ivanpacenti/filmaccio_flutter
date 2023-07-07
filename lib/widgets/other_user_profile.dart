@@ -754,7 +754,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                                   SizedBox(width: 8), // Spazio tra l'immagine e il titolo
                                                                   Expanded( // Per evitare overflow di testo
                                                                     child: Text(
-                                                                      tvShow.name, // Titolo della serie TV
+                                                                      tvShow.name ?? '', // Titolo della serie TV
                                                                       style: TextStyle(fontSize: 16),
                                                                     ),
                                                                   ),
@@ -881,9 +881,12 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
       if (tvDetails.posterPath != null) {
         String fullPosterPath = "$baseUrl${tvDetails.posterPath}";
         TvShow tvShow = TvShow(
+          id: tvDetails.id, // Devi ottenere questo valore da qualche parte
           name: tvDetails.name,
           posterPath: fullPosterPath,
-          // Aggiungi altri attributi se necessario
+          overview: tvDetails.overview, // Devi ottenere questo valore da qualche parte
+          releaseDate: tvDetails.releaseDate, // Devi ottenere questo valore da qualche parte
+          backdropPath: tvDetails.backdropPath, // Devi ottenere questo valore da qualche parte
         );
         tvShows.add(tvShow);
       }

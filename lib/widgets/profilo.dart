@@ -723,7 +723,7 @@ class _ProfiloState extends State<Profilo> {
                                                             SizedBox(width: 8), // Spazio tra l'immagine e il titolo
                                                             Expanded( // Per evitare overflow di testo
                                                               child: Text(
-                                                                tvShow.name, // Titolo della serie TV
+                                                                tvShow.name ?? " ", // Titolo della serie TV
                                                                 style: TextStyle(fontSize: 16),
                                                               ),
                                                             ),
@@ -858,11 +858,16 @@ class _ProfiloState extends State<Profilo> {
       if (tvDetails.posterPath != null) {
         String fullPosterPath = "$baseUrl${tvDetails.posterPath}";
         TvShow tvShow = TvShow(
+          id: tvDetails.id,
           name: tvDetails.name,
           posterPath: fullPosterPath,
-          // Aggiungi altri attributi se necessario
+          overview: tvDetails.overview,
+          releaseDate: tvDetails.releaseDate,
+          backdropPath: tvDetails.backdropPath,
         );
+
         tvShows.add(tvShow);
+        print("tvShow: $tvShow");
       }
     }
     return tvShows;

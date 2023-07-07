@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:filmaccio_flutter/widgets/models/Movie.dart';
+import 'package:filmaccio_flutter/widgets/models/Series.dart';
 import 'package:filmaccio_flutter/widgets/models/TvShow.dart';
 import 'package:flutter/material.dart';
 import 'MovieDetails.dart';
@@ -185,7 +186,7 @@ class _HomeApiState extends State<HomeApi> {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: _topTrandingTvShows?.map((tvShow) {
+                children: _topTrandingTvShows?.map((TvShow) {
                   return Padding(
                     padding: EdgeInsets.only(right: 16.0),
                     child: SizedBox(
@@ -197,7 +198,7 @@ class _HomeApiState extends State<HomeApi> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Image.network(
-                          'https://image.tmdb.org/t/p/w185/${tvShow.posterPath}',
+                          'https://image.tmdb.org/t/p/w185/${TvShow.posterPath}',
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -261,9 +262,9 @@ class _HomeApiState extends State<HomeApi> {
       final response = await _apiClient.getTrandingTV(tmdbApiKey, 'IT');
       setState(() {
         if (response.results != null) {
-          _topTrandingTvShows = response.results!.take(3).toList();
+          _topTrandingTvShows = response.results.take(3).toList();
         } else {
-          _topTvShows = [];
+          _topTrandingTvShows = [];
         }
       });
     } catch (error) {

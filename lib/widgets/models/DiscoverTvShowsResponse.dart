@@ -1,6 +1,8 @@
 import 'package:filmaccio_flutter/widgets/models/TvShow.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'DiscoverTvShowsResponse.g.dart';
+
+
 @JsonSerializable()
 class DiscoverTvShowsResponse {
   List<TvShow> results;
