@@ -14,7 +14,6 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:filmaccio_flutter/widgets/other_user_profile.dart';
 import '../login/home.dart';
 import '../models/UserData.dart';
-import '../popolarfilm.dart';
 
 
 
@@ -31,7 +30,7 @@ class BottomNavBar extends StatelessWidget {
             Home(),
             Ricerca(),
             HomeApi(),
-            //HomeApi2(),
+
             Profilo(),
           ],
         ),

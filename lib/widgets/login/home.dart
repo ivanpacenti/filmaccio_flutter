@@ -104,26 +104,37 @@ class _HomeState extends State<Home> {
             Expanded(
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: _movieTopRating?.length??0,
+                itemCount: _movieTopRating?.length ?? 0,
                 itemBuilder: (context, index) {
                   final movie = _movieTopRating?[index];
-                  return Container(
-                    width: 140,
-                    margin: EdgeInsets.only(left: 16.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                      color: Colors.grey,
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          'https://image.tmdb.org/t/p/w185/${movie?.posterPath}',
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MovieDetails(movie: movie!),
                         ),
-                        fit: BoxFit.cover,
+                      );
+                    },
+                    child: Container(
+                      width: 140,
+                      margin: EdgeInsets.only(left: 16.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        color: Colors.grey,
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            'https://image.tmdb.org/t/p/w185/${movie?.posterPath}',
+                          ),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   );
                 },
               ),
             ),
+
             Divider(),
             Padding(
               padding: const EdgeInsets.all(16.0),

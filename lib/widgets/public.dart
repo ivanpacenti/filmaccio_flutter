@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:filmaccio_flutter/widgets/models/Movie.dart';
 import 'package:filmaccio_flutter/widgets/models/TvShow.dart';
 import 'package:flutter/material.dart';
+import 'MovieDetails.dart';
 import 'data/api/TmdbApiClient.dart';
 import 'data/api/api_key.dart';
 
@@ -54,27 +55,37 @@ class _HomeApiState extends State<HomeApi> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: _topMovies?.map((movie) {
-                  return Padding(
-                    padding: EdgeInsets.only(right: 16.0),
-                    child: SizedBox(
-                      width: 110,
-                      height: 165,
-                      child: Card(
-                        clipBehavior: Clip.antiAlias,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MovieDetails(movie: movie),
                         ),
-                        child: Image.network(
-                          'https://image.tmdb.org/t/p/w185/${movie.posterPath}',
-                          fit: BoxFit.cover,
+                      );
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 16.0),
+                      child: SizedBox(
+                        width: 110,
+                        height: 165,
+                        child: Card(
+                          clipBehavior: Clip.antiAlias,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Image.network(
+                            'https://image.tmdb.org/t/p/w185/${movie.posterPath}',
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
                   );
-                }).toList() ??
-                    [],
+                }).toList() ?? [],
               ),
-    ),
+            ),
+
 // QUI INIZIANO I POSTER DELLE SERIE TV
             SizedBox(height: 16),
             Container(
@@ -129,27 +140,37 @@ class _HomeApiState extends State<HomeApi> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: _topMoviesWeek?.map((movie) {
-                  return Padding(
-                    padding: EdgeInsets.only(right: 16.0),
-                    child: SizedBox(
-                      width: 110,
-                      height: 165,
-                      child: Card(
-                        clipBehavior: Clip.antiAlias,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MovieDetails(movie: movie),
                         ),
-                        child: Image.network(
-                          'https://image.tmdb.org/t/p/w185/${movie.posterPath}',
-                          fit: BoxFit.cover,
+                      );
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 16.0),
+                      child: SizedBox(
+                        width: 110,
+                        height: 165,
+                        child: Card(
+                          clipBehavior: Clip.antiAlias,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Image.network(
+                            'https://image.tmdb.org/t/p/w185/${movie.posterPath}',
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
                   );
-                }).toList() ??
-                    [],
+                }).toList() ?? [],
               ),
             ),
+
             SizedBox(height: 16),
             Container(
               margin: EdgeInsets.all(16),
