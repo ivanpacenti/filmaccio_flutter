@@ -1,21 +1,9 @@
-import 'package:filmaccio_flutter/widgets/login/PasswordDimenticata.dart';
-import 'package:flutter/material.dart';
-import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
-
-import 'package:filmaccio_flutter/widgets/login/RegTerza.dart';
-import 'package:filmaccio_flutter/widgets/login/logout.dart';
 import 'package:filmaccio_flutter/widgets/profilo.dart';
-import 'package:filmaccio_flutter/widgets/login/RegPrima.dart';
-import 'package:filmaccio_flutter/widgets/ricerca.dart';
-import 'package:filmaccio_flutter/widgets/prova2.dart';
-import 'package:flutter/material.dart';
 import 'package:filmaccio_flutter/widgets/public.dart';
-import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
-import 'package:filmaccio_flutter/widgets/other_user_profile.dart';
+import 'package:filmaccio_flutter/widgets/ricerca.dart';
+import 'package:flutter/material.dart';
+
 import '../login/home.dart';
-import '../models/UserData.dart';
-
-
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({Key? key}) : super(key: key);
@@ -50,7 +38,6 @@ class BottomNavBar extends StatelessWidget {
                   icon: Icon(Icons.explore),
                   text: 'Esplora',
                 ),
-
                 Tab(
                   icon: Icon(Icons.account_circle_rounded),
                   text: 'Profilo',

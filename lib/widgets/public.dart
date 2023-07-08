@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:filmaccio_flutter/widgets/models/Movie.dart';
-
 import 'package:filmaccio_flutter/widgets/models/TvShow.dart';
 import 'package:flutter/material.dart';
+
 import 'MovieDetails.dart';
 import 'SeriesDetails.dart';
 import 'data/api/TmdbApiClient.dart';
@@ -21,8 +21,7 @@ class _HomeApiState extends State<HomeApi> {
   List<Movie>? _topMovies;
   List<Movie>? _topMoviesWeek;
   List<TvShow>? _topTvShows;
-  List<TvShow>?_topTrandingTvShows;
-
+  List<TvShow>? _topTrandingTvShows;
 
   @override
   void initState() {
@@ -37,212 +36,94 @@ class _HomeApiState extends State<HomeApi> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 60),
-              child: Container(
-                margin: EdgeInsets.all(16),
-                child: Text(
-                  'Film consigliati',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                  ),
-                ),
-              ),
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: _topMovies?.map((movie) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MovieDetails(movie: movie),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.only(right: 16.0),
-                      child: SizedBox(
-                        width: 110,
-                        height: 165,
-                        child: Card(
-                          clipBehavior: Clip.antiAlias,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Image.network(
-                            'https://image.tmdb.org/t/p/w185/${movie.posterPath}',
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList() ?? [],
-              ),
-            ),
-
-// QUI INIZIANO I POSTER DELLE SERIE TV
-            SizedBox(height: 16),
-            Container(
-              margin: EdgeInsets.all(1),
-              child: Text(
-                'Serie consigliate',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
-                ),
-              ),
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: _topTvShows?.map((tvShow) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TvShowDetails(tvShow: tvShow),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.only(right: 16.0),
-                      child: SizedBox(
-                        width: 110,
-                        height: 165,
-                        child: Card(
-                          clipBehavior: Clip.antiAlias,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Image.network(
-                            'https://image.tmdb.org/t/p/w185/${tvShow.posterPath}',
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList() ?? [],
-              ),
-            ),
-
-
-            SizedBox(height: 16),
-            Container(
-              margin: EdgeInsets.all(16),
-              child: Text(
-                'Film in tendenza',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
-                ),
-              ),
-            ),
-
-//qui iniziano i poster dei film in tendenza
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: _topMoviesWeek?.map((movie) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MovieDetails(movie: movie),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.only(right: 16.0),
-                      child: SizedBox(
-                        width: 110,
-                        height: 165,
-                        child: Card(
-                          clipBehavior: Clip.antiAlias,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Image.network(
-                            'https://image.tmdb.org/t/p/w185/${movie.posterPath}',
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList() ?? [],
-              ),
-            ),
-
-            SizedBox(height: 16),
-            Container(
-              margin: EdgeInsets.all(16),
-              child: Text(
-                'Serie in tendenza',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
-                ),
-              ),
-            ),
-      SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: _topTrandingTvShows?.map((tvShow) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TvShowDetails(tvShow: tvShow),
-                  ),
-                );
-              },
-              child: Padding(
-                padding: EdgeInsets.only(right: 16.0),
-                child: SizedBox(
-                  width: 110,
-                  height: 165,
-                  child: Card(
-                    clipBehavior: Clip.antiAlias,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Image.network(
-                      'https://image.tmdb.org/t/p/w185/${tvShow.posterPath}',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
-            );
-          }).toList() ?? [],
-        ),
-      ),
-          ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Film popolari
+              buildSection('Film popolari', _topMovies,
+                  (movie) => MovieDetails(movie: movie)),
+              const Divider(),
+              // Serie TV popolari
+              buildSection('Serie TV popolari', _topTvShows,
+                  (movie) => MovieDetails(movie: movie)),
+              const Divider(),
+              // Film di tendenza
+              buildSection('Film di tendenza', _topMoviesWeek,
+                  (movie) => MovieDetails(movie: movie)),
+              const Divider(),
+              // Serie TV di tendenza
+              buildSection('Serie TV di tendenza', _topTrandingTvShows,
+                  (tvShow) => TvShowDetails(tvShow: tvShow)),
+            ],
+          ),
         ),
       ),
     );
   }
 
+  Widget buildSection(String title, List<dynamic>? items,
+      Widget Function(dynamic item) detailsBuilder) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 200,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: items?.length ?? 0,
+            itemBuilder: (context, index) {
+              final item = items?[index];
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => detailsBuilder(item),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: 140,
+                  margin: const EdgeInsets.only(left: 16.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    color: Colors.grey,
+                    image: DecorationImage(
+                      image: NetworkImage(
+                        'https://image.tmdb.org/t/p/w185/${item?.posterPath}',
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
 
   Future<void> fetchTopMovies() async {
     // funzione per prendere i top rated movies
     try {
-      final response = await _apiClient.getTopRatedMovies(tmdbApiKey, 1, 'it', 'IT');
+      final response =
+          await _apiClient.getTopRatedMovies(tmdbApiKey, 1, 'it', 'IT');
       setState(() {
-        _topMovies = response.results.take(3).toList();
+        _topMovies = response.results.toList();
       });
     } catch (error) {
       print('Error fetching top movies: $error');
@@ -254,7 +135,7 @@ class _HomeApiState extends State<HomeApi> {
     try {
       final response = await _apiClient.getTrandingMovie(tmdbApiKey, 'IT');
       setState(() {
-        _topMoviesWeek = response.results.take(3).toList();
+        _topMoviesWeek = response.results.toList();
       });
     } catch (error) {
       print('Error fetching top trending movies: $error');
@@ -264,10 +145,11 @@ class _HomeApiState extends State<HomeApi> {
   Future<void> fetchTopTvShows() async {
     // funzione per prendere i le serie tv  rated movies
     try {
-      final response = await _apiClient.getTopRatedTv(tmdbApiKey, 1, 'it', 'IT');
+      final response =
+          await _apiClient.getTopRatedTv(tmdbApiKey, 1, 'it', 'IT');
       setState(() {
         if (response.results != null) {
-          _topTvShows = response.results!.take(3).toList();
+          _topTvShows = response.results!.toList();
         } else {
           _topTvShows = [];
         }
@@ -283,7 +165,7 @@ class _HomeApiState extends State<HomeApi> {
       final response = await _apiClient.getTrandingTV(tmdbApiKey, 'IT');
       setState(() {
         if (response.results != null) {
-          _topTrandingTvShows = response.results.take(3).toList();
+          _topTrandingTvShows = response.results.toList();
         } else {
           _topTrandingTvShows = [];
         }
@@ -292,5 +174,4 @@ class _HomeApiState extends State<HomeApi> {
       print('Error fetching top TV shows: $error');
     }
   }
-
 }
