@@ -13,6 +13,7 @@ import 'data/api/TmdbApiClient.dart';
 import 'data/api/api_key.dart';
 import 'login/Auth.dart';
 import 'models/Character.dart';
+import 'models/TmdbEntity.dart';
 
 class MovieDetails extends StatefulWidget {
   final Movie movie;
@@ -460,3 +461,12 @@ void AggiungiMinutes(int minFilm) async {
         .catchError((error) => myCallback(false));
   }
 }
+
+// Movie convertToMovie(TmdbEntity entity) {
+//   return Movie(
+//     id: entity.id,
+//     title: entity.title,
+//     posterPath: entity.imagePath,
+//     backdropPath: entity.backdropPath,
+//     // Aggiungi qui altri campi se necessario
+//

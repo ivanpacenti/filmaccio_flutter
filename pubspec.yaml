@@ -54,6 +54,7 @@ dependencies:
   tmdb_api: ^2.1.5
   fluttertoast: ^8.2.2
   tuple: ^2.0.2
+  flutter_config: ^2.0.1
 
 
 dev_dependencies:

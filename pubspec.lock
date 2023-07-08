@@ -398,6 +398,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_config:
+    dependency: "direct main"
+    description:
+      name: flutter_config
+      sha256: b3964bf8495c54079486c03ea92a82ad9626c78fb4928a1a2fc4a95aa123c16b
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   flutter_dotenv:
     dependency: "direct main"
     description:
