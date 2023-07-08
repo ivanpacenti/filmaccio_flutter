@@ -7,6 +7,7 @@ import 'package:filmaccio_flutter/widgets/models/TvShow.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:retrofit/retrofit.dart';
 
+import '../../models/Person.dart';
 import 'api_key.dart';
 
 part 'TmdbApiClient.g.dart';
@@ -87,6 +88,15 @@ abstract class TmdbApiClient {
     @Query('page') int page = 1,
     @Query('language') String language = 'it-IT',
     @Query("include_adult")  bool includeAdult = false,
+  });
+
+  @GET("person/{person_id}")
+  Future<Person> getPersonDetails({
+    @Query("api_key") required String apiKey,
+    @Path("person_id") required  String personId,
+    @Query("language")  String language = 'it-IT',
+    @Query("region")  required String region,
+    @Query("append_to_response") String appendToResponse = '',
   });
 
 }

@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:filmaccio_flutter/widgets/models/Person.dart';
+import 'package:filmaccio_flutter/widgets/peopleDetails.dart';
 import 'package:flutter/material.dart';
 
 import 'MovieDetails.dart';
@@ -139,7 +141,7 @@ class _RicercaState extends State<Ricerca> {
                             } else if (result.mediaType == 'movie') {
                               schermatafilm(result.id.toString());
                             } else if (result.mediaType == 'person') {
-                              schermataperson(result.id);
+                              schermataperson(result.id.toString());
                             }
                           },
                         );
@@ -207,5 +209,20 @@ class _RicercaState extends State<Ricerca> {
     );
   }
 
-  void schermataperson(int id) {}
+  Future<void> schermataperson(String personId) async {
+    Person person = await _apiClient.getPersonDetails(
+      apiKey: tmdbApiKey,
+      personId: personId,
+      language: 'it-IT',
+      region: 'IT',
+      appendToResponse: 'combined_credits',
+    );
+    print("PERSONA: " + person.name);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PersonDetailsActivity(person: person),
+      ),
+    );
+  }
 }

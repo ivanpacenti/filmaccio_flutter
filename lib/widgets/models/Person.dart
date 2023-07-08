@@ -18,9 +18,9 @@ class Person {
   String knownFor;
   @JsonKey(name: 'place_of_death')
   String? placeOfDeath;
-  CombinedCredits combinedCredits;
+  final CombinedCredits? combinedCredits;
 
-  List<Product> products = [];
+ //List<Product> products = [];
 
   Person({
     required this.id,
@@ -33,7 +33,7 @@ class Person {
     required this.gender,
     required this.knownFor,
     this.placeOfDeath,
-    required this.combinedCredits,
+    this.combinedCredits,
   });
 
   factory Person.fromJson(Map<String, dynamic> json) => _$PersonFromJson(json);
