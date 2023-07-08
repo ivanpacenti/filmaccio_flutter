@@ -2,13 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:filmaccio_flutter/main.dart';
 import 'package:filmaccio_flutter/widgets/models/Movie.dart';
+import 'package:filmaccio_flutter/widgets/peopleDetails.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'Firebase/FirestoreService.dart';
 import 'data/api/TmdbApiClient.dart';
 import 'data/api/api_key.dart';
 import 'login/Auth.dart';
+import 'models/Person.dart';
 
 class MovieDetails extends StatefulWidget {
   final Movie movie;
@@ -44,6 +47,24 @@ class _MovieDetailsState extends State<MovieDetails> {
     setState(() {});
   }
 
+  Future<void> schermataperson(String personId) async {
+    Person person = await _apiClient.getPersonDetails(
+      apiKey: tmdbApiKey,
+      personId: personId,
+      language: 'it-IT',
+      region: 'IT',
+      appendToResponse: 'combined_credits',
+    );
+    if (kDebugMode) {
+      print("PERSONA: ${person.name}");
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PersonDetailsActivity(person: person),
+      ),
+    );
+  }
   Future<void> checkisFavorite() async {
     _isFavorite = false;
     filmvisti = await FirestoreService.getList(currentUserId, 'favorite_m');
@@ -314,12 +335,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                     final castMember = _movieDetails.credits?.cast[index];
                     return GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MyApp(),
-                          ),
-                        );
+                         schermataperson( castMember!.id.toString());
                       },
                       child: Container(
                         width: 150,
@@ -446,7 +462,9 @@ class _ExpandableTextState extends State<ExpandableText> {
         );
       },
     );
+
   }
+
 }
 
 void myCallback(bool success) {
@@ -470,6 +488,8 @@ void AggiungiMinutes(int minFilm) async {
         .catchError((error) => myCallback(false));
   }
 }
+
+
 
 // Movie convertToMovie(TmdbEntity entity) {
 //   return Movie(

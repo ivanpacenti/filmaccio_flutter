@@ -274,6 +274,7 @@ class _TvShowDetailsState extends State<TvShowDetails> {
         serieId: _tvShow.id.toString(),
         language: 'it-IT',
         region: 'IT',
+        appendToResponse: 'credits',
       );
       setState(() {});
     } catch (error) {
