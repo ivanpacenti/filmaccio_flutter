@@ -81,8 +81,9 @@ abstract class TmdbApiClient {
 
   @GET("/search/multi")
   // endpoint per la ricerca
-  Future<SearchResponse> SearchMulti({
+  Future<SearchResponse> searchMulti({
     @Query('api_key')required String apiKey,
+    @Query("query") required String query,
     @Query('page') int page = 1,
     @Query('language') String language = 'it-IT',
     @Query("include_adult")  bool includeAdult = false,
