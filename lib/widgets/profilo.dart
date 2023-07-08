@@ -1116,16 +1116,13 @@ class _ProfiloState extends State<Profilo> {
                               child: FutureBuilder<List<TvShow>>(
                                 future: getPostersTvF(userDoc?.get('uid'), "finished_t"),
                                 builder: (BuildContext context, AsyncSnapshot<List<TvShow>> snapshot) {
-                                  if (snapshot.hasData) {
-                                    print('Data: ${snapshot.data![0].name}');
-                                  }
                                   if (snapshot.connectionState == ConnectionState.waiting) {
-                                    return Center(child: CircularProgressIndicator());
+                                    return const Center(child: CircularProgressIndicator());
                                   } else if (snapshot.hasError) {
                                     return Center(child: Text('Errore: ${snapshot.error}'));
                                   } else {
                                     final tvShows = snapshot.data ?? [];
-                                    if (tvShows.isEmpty) {
+                                    if (tvShows.isEmpty || tvShows.isEmpty) {
                                       return const Center(
                                         child: Text(
                                           'Ancora nessuna serie TV completata',
@@ -1207,7 +1204,7 @@ class _ProfiloState extends State<Profilo> {
 
     TmdbApiClient tmdbApiClient = TmdbApiClient(Dio());
 
-    int maxIndex = (list.length <= 3) ? list.length : 3;
+    int maxIndex = list.length;
     for (int i = 0; i < maxIndex; i++) {
       String movieId = list[i].toString();
       Movie movieDetails = await tmdbApiClient.getMovieDetails(
@@ -1239,7 +1236,7 @@ class _ProfiloState extends State<Profilo> {
 
     TmdbApiClient tmdbApiClient = TmdbApiClient(Dio());
 
-    int maxIndex = (list.length <= 3) ? list.length : 3;
+    int maxIndex = list.length;
     for (int i = 0; i < maxIndex; i++) {
       String serieId = list[i].toString();
       TvShow TvDetails = await tmdbApiClient.getTvDetails(
