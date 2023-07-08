@@ -87,18 +87,20 @@ class _HomeState extends State<Home> {
                 child: Container(
                   width: 135,
                   margin: const EdgeInsets.only(left: 16.0),
-                  decoration: BoxDecoration(
+                  child: ClipRRect(
                     borderRadius: BorderRadius.circular(8.0),
-                    color: Colors.grey,
-                    image: DecorationImage(
-                      image: NetworkImage(
-                        'https://image.tmdb.org/t/p/w185/${item?.posterPath}',
-                      ),
+                    child: item?.posterPath != null
+                        ? Image.network(
+                      'https://image.tmdb.org/t/p/w185/${item?.posterPath}',
+                      fit: BoxFit.cover,
+                    )
+                        : Image.asset(
+                      'assets/images/error_404.png',
                       fit: BoxFit.cover,
                     ),
+                    ),
                   ),
-                ),
-              );
+                );
             },
           ),
         ),
@@ -108,18 +110,19 @@ class _HomeState extends State<Home> {
 
   Future<void> fetchTopTrending() async {
     try {
-      final response = await _apiClient.getTrandingMovie(tmdbApiKey, 'it-IT');
+      final response = await _apiClient.getMovieNowPlaying(tmdbApiKey, 1, 'it-IT', 'IT');
       setState(() {
         if (response.results != null) {
-          _movieNowPlaying = response.results!.toList();
+          _movieNowPlaying = response.results.toList();
         } else {
           _movieNowPlaying = [];
         }
       });
     } catch (error) {
-      print('Error fetching top trending movies: $error');
+      print('Error fetching now playing movies: $error');
     }
   }
+
   Future<void> fetchTopRating() async {
     try {
       final response = await _apiClient.getTopRatedMovies(tmdbApiKey, 1,'it-IT',"IT");

@@ -140,8 +140,13 @@ class _MovieDetailsState extends State<MovieDetails> {
                 bottomLeft: Radius.circular(70),
                 bottomRight: Radius.circular(70),
               ),
-              child: Image.network(
-                'https://image.tmdb.org/t/p/original/${_movieDetails.backdropPath}',
+              child: _movieDetails.backdropPath != null
+                  ? Image.network(
+                'https://image.tmdb.org/t/p/w185/${_movieDetails.backdropPath}',
+                fit: BoxFit.cover,
+              )
+                  : Image.asset(
+                'assets/images/error_404.png',
                 fit: BoxFit.cover,
               ),
             ),
@@ -155,8 +160,13 @@ class _MovieDetailsState extends State<MovieDetails> {
                 height: 180,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    'https://image.tmdb.org/t/p/original/${_movieDetails.posterPath}',
+                  child: _movieDetails.posterPath != null
+                      ? Image.network(
+                    'https://image.tmdb.org/t/p/w185/${_movieDetails.posterPath}',
+                    fit: BoxFit.cover,
+                  )
+                      : Image.asset(
+                    'assets/images/error_404.png',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -185,7 +195,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                         margin:
                             const EdgeInsets.only(left: 16, top: 8, right: 16),
                         child: Text(
-                            "${_movieDetails.releaseDate.split("-").first ?? ''} | Diretto da:",
+                            _movieDetails.releaseDate != null ? "${_movieDetails.releaseDate!.split("-").first ?? ''} | Diretto da:" : "Diretto da:",
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.normal,
@@ -333,7 +343,7 @@ class _MovieDetailsState extends State<MovieDetails> {
               Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: ExpandableText(
-                      text: _movieDetails.overview,
+                      text: _movieDetails.overview ?? "Non disponibile",
                       maxLines: 3,
                     ),
                   ),

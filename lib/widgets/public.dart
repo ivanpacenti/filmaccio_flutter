@@ -121,7 +121,7 @@ class _HomeApiState extends State<HomeApi> {
     // funzione per prendere i top rated movies
     try {
       final response =
-          await _apiClient.getTopRatedMovies(tmdbApiKey, 1, 'it', 'IT');
+          await _apiClient.getTopRatedMovies(tmdbApiKey, 1, 'it-IT', 'IT');
       setState(() {
         _topMovies = response.results.toList();
       });
@@ -133,7 +133,7 @@ class _HomeApiState extends State<HomeApi> {
   Future<void> fetchTrandingMovie() async {
     // funzione per prendere i tranding  rated movies
     try {
-      final response = await _apiClient.getTrandingMovie(tmdbApiKey, 'IT');
+      final response = await _apiClient.getTrandingMovie(tmdbApiKey, 'it-IT', 'IT');
       setState(() {
         _topMoviesWeek = response.results.toList();
       });
@@ -146,7 +146,7 @@ class _HomeApiState extends State<HomeApi> {
     // funzione per prendere i le serie tv  rated movies
     try {
       final response =
-          await _apiClient.getTopRatedTv(tmdbApiKey, 1, 'it', 'IT');
+          await _apiClient.getTopRatedTv(tmdbApiKey, 1, 'it-IT', 'IT');
       setState(() {
         if (response.results != null) {
           _topTvShows = response.results!.toList();
@@ -162,7 +162,7 @@ class _HomeApiState extends State<HomeApi> {
   Future<void> fetchTrandingTvShows() async {
     // funzione per prendere i le serie tv  in tranding
     try {
-      final response = await _apiClient.getTrandingTV(tmdbApiKey, 'IT');
+      final response = await _apiClient.getTrandingTV(tmdbApiKey, 'it-IT', 'IT');
       setState(() {
         if (response.results != null) {
           _topTrandingTvShows = response.results.toList();
