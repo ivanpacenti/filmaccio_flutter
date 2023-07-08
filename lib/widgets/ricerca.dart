@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'dart:convert';
-
+import 'SeriesDetails.dart';
 import 'MovieDetails.dart';
 import 'data/api/TmdbApiClient.dart';
 import 'models/Movie.dart';
 import 'models/TmdbEntity.dart';
+import 'models/TvShow.dart';
 import 'other_user_profile.dart';
 import 'data/api/api_key.dart';
 
@@ -157,15 +158,15 @@ class _RicercaState extends State<Ricerca> {
                     leading: CircleAvatar(
                       backgroundImage: NetworkImage('https://image.tmdb.org/t/p/w185/${media.imagePath}'),
                     ),
-                    // onTap: () {
-                    //   Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) => MovieDetails( _mediaResults![index];
-                    //       ),
-                    //     ),
-                    //   );
-                    // }
+                    onTap: () {
+                      if(media.mediaType == 'tv'){
+                        schermatatv(media.id.toString());
+                      } else if(media.mediaType == 'movie') {
+                        schermatafilm(media.id.toString());
+                      } else if(media.mediaType == 'person') {
+                        schermataperson(media.id);
+                      }
+                    },
                   );
                 },
               )
@@ -175,17 +176,38 @@ class _RicercaState extends State<Ricerca> {
       ),
     );
   }
-}
 
-// Movie convertToMovie(TmdbEntity entity) {
-//   return Movie(
-//     id: entity.id,
-//     title: entity.title,
-//     imagePath: entity.imagePath,
-//     mediaType: entity.mediaType,
-//     overview: '',
-//     releaseDate: '',
-//     backdropPath: '',
-//     // Aggiungi qui altri campi se necessario
-//   );
-// }
+  Future<void> schermatatv(String seriesId) async {
+    TvShow tvDetails = await _apiClient.getTvDetails(
+      apiKey: tmdbApiKey,
+      serieId: seriesId,
+      language: 'it-IT',
+      region: 'IT',
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TvShowDetails( tvShow: tvDetails),
+      ),
+    );
+  }
+
+  Future<void> schermatafilm(String movieId) async {
+    Movie movie = await _apiClient.getMovieDetails(
+      apiKey: tmdbApiKey,
+      movieId: movieId,
+      language: 'it-IT',
+      region: 'IT',
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MovieDetails(movie: movie),
+      ),
+    );
+  }
+
+  void schermataperson(int id) {}
+}
