@@ -2,6 +2,7 @@ import 'package:filmaccio_flutter/widgets/login/RegTerza.dart';
 import 'package:filmaccio_flutter/widgets/nav/bottomnavbar.dart';
 
 import 'package:filmaccio_flutter/widgets/login/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
@@ -13,10 +14,8 @@ import 'color_schemes.g.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp( MyApp());
+  await Firebase.initializeApp();
+  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -33,13 +32,13 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
+    final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
     return MaterialApp(
 
         title: 'Filmaccio',
         debugShowCheckedModeBanner: false,
         home: StreamBuilder(
-          stream: Auth().authStateChanges,
+          stream: firebaseAuth.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return BottomNavBar();
