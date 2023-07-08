@@ -638,7 +638,14 @@ class _ProfiloState extends State<Profilo> {
                                                     snapshot) {
                                               if (snapshot.connectionState ==
                                                   ConnectionState.waiting) {
-                                                return CircularProgressIndicator();
+                                                return Center(
+                                                  child: Container(
+                                                    width: 50,
+                                                    height: 50,
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  ),
+                                                );
                                               } else if (snapshot.hasError) {
                                                 return Text(
                                                     'Errore: ${snapshot.error}');
@@ -719,7 +726,14 @@ class _ProfiloState extends State<Profilo> {
                                                     snapshot) {
                                               if (snapshot.connectionState ==
                                                   ConnectionState.waiting) {
-                                                return CircularProgressIndicator();
+                                                return Center(
+                                                  child: Container(
+                                                    width: 50,
+                                                    height: 50,
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  ),
+                                                );
                                               } else if (snapshot.hasError) {
                                                 return Text(
                                                     'Errore: ${snapshot.error}');
@@ -801,7 +815,14 @@ class _ProfiloState extends State<Profilo> {
                                                     snapshot) {
                                               if (snapshot.connectionState ==
                                                   ConnectionState.waiting) {
-                                                return CircularProgressIndicator();
+                                                return Center(
+                                                  child: Container(
+                                                    width: 50,
+                                                    height: 50,
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  ),
+                                                );
                                               } else if (snapshot.hasError) {
                                                 return Text(
                                                     'Errore: ${snapshot.error}');
@@ -883,7 +904,14 @@ class _ProfiloState extends State<Profilo> {
                                                     snapshot) {
                                               if (snapshot.connectionState ==
                                                   ConnectionState.waiting) {
-                                                return CircularProgressIndicator();
+                                                return Center(
+                                                  child: Container(
+                                                    width: 50,
+                                                    height: 50,
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  ),
+                                                );
                                               } else if (snapshot.hasError) {
                                                 return Text(
                                                     'Errore: ${snapshot.error}');
@@ -965,7 +993,14 @@ class _ProfiloState extends State<Profilo> {
                                                     snapshot) {
                                               if (snapshot.connectionState ==
                                                   ConnectionState.waiting) {
-                                                return CircularProgressIndicator();
+                                                return Center(
+                                                  child: Container(
+                                                    width: 50,
+                                                    height: 50,
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  ),
+                                                );
                                               } else if (snapshot.hasError) {
                                                 return Text(
                                                     'Errore: ${snapshot.error}');
@@ -1047,7 +1082,14 @@ class _ProfiloState extends State<Profilo> {
                                                     snapshot) {
                                               if (snapshot.connectionState ==
                                                   ConnectionState.waiting) {
-                                                return CircularProgressIndicator();
+                                                return Center(
+                                                  child: Container(
+                                                    width: 50,
+                                                    height: 50,
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  ),
+                                                );
                                               } else if (snapshot.hasError) {
                                                 return Text(
                                                     'Errore: ${snapshot.error}');
@@ -1114,12 +1156,23 @@ class _ProfiloState extends State<Profilo> {
                             child: Padding(
                               padding: EdgeInsets.symmetric(horizontal: 8),
                               child: FutureBuilder<List<TvShow>>(
-                                future: getPostersTvF(userDoc?.get('uid'), "finished_t"),
-                                builder: (BuildContext context, AsyncSnapshot<List<TvShow>> snapshot) {
-                                  if (snapshot.connectionState == ConnectionState.waiting) {
-                                    return const Center(child: CircularProgressIndicator());
+                                future: getPostersTvF(
+                                    userDoc?.get('uid'), "finished_t"),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<List<TvShow>> snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return Center(
+                                      child: Container(
+                                        width: 50,
+                                        height: 50,
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    );
                                   } else if (snapshot.hasError) {
-                                    return Center(child: Text('Errore: ${snapshot.error}'));
+                                    return Center(
+                                        child:
+                                            Text('Errore: ${snapshot.error}'));
                                   } else {
                                     final tvShows = snapshot.data ?? [];
                                     if (tvShows.isEmpty || tvShows.isEmpty) {
@@ -1133,7 +1186,8 @@ class _ProfiloState extends State<Profilo> {
                                       return ListView.builder(
                                         padding: EdgeInsets.zero,
                                         shrinkWrap: true,
-                                        physics: const NeverScrollableScrollPhysics(),
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
                                         itemCount: tvShows.length,
                                         itemBuilder: (context, index) {
                                           final tvShow = tvShows[index];
@@ -1142,7 +1196,9 @@ class _ProfiloState extends State<Profilo> {
                                             child: Row(
                                               children: [
                                                 ClipRRect(
-                                                  borderRadius: BorderRadius.circular(8.0),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0),
                                                   child: Image.network(
                                                     tvShow.posterPath ?? '',
                                                     width: 50,
@@ -1154,7 +1210,8 @@ class _ProfiloState extends State<Profilo> {
                                                 Expanded(
                                                   child: Text(
                                                     tvShow.name ?? " ",
-                                                    style: TextStyle(fontSize: 14),
+                                                    style:
+                                                        TextStyle(fontSize: 14),
                                                   ),
                                                 ),
                                               ],
@@ -1166,8 +1223,8 @@ class _ProfiloState extends State<Profilo> {
                                   }
                                 },
                               ),
-                              ),
                             ),
+                          ),
                         ],
                       ),
                     ),
