@@ -1,16 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'dart:convert';
-import 'SeriesDetails.dart';
 import 'MovieDetails.dart';
+import 'SeriesDetails.dart';
 import 'data/api/TmdbApiClient.dart';
+import 'data/api/api_key.dart';
 import 'models/Movie.dart';
 import 'models/TmdbEntity.dart';
 import 'models/TvShow.dart';
 import 'other_user_profile.dart';
-import 'data/api/api_key.dart';
 
 class Ricerca extends StatefulWidget {
   @override
@@ -21,158 +20,157 @@ class _RicercaState extends State<Ricerca> {
   final Dio _dio = Dio();
   late TmdbApiClient _apiClient;
 
-  final TextEditingController _userSearchController = TextEditingController();
-  final TextEditingController _mediaSearchController = TextEditingController();
-  Stream<QuerySnapshot>? _usersStream;
-  List<TmdbEntity>? _mediaResults;
+  final TextEditingController _searchController = TextEditingController();
+  final List<dynamic> _searchResults = [];
 
   void initState() {
     super.initState();
     _apiClient = TmdbApiClient(_dio);
   }
 
-  void _searchUsers() {
-    final String searchText = _userSearchController.text.trim();
+  Future<List<DocumentSnapshot>> _searchUsers(String searchText) async {
     if (searchText.isNotEmpty) {
-      _usersStream = FirebaseFirestore.instance
+      final userSnapshot = await FirebaseFirestore.instance
           .collection('users')
           .where('username', isGreaterThanOrEqualTo: searchText)
           .where('username', isLessThanOrEqualTo: searchText + '\uf8ff')
-          .snapshots();
+          .get();
+      final userList = userSnapshot.docs;
+      print('User Search Results: $userList');
+      return userList;
     } else {
-      _usersStream = null;
+      return [];
     }
-    setState(() {});
   }
 
-  Future<void> _searchMedia() async {
-    final String searchText = _mediaSearchController.text.trim();
+  Future<List<TmdbEntity>> _searchMedia(String searchText) async {
+    List<TmdbEntity> mediaList = [];
     if (searchText.isNotEmpty) {
-      final response = await _apiClient.searchMulti(apiKey: tmdbApiKey, query: searchText);
-      final results = response.entities;
-      setState(() {
-        _mediaResults = results;
-      });
-      print(" i media sono: ${results[0].title}");
+      final response =
+          await _apiClient.searchMulti(apiKey: tmdbApiKey, query: searchText);
+      if (response.entities.isNotEmpty) {
+        mediaList = response.entities;
+      } else {
+        mediaList = [];
+      }
     }
+    return mediaList;
+  }
+
+  Future<void> _search() async {
+    final String searchText = _searchController.text.trim();
+    _searchResults.clear();
+    if (searchText.isNotEmpty) {
+      final usersFuture = _searchUsers(searchText);
+      final mediaFuture = _searchMedia(searchText);
+
+      final results = await Future.wait([usersFuture, mediaFuture]);
+      final users = results[0] as List<DocumentSnapshot>;
+      final media = results[1] as List<TmdbEntity>;
+
+      _searchResults.addAll(media);
+      _searchResults.addAll(users);
+    }
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              margin: EdgeInsets.fromLTRB(16, 80, 16, 0),
-              child: Text(
-                'Ricerca',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin: const EdgeInsets.fromLTRB(16, 48, 16, 8),
+            child: Text(
+              'Ricerca',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: 'Ricerca film, serie TV, persone e utenti',
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: _search,
                 ),
               ),
             ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 16),
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: TextField(
-                controller: _userSearchController,
-                decoration: InputDecoration(
-                  hintText: 'Cerca utenti...',
-                  border: InputBorder.none,
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: _searchUsers,
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: TextField(
-                controller: _mediaSearchController,
-                decoration: InputDecoration(
-                  hintText: 'Cerca serie TV o film...',
-                  border: InputBorder.none,
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: _searchMedia,
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              child: _usersStream != null
-                  ? StreamBuilder<QuerySnapshot>(
-                stream: _usersStream,
-                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.hasError) {
-                    return Text('Errore: ${snapshot.error}');
-                  }
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  return ListView(
-                    children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-                      String userId = data['uid'];
-                      return ListTile(
-                        title: Text(data['username']),
-                        subtitle: Text(data['nameShown']),
-                        leading: CircleAvatar(
-                          backgroundImage: NetworkImage(data['profileImage']),
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => OtherUserProfile(userId),
-                            ),
-                          );
-                        },
-                      );
-                    }).toList(),
-                  );
-                },
-              )
-                  : Container(),
-            ),
-            Expanded(
-              child: _mediaResults != null
-                  ? ListView.builder(
-                itemCount: _mediaResults!.length,
-                itemBuilder: (BuildContext context, int index) {
-                  TmdbEntity media = _mediaResults![index];
-                  return ListTile(
-                    title: Text(media.title),
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage('https://image.tmdb.org/t/p/w185/${media.imagePath}'),
-                    ),
-                    onTap: () {
-                      if(media.mediaType == 'tv'){
-                        schermatatv(media.id.toString());
-                      } else if(media.mediaType == 'movie') {
-                        schermatafilm(media.id.toString());
-                      } else if(media.mediaType == 'person') {
-                        schermataperson(media.id);
+          ),
+          Expanded(
+            child: _searchResults.isNotEmpty
+                ? ListView.builder(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    itemCount: _searchResults.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      print('Building item for index $index');
+                      final result = _searchResults[index];
+                      if (result is TmdbEntity) {
+                        // Mostra il media
+                        return ListTile(
+                          title: Text(result.title),
+                          leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: result.imagePath != null
+                                ? Image.network(
+                                    'https://image.tmdb.org/t/p/w185/${result.imagePath}',
+                                    width: 50,
+                                    height: 50,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.asset(
+                                    'assets/images/error_404.png',
+                                    width: 50,
+                                    height: 50,
+                                    fit: BoxFit.cover,
+                                  ),
+                          ),
+                          onTap: () {
+                            if (result.mediaType == 'tv') {
+                              schermatatv(result.id.toString());
+                            } else if (result.mediaType == 'movie') {
+                              schermatafilm(result.id.toString());
+                            } else if (result.mediaType == 'person') {
+                              schermataperson(result.id);
+                            }
+                          },
+                        );
+                      } else if (result is DocumentSnapshot) {
+                        // Mostra l'utente
+                        final user = result.data() as Map<String, dynamic>;
+                        return ListTile(
+                          title: Text(user['username']),
+                          subtitle: Text(user['nameShown']),
+                          leading: CircleAvatar(
+                            radius: 25,
+                            backgroundImage: NetworkImage(user['profileImage']),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    OtherUserProfile(user['uid']),
+                              ),
+                            );
+                          },
+                        );
+                      } else {
+                        return SizedBox.shrink(); // Non dovrebbe mai accadere
                       }
                     },
-                  );
-                },
-              )
-                  : Container(),
-            ),
-          ],
+                  )
+                : Container(),
+          ),
+        ],
       ),
     );
   }
@@ -188,7 +186,7 @@ class _RicercaState extends State<Ricerca> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TvShowDetails( tvShow: tvDetails),
+        builder: (context) => TvShowDetails(tvShow: tvDetails),
       ),
     );
   }
