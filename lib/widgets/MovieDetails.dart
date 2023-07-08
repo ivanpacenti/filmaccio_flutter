@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:filmaccio_flutter/main.dart';
@@ -28,14 +30,6 @@ class _MovieDetailsState extends State<MovieDetails> {
   DocumentSnapshot? userData;
   int? movieMinutes;
 
-  Future<void> loadUserData() async {
-    userData = await FirestoreService.getUserByUid(currentUserId);
-    if (userData != null && userData!.data() != null) {
-      Map<String, dynamic> data = userData!.data() as Map<String, dynamic>;
-      movieMinutes = data['movieMinutes'] as int?;
-    }
-    setState(() {});
-  }
 
   late Movie _movie;
   late Movie _movieDetails;
@@ -56,6 +50,22 @@ class _MovieDetailsState extends State<MovieDetails> {
       }
       setState(() {});
     }
+  Future<void> checkisFavorite() async {
+    _isFavorite = false;
+    filmvisti = await FirestoreService.getList(currentUserId, 'favorite_m');
+    if (filmvisti != null && filmvisti!.contains(_movieDetails.id)) {
+      _isFavorite = true;
+    }
+    setState(() {});
+  }
+  Future<void> ceckisAddedToWatchlist() async {
+    _isAddedToWatchlist = false;
+    filmvisti = await FirestoreService.getList(currentUserId, 'watchlist_m');
+    if (filmvisti != null && filmvisti!.contains(_movieDetails.id)) {
+      _isAddedToWatchlist = true;
+    }
+    setState(() {});
+  }
 
 
     @override
@@ -65,8 +75,9 @@ class _MovieDetailsState extends State<MovieDetails> {
     _movie = widget.movie;
     fetchMovieDetails();
     _movieDetails=widget.movie;
-    loadUserData();
     checkIsWatched();
+    checkisFavorite();
+    ceckisAddedToWatchlist();
   }
 
   @override
@@ -190,16 +201,12 @@ class _MovieDetailsState extends State<MovieDetails> {
                         onPressed: () {
                           setState(() {
                             if(_isWatched) {
-                              // movieMinutes =
-                              //     movieMinutes! - _movieDetails.duration!;
                               FirestoreService.removeFromList(currentUserId, 'watched_m', _movieDetails.id);
-                              //FirestoreService.updateUserField(currentUserId, 'movieMinutes', movieMinutes,myCallback);
+                              AggiungiMinutes(_movieDetails.duration!*-1);
                               _isWatched = !_isWatched;
                             } else {
-                              // movieMinutes =
-                              //     movieMinutes! + _movieDetails.duration!;
-
-                              FirestoreService.addToList(currentUserId, 'watched_m', _movieDetails.id,);
+                              FirestoreService.addToList(currentUserId, 'watched_m', _movieDetails.id);
+                              AggiungiMinutes(_movieDetails.duration!);
                               _isWatched = !_isWatched;
                             }
                           });
@@ -213,7 +220,13 @@ class _MovieDetailsState extends State<MovieDetails> {
                       child: ElevatedButton.icon(
                         onPressed: () {
                           setState(() {
+                            if(_isFavorite) {
+                              FirestoreService.removeFromList(currentUserId, 'favorite_m', _movieDetails.id);
+                              _isFavorite = !_isFavorite;
+                            } else {
+                            FirestoreService.addToList(currentUserId, 'favorite_m', _movieDetails.id);
                             _isFavorite = !_isFavorite;
+                            }
                           });
                         },
                         icon: Icon(_isFavorite ? Icons.favorite : Icons.favorite_border),
@@ -225,7 +238,14 @@ class _MovieDetailsState extends State<MovieDetails> {
                       child: ElevatedButton.icon(
                         onPressed: () {
                           setState(() {
-                            _isAddedToWatchlist = !_isAddedToWatchlist;
+                            if(_isAddedToWatchlist) {
+                              FirestoreService.removeFromList(currentUserId, 'watchlist_m', _movieDetails.id);
+                              _isAddedToWatchlist = !_isAddedToWatchlist;;
+                            } else {
+                              FirestoreService.addToList(currentUserId, 'watchlist_m', _movieDetails.id);
+                              _isAddedToWatchlist = !_isAddedToWatchlist;
+                            }
+
                           });
                         },
                         icon: Icon(_isAddedToWatchlist ? Icons.playlist_add_check : Icons.playlist_add),
@@ -421,11 +441,22 @@ class _ExpandableTextState extends State<ExpandableText> {
   }
 }
 
-
 void myCallback(bool success) {
   if (success) {
     print("Aggiornamento riuscito!");
   } else {
     print("Aggiornamento non riuscito.");
+  }
+}
+
+void AggiungiMinutes(int minFilm) async {
+  final String currentUserId = Auth().currentUser!.uid;
+  Map<String, dynamic>? userData;
+  userData = await FirestoreService.getUserByUid(currentUserId);
+  if (userData != null) {
+    var movieMinutes = userData['movieMinutes'] as int?;
+    int movieFinale = movieMinutes! + minFilm;  // Ho cambiato da - a +, dato il nome della funzione "AggiungiMinutes"
+    FirestoreService.updateUserField(currentUserId, 'movieMinutes', movieFinale, myCallback)
+        .catchError((error) => myCallback(false));
   }
 }
