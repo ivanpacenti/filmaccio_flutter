@@ -1,17 +1,16 @@
-import 'dart:ffi';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
-import 'package:filmaccio_flutter/widgets/models/TvShow.dart';
-import 'package:tuple/tuple.dart';
 import 'package:filmaccio_flutter/widgets/Firebase/FirestoreService.dart';
+import 'package:filmaccio_flutter/widgets/models/TvShow.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tuple/tuple.dart';
+
 import 'data/api/TmdbApiClient.dart';
 import 'data/api/api_key.dart';
-import 'models/Movie.dart';
-import 'models/TvShow.dart';
-import 'modificaUtente.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'login/Auth.dart';
+import 'models/Movie.dart';
+import 'modificaUtente.dart';
 
 class Profilo extends StatefulWidget {
   Profilo({Key? key}) : super(key: key);
@@ -39,9 +38,10 @@ class _ProfiloState extends State<Profilo> {
   Widget build(BuildContext context) {
     return FutureBuilder<DocumentSnapshot>(
       future: userDocFuture,
-      builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Text('Errore: ${snapshot.error}');
         } else {
@@ -69,45 +69,50 @@ class _ProfiloState extends State<Profilo> {
                         AspectRatio(
                           aspectRatio: 16 / 9,
                           child: Image.network(
-                            backdropImage ?? 'https://via.placeholder.com/150',
+                            backdropImage!,
                             fit: BoxFit.cover,
                           ),
                         ),
                         Positioned(
-                          top: (MediaQuery.of(context).size.width / 16 * 9) - 80,
+                          top: (MediaQuery.of(context).size.width / 16 * 9) -
+                              108,
                           child: CircleAvatar(
                             radius: 50,
-                            backgroundImage: NetworkImage(profileImage ?? 'https://via.placeholder.com/150'),
+                            backgroundImage: NetworkImage(profileImage!),
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 50),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Text(
-                            nameShown ?? 'Unknown User',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            username ?? 'username sconosciuto',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                          SizedBox(height: 8),
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  nameShown!,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  username!,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                )
+                              ]),
+                          const SizedBox(height: 8),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              ElevatedButton(
+                              OutlinedButton(
                                 onPressed: () async {
                                   final result = await Navigator.push(
                                     context,
@@ -116,7 +121,8 @@ class _ProfiloState extends State<Profilo> {
                                     ),
                                   );
                                   if (result == true) {
-                                    final User? currentUser = Auth().currentUser;
+                                    final User? currentUser =
+                                        Auth().currentUser;
                                     if (currentUser != null) {
                                       userDocFuture = FirebaseFirestore.instance
                                           .collection('users')
@@ -126,221 +132,456 @@ class _ProfiloState extends State<Profilo> {
                                     }
                                   }
                                 },
-                                child: Text('Modifica'),
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
+                                child: const Text('Modifica'),
                               ),
-                              ElevatedButton(
+                              const SizedBox(width: 16),
+                              OutlinedButton(
                                 onPressed: logoutFunction,
-                                child: Text('Logout'),
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
+                                child: const Text('Logout'),
                               ),
                             ],
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children: [
-                                Container(
-                                  height: 80,
-                                  child: Card(
+                                // Card del tempo film
+                                Card(
+                                  margin: const EdgeInsets.only(right: 4),
+                                  child: SizedBox(
+                                    width: 150,
+                                    height: 90,
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
-                                        Text('TEMPO FILM'),
-                                        Row(
-                                          children: [
-                                            Column(
-                                              children: [
-                                                Text(
-                                                  convertMinutesToMonthsDaysHours(movieMinutes ?? 0).item1.toString(),
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                Text('mesi'),
-                                              ],
+                                        const Padding(
+                                          padding: EdgeInsets.only(top: 4),
+                                          child: Text(
+                                            'TEMPO FILM',
+                                            style: TextStyle(
+                                              fontFamily: 'sans-serif-black',
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
                                             ),
-                                            SizedBox(width: 8),
-                                            Column(
-                                              children: [
-                                                Text(
-                                                  convertMinutesToMonthsDaysHours(movieMinutes ?? 0).item2.toString(),
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                Text('giorni'),
-                                              ],
-                                            ),
-                                            SizedBox(width: 8),
-                                            Column(
-                                              children: [
-                                                Text(
-                                                  convertMinutesToMonthsDaysHours(movieMinutes ?? 0).item3.toString(),
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                Text('ore'),
-                                              ],
-                                            ),
-                                          ],
+                                          ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-             // iNIZIA IL CONTAINER CHE CONTIENE IL TEMPO DELLE SERIE TV
-                                Container(
-                                  height: 80,
-                                  child: Card(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text('TEMPO TV'),
-                                        Row(
-                                          children: [
-                                            Column(
-                                              children: [
-                                                Text(
-                                                  convertMinutesToMonthsDaysHours(tvMinutes ?? 0).item1.toString(),
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
+                                        Expanded(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      convertMinutesToMonthsDaysHours(
+                                                              movieMinutes!)
+                                                          .item1
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            'roboto_bold',
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .primary,
+                                                      ),
+                                                    ),
+                                                    const Text(
+                                                      'mesi',
+                                                      style: TextStyle(
+                                                          fontSize: 12),
+                                                    ),
+                                                  ],
                                                 ),
-                                                Text('mesi'),
-                                              ],
-                                            ),
-                                            SizedBox(width: 8),
-                                            Column(
-                                              children: [
-                                                Text(
-                                                  convertMinutesToMonthsDaysHours(tvMinutes ?? 0).item2.toString(),
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
+                                              ),
+                                              Expanded(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      convertMinutesToMonthsDaysHours(
+                                                              movieMinutes)
+                                                          .item2
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            'roboto_bold',
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .primary,
+                                                      ),
+                                                    ),
+                                                    const Text(
+                                                      'giorni',
+                                                      style: TextStyle(
+                                                          fontSize: 12),
+                                                    ),
+                                                  ],
                                                 ),
-                                                Text('giorni'),
-                                              ],
-                                            ),
-                                            SizedBox(width: 8),
-                                            Column(
-                                              children: [
-                                                Text(
-                                                  convertMinutesToMonthsDaysHours(tvMinutes ?? 0).item3.toString(),
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
+                                              ),
+                                              Expanded(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      convertMinutesToMonthsDaysHours(
+                                                              movieMinutes)
+                                                          .item3
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            'roboto_bold',
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .primary,
+                                                      ),
+                                                    ),
+                                                    const Text(
+                                                      'ore',
+                                                      style: TextStyle(
+                                                          fontSize: 12),
+                                                    ),
+                                                  ],
                                                 ),
-                                                Text('ore'),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  height: 80,
-                                  child: Card(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Text('NUMERO FILM VISTI'),
-                                        Text(
-                                          moviesNumber.toString() ?? '0' ,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
                                 ),
-                                Container(
-                                  height: 80,
-                                  child: Card(
+                                // Card del tempo tv
+                                Card(
+                                  margin: const EdgeInsets.only(right: 4),
+                                  child: SizedBox(
+                                    width: 150,
+                                    height: 90,
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
-                                        Text('NUMERO EPISODI VISTI'),
-                                        Text(
-                                          tvNumber.toString() ?? '0' ,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
+                                        const Padding(
+                                          padding: EdgeInsets.only(top: 4),
+                                          child: Text(
+                                            'TEMPO TV',
+                                            style: TextStyle(
+                                              fontFamily: 'sans-serif-black',
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      convertMinutesToMonthsDaysHours(
+                                                              tvMinutes!)
+                                                          .item1
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            'roboto_bold',
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .primary,
+                                                      ),
+                                                    ),
+                                                    const Text(
+                                                      'mesi',
+                                                      style: TextStyle(
+                                                          fontSize: 12),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      convertMinutesToMonthsDaysHours(
+                                                              tvMinutes)
+                                                          .item2
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            'roboto_bold',
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .primary,
+                                                      ),
+                                                    ),
+                                                    const Text(
+                                                      'giorni',
+                                                      style: TextStyle(
+                                                          fontSize: 12),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      convertMinutesToMonthsDaysHours(
+                                                              tvMinutes)
+                                                          .item3
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            'roboto_bold',
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .primary,
+                                                      ),
+                                                    ),
+                                                    const Text(
+                                                      'ore',
+                                                      style: TextStyle(
+                                                          fontSize: 12),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
                                 ),
-                                Container(
-                                  height: 80,
-                                  child: Card(
+                                // Card del numero di film visti
+                                Card(
+                                  margin: const EdgeInsets.only(right: 4),
+                                  child: SizedBox(
+                                    width: 150,
+                                    height: 90,
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
-                                        Text('NUMERO FOLLOWER'),
-                                        FutureBuilder<int>(
-                                          future: getTotalFollowers(uid ?? ''),
-                                          builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-                                            if (snapshot.connectionState == ConnectionState.waiting) {
-                                              return CircularProgressIndicator();
-                                            } else if (snapshot.hasError) {
-                                              return Text('Errore: ${snapshot.error}');
-                                            } else if (snapshot.hasData) {
-                                              int followerCount = snapshot.data ?? 0;
-                                              return Text(
-                                                followerCount.toString(),
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              );
-                                            } else {
-                                              return Text('Nessun dato disponibile');
-                                            }
-                                          },
+                                        const Padding(
+                                          padding: EdgeInsets.only(top: 4),
+                                          child: Text(
+                                            'FILM VISTI',
+                                            style: TextStyle(
+                                              fontFamily: 'sans-serif-black',
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 10),
+                                          child: Text(
+                                            moviesNumber.toString() ?? '0',
+                                            style: TextStyle(
+                                              fontFamily: 'sans-serif-black',
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ),
                                 ),
-                                Container(
-                                  height: 80,
-                                  child: Card(
+                                // Card del numero di episodi visti
+                                Card(
+                                  margin: const EdgeInsets.only(right: 4),
+                                  child: SizedBox(
+                                    width: 150,
+                                    height: 90,
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
-                                        Text('NUMERO FOLLOWING'),
-                                        FutureBuilder<int>(
-                                          future: getTotalFollowing(uid ?? ''),
-                                          builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-                                            if (snapshot.connectionState == ConnectionState.waiting) {
-                                              return CircularProgressIndicator();
-                                            } else if (snapshot.hasError) {
-                                              return Text('Errore: ${snapshot.error}');
-                                            } else if (snapshot.hasData) {
-                                              int followingCount = snapshot.data ?? 0;
-                                              return Text(
-                                                followingCount.toString(),
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              );
-                                            } else {
-                                              return Text('Nessun dato disponibile');
-                                            }
-                                          },
+                                        const Padding(
+                                          padding: EdgeInsets.only(top: 4),
+                                          child: Text(
+                                            'EPISODI VISTI',
+                                            style: TextStyle(
+                                              fontFamily: 'sans-serif-black',
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 10),
+                                          child: Text(
+                                            tvNumber.toString(),
+                                            style: TextStyle(
+                                              fontFamily: 'sans-serif-black',
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                // Card del numero di followers
+                                Card(
+                                  margin: const EdgeInsets.only(right: 4),
+                                  child: SizedBox(
+                                    width: 150,
+                                    height: 90,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        const Padding(
+                                          padding: EdgeInsets.only(top: 4),
+                                          child: Text(
+                                            'FOLLOWERS',
+                                            style: TextStyle(
+                                              fontFamily: 'sans-serif-black',
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 10),
+                                          child: FutureBuilder<int>(
+                                            future:
+                                                getTotalFollowers(uid ?? ''),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<int> snapshot) {
+                                              if (snapshot.connectionState ==
+                                                  ConnectionState.waiting) {
+                                                return const CircularProgressIndicator();
+                                              } else if (snapshot.hasError) {
+                                                return Text(
+                                                    'Errore: ${snapshot.error}');
+                                              } else if (snapshot.hasData) {
+                                                int followersCount =
+                                                    snapshot.data ?? 0;
+                                                return Text(
+                                                  followersCount.toString(),
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                        'sans-serif-black',
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primary,
+                                                  ),
+                                                );
+                                              } else {
+                                                return const Text(
+                                                    'Nessun dato disponibile');
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Card(
+                                  margin: const EdgeInsets.only(right: 4),
+                                  child: SizedBox(
+                                    width: 150,
+                                    height: 90,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        const Padding(
+                                          padding: EdgeInsets.only(top: 4),
+                                          child: Text(
+                                            'SEGUITI',
+                                            style: TextStyle(
+                                              fontFamily: 'sans-serif-black',
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 10),
+                                          child: FutureBuilder<int>(
+                                            future:
+                                                getTotalFollowing(uid ?? ''),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<int> snapshot) {
+                                              if (snapshot.connectionState ==
+                                                  ConnectionState.waiting) {
+                                                return CircularProgressIndicator();
+                                              } else if (snapshot.hasError) {
+                                                return Text(
+                                                    'Errore: ${snapshot.error}');
+                                              } else if (snapshot.hasData) {
+                                                int followingCount =
+                                                    snapshot.data ?? 0;
+                                                return Text(
+                                                  followingCount.toString(),
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                        'sans-serif-black',
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primary,
+                                                  ),
+                                                );
+                                              } else {
+                                                return const Text(
+                                                    'Nessun dato disponibile');
+                                              }
+                                            },
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -349,51 +590,88 @@ class _ProfiloState extends State<Profilo> {
                               ],
                             ),
                           ),
-                          Divider(),
-                          Text('Liste'),
-                          SizedBox(height: 8),
+                          const Divider(),
+                          Text(
+                            'Liste',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children: [
                                 Card(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 8),
+                                  child: SizedBox(
+                                    width: 150,
+                                    height: 110,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
-                                        Text(
-                                          'Film Preferiti',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
+                                        const Padding(
+                                          padding: EdgeInsets.only(top: 4),
+                                          child: Text(
+                                            'PREFERITI (FILM)',
+                                            style: TextStyle(
+                                              fontFamily: 'sans-serif-black',
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
-                                        SizedBox(height: 8),
+                                        const SizedBox(height: 8),
                                         SizedBox(
-                                          width: 130,  // Imposta la larghezza desiderata per il rettangolo
-                                          height: 120,  // Altezza fissa
+                                          // Imposta la larghezza desiderata per il rettangolo
+                                          width: 130,
+                                          // Altezza fissa
+                                          height: 65,
                                           child: FutureBuilder<List<String>>(
-                                            future: getPosters(userDoc?.get('uid'), "favorite_m"),
-                                            builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                            future: getPosters(
+                                                userDoc?.get('uid'),
+                                                "favorite_m"),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<List<String>>
+                                                    snapshot) {
+                                              if (snapshot.connectionState ==
+                                                  ConnectionState.waiting) {
                                                 return CircularProgressIndicator();
                                               } else if (snapshot.hasError) {
-                                                return Text('Errore: ${snapshot.error}');
+                                                return Text(
+                                                    'Errore: ${snapshot.error}');
                                               } else {
-                                                final posterPaths = snapshot.data ?? [];
+                                                final posterPaths =
+                                                    snapshot.data ?? [];
                                                 return ListView.builder(
-                                                  scrollDirection: Axis.horizontal,
+                                                  scrollDirection:
+                                                      Axis.horizontal,
                                                   itemCount: posterPaths.length,
-                                                  itemBuilder: (BuildContext context, int index) {
+                                                  itemBuilder:
+                                                      (BuildContext context,
+                                                          int index) {
                                                     return Padding(
-                                                      padding: EdgeInsets.only(right: 8),
-                                                      child: SizedBox(
-                                                        width: 40,  // Imposta la larghezza desiderata per il rettangolo
-                                                        height: 100,  // Altezza fissa
-                                                        child: Image.network(
-                                                          posterPaths[index],
-                                                          fit: BoxFit.cover,
+                                                      padding: EdgeInsets.only(
+                                                          right: 8),
+                                                      child: Container(
+                                                        width: 40,
+                                                        height: 60,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      8.0),
+                                                          color: Colors.grey,
+                                                          image:
+                                                              DecorationImage(
+                                                            image: NetworkImage(
+                                                                posterPaths[
+                                                                    index]),
+                                                            fit: BoxFit.cover,
+                                                          ),
                                                         ),
                                                       ),
                                                     );
@@ -408,43 +686,74 @@ class _ProfiloState extends State<Profilo> {
                                   ),
                                 ),
                                 Card(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 8),
+                                  child: SizedBox(
+                                    width: 150,
+                                    height: 110,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
-                                        Text(
-                                          'Film Finiti',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
+                                        const Padding(
+                                          padding: EdgeInsets.only(top: 4),
+                                          child: Text(
+                                            'VISTI (FILM)',
+                                            style: TextStyle(
+                                              fontFamily: 'sans-serif-black',
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
-                                        SizedBox(height: 8),
+                                        const SizedBox(height: 8),
                                         SizedBox(
-                                          width: 130,  // Imposta la larghezza desiderata per il rettangolo
-                                          height: 120,  // Altezza fissa
+                                          // Imposta la larghezza desiderata per il rettangolo
+                                          width: 130,
+                                          // Altezza fissa
+                                          height: 65,
                                           child: FutureBuilder<List<String>>(
-                                            future: getPosters(userDoc?.get('uid'), "watched_m"),
-                                            builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                            future: getPosters(
+                                                userDoc?.get('uid'),
+                                                "watched_m"),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<List<String>>
+                                                    snapshot) {
+                                              if (snapshot.connectionState ==
+                                                  ConnectionState.waiting) {
                                                 return CircularProgressIndicator();
                                               } else if (snapshot.hasError) {
-                                                return Text('Errore: ${snapshot.error}');
+                                                return Text(
+                                                    'Errore: ${snapshot.error}');
                                               } else {
-                                                final posterPaths = snapshot.data ?? [];
+                                                final posterPaths =
+                                                    snapshot.data ?? [];
                                                 return ListView.builder(
-                                                  scrollDirection: Axis.horizontal,
+                                                  scrollDirection:
+                                                      Axis.horizontal,
                                                   itemCount: posterPaths.length,
-                                                  itemBuilder: (BuildContext context, int index) {
+                                                  itemBuilder:
+                                                      (BuildContext context,
+                                                          int index) {
                                                     return Padding(
-                                                      padding: EdgeInsets.only(right: 8),
-                                                      child: SizedBox(
-                                                        width: 40,  // Imposta la larghezza desiderata per il rettangolo
-                                                        height: 100,  // Altezza fissa
-                                                        child: Image.network(
-                                                          posterPaths[index],
-                                                          fit: BoxFit.cover,
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 8),
+                                                      child: Container(
+                                                        width: 40,
+                                                        height: 60,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      8.0),
+                                                          color: Colors.grey,
+                                                          image:
+                                                              DecorationImage(
+                                                            image: NetworkImage(
+                                                                posterPaths[
+                                                                    index]),
+                                                            fit: BoxFit.cover,
+                                                          ),
                                                         ),
                                                       ),
                                                     );
@@ -459,43 +768,74 @@ class _ProfiloState extends State<Profilo> {
                                   ),
                                 ),
                                 Card(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 8),
+                                  child: SizedBox(
+                                    width: 150,
+                                    height: 110,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
-                                        Text(
-                                          'Film in watchlist',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
+                                        const Padding(
+                                          padding: EdgeInsets.only(top: 4),
+                                          child: Text(
+                                            'WATCHLIST (FILM)',
+                                            style: TextStyle(
+                                              fontFamily: 'sans-serif-black',
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
-                                        SizedBox(height: 8),
+                                        const SizedBox(height: 8),
                                         SizedBox(
-                                          width: 130,  // Imposta la larghezza desiderata per il rettangolo
-                                          height: 120,  // Altezza fissa
+                                          // Imposta la larghezza desiderata per il rettangolo
+                                          width: 130,
+                                          // Altezza fissa
+                                          height: 65,
                                           child: FutureBuilder<List<String>>(
-                                            future: getPosters(userDoc?.get('uid'), "watchlist_m"),
-                                            builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                            future: getPosters(
+                                                userDoc?.get('uid'),
+                                                "watchlist_m"),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<List<String>>
+                                                    snapshot) {
+                                              if (snapshot.connectionState ==
+                                                  ConnectionState.waiting) {
                                                 return CircularProgressIndicator();
                                               } else if (snapshot.hasError) {
-                                                return Text('Errore: ${snapshot.error}');
+                                                return Text(
+                                                    'Errore: ${snapshot.error}');
                                               } else {
-                                                final posterPaths = snapshot.data ?? [];
+                                                final posterPaths =
+                                                    snapshot.data ?? [];
                                                 return ListView.builder(
-                                                  scrollDirection: Axis.horizontal,
+                                                  scrollDirection:
+                                                      Axis.horizontal,
                                                   itemCount: posterPaths.length,
-                                                  itemBuilder: (BuildContext context, int index) {
+                                                  itemBuilder:
+                                                      (BuildContext context,
+                                                          int index) {
                                                     return Padding(
-                                                      padding: EdgeInsets.only(right: 8),
-                                                      child: SizedBox(
-                                                        width: 40,  // Imposta la larghezza desiderata per il rettangolo
-                                                        height: 100,  // Altezza fissa
-                                                        child: Image.network(
-                                                          posterPaths[index],
-                                                          fit: BoxFit.cover,
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 8),
+                                                      child: Container(
+                                                        width: 40,
+                                                        height: 60,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      8.0),
+                                                          color: Colors.grey,
+                                                          image:
+                                                              DecorationImage(
+                                                            image: NetworkImage(
+                                                                posterPaths[
+                                                                    index]),
+                                                            fit: BoxFit.cover,
+                                                          ),
                                                         ),
                                                       ),
                                                     );
@@ -510,43 +850,74 @@ class _ProfiloState extends State<Profilo> {
                                   ),
                                 ),
                                 Card(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 8),
+                                  child: SizedBox(
+                                    width: 150,
+                                    height: 110,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
-                                        Text(
-                                          'Serie Tv Favorite',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
+                                        const Padding(
+                                          padding: EdgeInsets.only(top: 4),
+                                          child: Text(
+                                            'PREFERITI (TV)',
+                                            style: TextStyle(
+                                              fontFamily: 'sans-serif-black',
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
-                                        SizedBox(height: 8),
+                                        const SizedBox(height: 8),
                                         SizedBox(
-                                          width: 130,  // Imposta la larghezza desiderata per il rettangolo
-                                          height: 120,  // Altezza fissa
+                                          // Imposta la larghezza desiderata per il rettangolo
+                                          width: 130,
+                                          // Altezza fissa
+                                          height: 65,
                                           child: FutureBuilder<List<String>>(
-                                            future: getPostersTv(userDoc?.get('uid'), "favorite_t"),
-                                            builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                            future: getPostersTv(
+                                                userDoc?.get('uid'),
+                                                "favorite_t"),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<List<String>>
+                                                    snapshot) {
+                                              if (snapshot.connectionState ==
+                                                  ConnectionState.waiting) {
                                                 return CircularProgressIndicator();
                                               } else if (snapshot.hasError) {
-                                                return Text('Errore: ${snapshot.error}');
+                                                return Text(
+                                                    'Errore: ${snapshot.error}');
                                               } else {
-                                                final posterPaths = snapshot.data ?? [];
+                                                final posterPaths =
+                                                    snapshot.data ?? [];
                                                 return ListView.builder(
-                                                  scrollDirection: Axis.horizontal,
+                                                  scrollDirection:
+                                                      Axis.horizontal,
                                                   itemCount: posterPaths.length,
-                                                  itemBuilder: (BuildContext context, int index) {
+                                                  itemBuilder:
+                                                      (BuildContext context,
+                                                          int index) {
                                                     return Padding(
-                                                      padding: EdgeInsets.only(right: 8),
-                                                      child: SizedBox(
-                                                        width: 40,  // Imposta la larghezza desiderata per il rettangolo
-                                                        height: 100,  // Altezza fissa
-                                                        child: Image.network(
-                                                          posterPaths[index],
-                                                          fit: BoxFit.cover,
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 8),
+                                                      child: Container(
+                                                        width: 40,
+                                                        height: 60,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      8.0),
+                                                          color: Colors.grey,
+                                                          image:
+                                                              DecorationImage(
+                                                            image: NetworkImage(
+                                                                posterPaths[
+                                                                    index]),
+                                                            fit: BoxFit.cover,
+                                                          ),
                                                         ),
                                                       ),
                                                     );
@@ -561,43 +932,74 @@ class _ProfiloState extends State<Profilo> {
                                   ),
                                 ),
                                 Card(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 8),
+                                  child: SizedBox(
+                                    width: 150,
+                                    height: 110,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
-                                        Text(
-                                          'Serie Tv in visione',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
+                                        const Padding(
+                                          padding: EdgeInsets.only(top: 4),
+                                          child: Text(
+                                            'IN VISIONE (TV)',
+                                            style: TextStyle(
+                                              fontFamily: 'sans-serif-black',
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
-                                        SizedBox(height: 8),
+                                        const SizedBox(height: 8),
                                         SizedBox(
-                                          width: 130,  // Imposta la larghezza desiderata per il rettangolo
-                                          height: 120,  // Altezza fissa
+                                          // Imposta la larghezza desiderata per il rettangolo
+                                          width: 130,
+                                          // Altezza fissa
+                                          height: 65,
                                           child: FutureBuilder<List<String>>(
-                                            future: getPostersTv(userDoc?.get('uid'), "watching_t"),
-                                            builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                            future: getPostersTv(
+                                                userDoc?.get('uid'),
+                                                "watching_t"),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<List<String>>
+                                                    snapshot) {
+                                              if (snapshot.connectionState ==
+                                                  ConnectionState.waiting) {
                                                 return CircularProgressIndicator();
                                               } else if (snapshot.hasError) {
-                                                return Text('Errore: ${snapshot.error}');
+                                                return Text(
+                                                    'Errore: ${snapshot.error}');
                                               } else {
-                                                final posterPaths = snapshot.data ?? [];
+                                                final posterPaths =
+                                                    snapshot.data ?? [];
                                                 return ListView.builder(
-                                                  scrollDirection: Axis.horizontal,
+                                                  scrollDirection:
+                                                      Axis.horizontal,
                                                   itemCount: posterPaths.length,
-                                                  itemBuilder: (BuildContext context, int index) {
+                                                  itemBuilder:
+                                                      (BuildContext context,
+                                                          int index) {
                                                     return Padding(
-                                                      padding: EdgeInsets.only(right: 8),
-                                                      child: SizedBox(
-                                                        width: 40,  // Imposta la larghezza desiderata per il rettangolo
-                                                        height: 100,  // Altezza fissa
-                                                        child: Image.network(
-                                                          posterPaths[index],
-                                                          fit: BoxFit.cover,
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 8),
+                                                      child: Container(
+                                                        width: 40,
+                                                        height: 60,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      8.0),
+                                                          color: Colors.grey,
+                                                          image:
+                                                              DecorationImage(
+                                                            image: NetworkImage(
+                                                                posterPaths[
+                                                                    index]),
+                                                            fit: BoxFit.cover,
+                                                          ),
                                                         ),
                                                       ),
                                                     );
@@ -612,43 +1014,74 @@ class _ProfiloState extends State<Profilo> {
                                   ),
                                 ),
                                 Card(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 8),
+                                  child: SizedBox(
+                                    width: 150,
+                                    height: 110,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
-                                        Text(
-                                          'Serie Tv da vedere',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
+                                        const Padding(
+                                          padding: EdgeInsets.only(top: 4),
+                                          child: Text(
+                                            'WATCHLIST (TV)',
+                                            style: TextStyle(
+                                              fontFamily: 'sans-serif-black',
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
-                                        SizedBox(height: 8),
+                                        const SizedBox(height: 8),
                                         SizedBox(
-                                          width: 130,  // Imposta la larghezza desiderata per il rettangolo
-                                          height: 120,  // Altezza fissa
+                                          // Imposta la larghezza desiderata per il rettangolo
+                                          width: 130,
+                                          // Altezza fissa
+                                          height: 65,
                                           child: FutureBuilder<List<String>>(
-                                            future: getPostersTv(userDoc?.get('uid'), "watchlist_t"),
-                                            builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                            future: getPostersTv(
+                                                userDoc?.get('uid'),
+                                                "watchlist_t"),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<List<String>>
+                                                    snapshot) {
+                                              if (snapshot.connectionState ==
+                                                  ConnectionState.waiting) {
                                                 return CircularProgressIndicator();
                                               } else if (snapshot.hasError) {
-                                                return Text('Errore: ${snapshot.error}');
+                                                return Text(
+                                                    'Errore: ${snapshot.error}');
                                               } else {
-                                                final posterPaths = snapshot.data ?? [];
+                                                final posterPaths =
+                                                    snapshot.data ?? [];
                                                 return ListView.builder(
-                                                  scrollDirection: Axis.horizontal,
+                                                  scrollDirection:
+                                                      Axis.horizontal,
                                                   itemCount: posterPaths.length,
-                                                  itemBuilder: (BuildContext context, int index) {
+                                                  itemBuilder:
+                                                      (BuildContext context,
+                                                          int index) {
                                                     return Padding(
-                                                      padding: EdgeInsets.only(right: 8),
-                                                      child: SizedBox(
-                                                        width: 40,  // Imposta la larghezza desiderata per il rettangolo
-                                                        height: 100,  // Altezza fissa
-                                                        child: Image.network(
-                                                          posterPaths[index],
-                                                          fit: BoxFit.cover,
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 8),
+                                                      child: Container(
+                                                        width: 40,
+                                                        height: 60,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      8.0),
+                                                          color: Colors.grey,
+                                                          image:
+                                                              DecorationImage(
+                                                            image: NetworkImage(
+                                                                posterPaths[
+                                                                    index]),
+                                                            fit: BoxFit.cover,
+                                                          ),
                                                         ),
                                                       ),
                                                     );
@@ -668,84 +1101,76 @@ class _ProfiloState extends State<Profilo> {
                           ),
                           SizedBox(height: 8),
                           Divider(),
-                          Text('Serie TV viste'),
-                          SizedBox(height: 8),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                Card(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 8),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(height: 8),
-                                        SizedBox(
-                                          width: MediaQuery.of(context).size.width - (16 * 2),
-                                          height: MediaQuery.of(context).size.height,
-                                          child: FutureBuilder<List<TvShow>>(
-                                            future: getPostersTvF(userDoc?.get('uid'), "finished_t"),
-                                            builder: (BuildContext context, AsyncSnapshot<List<TvShow>> snapshot) {
-                                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                                return CircularProgressIndicator();
-                                              } else if (snapshot.hasError) {
-                                                return Text('Errore: ${snapshot.error}');
-                                              } else {
-                                                final tvShows = snapshot.data ?? [];
-                                                if (tvShows.isEmpty) { // Se l'elenco delle serie TV è vuoto
-                                                  return Center( // Centra il testo nel widget
-                                                    child: Text(
-                                                      'Ancora nessun film aggiunto', // Il tuo messaggio
-                                                      style: TextStyle(fontSize: 16),
-                                                    ),
-                                                  );
-                                                } else {
-                                                  return ListView.builder(
-                                                    scrollDirection: Axis.vertical,
-                                                    itemCount: tvShows.length,
-                                                    itemBuilder: (BuildContext context, int index) {
-                                                      final tvShow = tvShows[index];
-                                                      return Padding(
-                                                        padding: EdgeInsets.only(bottom: 8),
-                                                        child: Row(
-                                                          children: [
-                                                            ClipOval(
-                                                              child: SizedBox(
-                                                                width: 55,
-                                                                height: 55,
-                                                                child: Image.network(
-                                                                  tvShow.posterPath ?? '',
-                                                                  fit: BoxFit.cover,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            SizedBox(width: 8), // Spazio tra l'immagine e il titolo
-                                                            Expanded( // Per evitare overflow di testo
-                                                              child: Text(
-                                                                tvShow.name ?? " ", // Titolo della serie TV
-                                                                style: TextStyle(fontSize: 16),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      );
-                                                    },
-                                                  );
-                                                }
-                                              }
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-
-                                // Add other cards here...
-                              ],
+                          Text(
+                            'Serie TV completate',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
+                          SizedBox(height: 8),
+                          SingleChildScrollView(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8),
+                              child: FutureBuilder<List<TvShow>>(
+                                future: getPostersTvF(userDoc?.get('uid'), "finished_t"),
+                                builder: (BuildContext context, AsyncSnapshot<List<TvShow>> snapshot) {
+                                  if (snapshot.hasData) {
+                                    print('Data: ${snapshot.data![0].name}');
+                                  }
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return Center(child: CircularProgressIndicator());
+                                  } else if (snapshot.hasError) {
+                                    return Center(child: Text('Errore: ${snapshot.error}'));
+                                  } else {
+                                    final tvShows = snapshot.data ?? [];
+                                    if (tvShows.isEmpty) {
+                                      return const Center(
+                                        child: Text(
+                                          'Ancora nessuna serie TV completata',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                      );
+                                    } else {
+                                      return ListView.builder(
+                                        padding: EdgeInsets.zero,
+                                        shrinkWrap: true,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        itemCount: tvShows.length,
+                                        itemBuilder: (context, index) {
+                                          final tvShow = tvShows[index];
+                                          return Padding(
+                                            padding: EdgeInsets.only(bottom: 8),
+                                            child: Row(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius: BorderRadius.circular(8.0),
+                                                  child: Image.network(
+                                                    tvShow.posterPath ?? '',
+                                                    width: 50,
+                                                    height: 50,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 8),
+                                                Expanded(
+                                                  child: Text(
+                                                    tvShow.name ?? " ",
+                                                    style: TextStyle(fontSize: 14),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    }
+                                  }
+                                },
+                              ),
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -768,11 +1193,12 @@ class _ProfiloState extends State<Profilo> {
       print('Errore durante il logout: $e');
     }
   }
+
   Future<List<String>> getPosters(String uid, String listName) async {
     List<dynamic> list = await FirestoreService.getList(uid, listName);
     if (list.isEmpty) {
       print("La lista è vuota");
-      return [];  // ritorna una lista vuota
+      return []; // ritorna una lista vuota
     } else {
       print("La lista non è vuota");
     }
@@ -804,7 +1230,7 @@ class _ProfiloState extends State<Profilo> {
     List<dynamic> list = await FirestoreService.getList(uid, listName);
     if (list.isEmpty) {
       print("La lista è vuota");
-      return [];  // ritorna una lista vuota
+      return []; // ritorna una lista vuota
     } else {
       print("La lista non è vuota");
     }
@@ -831,13 +1257,12 @@ class _ProfiloState extends State<Profilo> {
     return posterPathsTv;
   }
 
-
   Future<List<TvShow>> getPostersTvF(String uid, String listName) async {
     // PER LE SERIE TV FINITE
     List<dynamic> list = await FirestoreService.getList(uid, listName);
     if (list.isEmpty) {
       print("La lista è vuota");
-      return [];  // ritorna una lista vuota
+      return []; // ritorna una lista vuota
     } else {
       print("La lista non è vuota");
     }
@@ -890,15 +1315,13 @@ Future<int> getTotalFollowing(String uid) async {
   return totalFollowing;
 }
 
-Future<int> getTotalMovies( String uid, String listName ) async {
+Future<int> getTotalMovies(String uid, String listName) async {
   //ritorna il numero totale dei film visti
-  List<dynamic> moviesWatched = await FirestoreService.getList(uid,listName);
+  List<dynamic> moviesWatched = await FirestoreService.getList(uid, listName);
   int totalMovies = moviesWatched.length;
   print('Numero totale dei film visti: $totalMovies');
   return totalMovies;
 }
-
-
 
 Tuple3<String, String, String> convertMinutesToMonthsDaysHours(int minutes) {
   // Questo metodo converte i minuti in mesi, giorni e ore
@@ -908,5 +1331,5 @@ Tuple3<String, String, String> convertMinutesToMonthsDaysHours(int minutes) {
   if (months.length == 1) months = '0$months';
   if (days.length == 1) days = '0$days';
   if (hours.length == 1) hours = '0$hours';
-  return Tuple3(months,days,hours);
+  return Tuple3(months, days, hours);
 }
