@@ -47,17 +47,15 @@ class BottomNavBar extends StatelessWidget {
                   text: 'Ricerca',
                 ),
                 Tab(
-                  icon: Icon(Icons.whatshot),
-                  text: 'Tendenza',
+                  icon: Icon(Icons.explore),
+                  text: 'Esplora',
                 ),
 
                 Tab(
-                  icon: Icon(Icons.person),
+                  icon: Icon(Icons.account_circle_rounded),
                   text: 'Profilo',
                 ),
               ],
-              labelColor: Colors.blue,
-              unselectedLabelColor: Colors.grey,
               indicatorSize: TabBarIndicatorSize.label,
             ),
           ],
