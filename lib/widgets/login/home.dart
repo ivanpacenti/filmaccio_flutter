@@ -85,7 +85,7 @@ class _HomeState extends State<Home> {
                   );
                 },
                 child: Container(
-                  width: 140,
+                  width: 135,
                   margin: const EdgeInsets.only(left: 16.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8.0),
