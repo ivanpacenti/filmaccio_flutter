@@ -47,7 +47,7 @@ class _HomeApiState extends State<HomeApi> {
               const Divider(),
               // Serie TV popolari
               buildSection('Serie TV popolari', _topTvShows,
-                  (movie) => MovieDetails(movie: movie)),
+                  (tvShow) => TvShowDetails(tvShow: tvShow)),
               const Divider(),
               // Film di tendenza
               buildSection('Film di tendenza', _topMoviesWeek,
