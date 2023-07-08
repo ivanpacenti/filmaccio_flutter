@@ -9,6 +9,8 @@ import 'widgets/login/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
+import 'color_schemes.g.dart';
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -45,7 +47,15 @@ class _MyAppState extends State<MyApp> {
               return LoginPage();
             }
           },
-        )
+        ),
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: lightColorScheme
+      ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        colorScheme: darkColorScheme
+      )
     );
   }
 }
