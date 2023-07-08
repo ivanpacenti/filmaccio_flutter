@@ -10,19 +10,16 @@ class Ricerca extends StatefulWidget {
 class _RicercaState extends State<Ricerca> {
   final TextEditingController _searchController = TextEditingController();
   Stream<QuerySnapshot>? _usersStream;
-  bool _isSearching = false;
 
   void _search() {
     final String searchText = _searchController.text.trim();
     if (searchText.isNotEmpty) {
-      _isSearching = true;
       _usersStream = FirebaseFirestore.instance
           .collection('users')
           .where('username', isGreaterThanOrEqualTo: searchText)
           .where('username', isLessThanOrEqualTo: searchText + '\uf8ff')
           .snapshots();
     } else {
-      _isSearching = false;
       _usersStream = null;
     }
     setState(() {});
@@ -66,39 +63,41 @@ class _RicercaState extends State<Ricerca> {
           Expanded(
             child: _usersStream != null
                 ? StreamBuilder<QuerySnapshot>(
-              stream: _usersStream,
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  return Text('Errore: ${snapshot.error}');
-                }
-                if (snapshot.connectionState ==
-                    ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                }
-                return ListView(
-                  children: snapshot.data!.docs
-                      .map((DocumentSnapshot document) {
-                    Map<String, dynamic> data =
-                    document.data() as Map<String, dynamic>;
-                    String userId = data['uid'];
-                    return ListTile(
-                      title: Text(data['username']),
-                      subtitle: Text(data['nameShown']),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                OtherUserProfile(userId),
-                          ),
-                        );
-                      },
-                    );
-                  }).toList(),
-                );
-              },
-            )
+                    stream: _usersStream,
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.hasError) {
+                        return Text('Errore: ${snapshot.error}');
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                      return ListView(
+                        children: snapshot.data!.docs
+                            .map((DocumentSnapshot document) {
+                          Map<String, dynamic> data =
+                              document.data() as Map<String, dynamic>;
+                          String userId = data['uid'];
+                          return ListTile(
+                            title: Text(data['username']),
+                            subtitle: Text(data['nameShown']),
+                            leading: CircleAvatar(
+                              backgroundImage: NetworkImage(data['profileImage']),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      OtherUserProfile(userId),
+                                ),
+                              );
+                            },
+                          );
+                        }).toList(),
+                      );
+                    },
+                  )
                 : Container(),
           ),
         ],
