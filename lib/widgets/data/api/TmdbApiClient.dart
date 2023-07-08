@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:filmaccio_flutter/widgets/models/DiscoverMoviesResponse.dart';
 import 'package:filmaccio_flutter/widgets/models/DiscoverTvShowsResponse.dart';
 import 'package:filmaccio_flutter/widgets/models/Movie.dart';
+import 'package:filmaccio_flutter/widgets/models/SearchResponse.dart';
 import 'package:filmaccio_flutter/widgets/models/TvShow.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:retrofit/retrofit.dart';
@@ -77,15 +78,15 @@ abstract class TmdbApiClient {
     @Query('region') required String region,
     @Query('append_to_response') String appendToResponse = '',
   });
-  //
-  // @GET("/tv/top_rated")
-  // // endpoint per trovare le serie tv più votati
-  // Future<DiscoverTvShowsResponse> getTopRatedTv(
-  //     @Query('api_key') String apiKey,
-  //     @Query('page') int page,
-  //     @Query('language') String language,
-  //     @Query('region') String region,
-  //     );
+
+  @GET("/search/multi")
+  // endpoint per la ricerca
+  Future<SearchResponse> SearchMulti({
+    @Query('api_key')required String apiKey,
+    @Query('page') int page = 1,
+    @Query('language') String language = 'it-IT',
+    @Query("include_adult")  bool includeAdult = false,
+  });
 
 }
 
