@@ -20,7 +20,7 @@ class Person {
   String? placeOfDeath;
   final CombinedCredits? combinedCredits;
 
- //List<Product> products = [];
+ List<Product>? products = [];
 
   Person({
     required this.id,

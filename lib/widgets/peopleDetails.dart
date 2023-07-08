@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-
 import 'models/Person.dart';
 
 class PersonDetailsActivity extends StatefulWidget {
@@ -18,15 +16,46 @@ class _PersonDetailsActivityState extends State<PersonDetailsActivity> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          // I tuoi widget qui
-          // Ad esempio, per visualizzare il nome della persona:
-          Text(widget.person.name),
-          // Per visualizzare l'immagine della persona:
-          Image.network('https://image.tmdb.org/t/p/w342${widget.person.profilePath}'),
-          // E così via...
-        ],
+      appBar: AppBar(
+        title: Text(widget.person.name),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (widget.person.profilePath != null)
+                Center(
+                  child: Image.network(
+                    'https://image.tmdb.org/t/p/w342${widget.person.profilePath}',
+                  ),
+                ),
+              SizedBox(height: 16),
+              Text(
+                'Biography:',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              SizedBox(height: 8),
+              Text(widget.person.biography),
+              SizedBox(height: 16),
+              Text(
+                'Birthday:',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              SizedBox(height: 8),
+              Text(widget.person.birthday ?? 'Unknown'),
+              SizedBox(height: 16),
+              Text(
+                'Place of Birth:',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              SizedBox(height: 8),
+              Text(widget.person.placeOfBirth ?? 'Unknown'),
+              // Aggiungi qui altri dettagli sulla persona...
+            ],
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
