@@ -82,13 +82,64 @@ class FirestoreService {
 
       // Salvataggio della mappa con i dati utente nel documento
       await userRef.set(userDataMap);
-//ai dovrai fare lo stesso per gli altri dati, devi fare le maps e caricarle 
+      // Inizio creazione delle varie mappe per i dati da salvare nel documento
+
+      // mappa per i follow
+      Map<String, dynamic> followDataMap = {
+        'followers': [],
+        'following': [],
+        'people': [],
+      };
+      DocumentReference followRef = FirebaseFirestore.instance.collection('follow').doc(uid);
+      await followRef.set(followDataMap);
+
+      //mappa per le liste
+      Map<String, dynamic> listDataMap = {
+        'favorite_m': [],
+        'favorite_t': [],
+        'finished_t': [],
+        'watched_m': [],
+        'watching_t': [],
+        'watchlist_m': [],
+        'watchlist_t': [],
+      };
+      DocumentReference listsRef = FirebaseFirestore.instance.collection('lists').doc(uid);
+      await listsRef.set(listDataMap);
+
+      // mappa per gli espisodi
+      Map<String, dynamic> watchingSeriesMap = {
+        'watchingSeries': <String, dynamic>{},
+      };
+
+      DocumentReference watchingSeriesRef = FirebaseFirestore.instance.collection('episodes').doc(uid);
+      await watchingSeriesRef.set(watchingSeriesMap);
+
+      Map<String, dynamic> reviewsDocument = {
+        "movies": <String, Map<String, Map<String, dynamic>>>{},
+        "series": <String, dynamic>{},
+      };
+
+      DocumentReference reviewsRef = FirebaseFirestore.instance.collection('usersReviews').doc(uid);
+      await reviewsRef.set(reviewsDocument);
+
 
       print('Utente creato con successo');
     } catch (error) {
       print('Errore durante la creazione dell\'utente: $error');
     }
   }
+
+
+  // static Future<void> popolateUser(UserData userData) async {
+  //   try{
+  //     String uid= UserData.uid;
+  //     // Conversione della data di nascita in un Timestamp
+  //     Timestamp birthDate = Timestamp.fromDate(userData.dataNascita);
+  //
+  //   }
+  // }
+
+
 
   static Future<List<dynamic>> searchUsers(String query) async {
     QuerySnapshot snapshot = await _collectionUsers

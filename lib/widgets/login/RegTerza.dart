@@ -204,6 +204,7 @@ class _RegTerzaState extends State<RegTerza> {
                   }
                   try {
                     FirestoreService.createUser(userData);
+                  //  FirestoreService.popolateUser(userData);
                     signupSuccess = true;
                     Navigator.push(
                       context,
