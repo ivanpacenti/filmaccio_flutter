@@ -7,6 +7,8 @@ import '../data/api/TmdbApiClient.dart';
 import '../data/api/api_key.dart';
 import '../SeriesDetails.dart';
 
+import 'package:filmaccio_flutter/color_schemes.g.dart';
+
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -32,165 +34,75 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Ultime uscite',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-
-                ],
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: _movieNowPlaying?.length??0,
-                itemBuilder: (context, index) {
-                  final movie = _movieNowPlaying?[index];
-                  return GestureDetector(
-                      onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MovieDetails(movie: movie!),
-                      ),
-                    );
-                  },
-                  child: Container(
-                  width: 140,
-                  margin: EdgeInsets.only(left: 16.0),
-                  decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
-                  color: Colors.grey,
-                  image: DecorationImage(
-                  image: NetworkImage(
-                  'https://image.tmdb.org/t/p/w185/${movie?.posterPath}',
-                  ),
-                  fit: BoxFit.cover,
-                  ),
-                  ),
-                  ),
-                  );},
-              ),
-            ),
-            Divider(),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Film più votati',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: _movieTopRating?.length ?? 0,
-                itemBuilder: (context, index) {
-                  final movie = _movieTopRating?[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MovieDetails(movie: movie!),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      width: 140,
-                      margin: EdgeInsets.only(left: 16.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.0),
-                        color: Colors.grey,
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            'https://image.tmdb.org/t/p/w185/${movie?.posterPath}',
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            Divider(),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Serie TV più votate',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: _topRatedTV?.length ?? 0,
-                itemBuilder: (context, index) {
-                  final tvShow = _topRatedTV?[index];
-                  return GestureDetector(
-                    onTap: () {
-                      if (tvShow != null) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TvShowDetails(tvShow: tvShow),
-                          ),
-                        );
-                      }
-                    },
-                    child: Container(
-                      width: 140,
-                      margin: EdgeInsets.only(left: 16.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.0),
-                        color: Colors.grey,
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            'https://image.tmdb.org/t/p/w185/${tvShow?.posterPath}',
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Ultime uscite
+              buildSection('Ultime uscite', _movieNowPlaying, (movie) => MovieDetails(movie: movie)),
+              const Divider(),
+              // Film più votati
+              buildSection('Film più votati', _movieTopRating, (movie) => MovieDetails(movie: movie)),
+              const Divider(),
+              // Serie TV più votate
+              buildSection('Serie TV più votate', _topRatedTV, (tvShow) => TvShowDetails(tvShow: tvShow)),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget buildSection(String title, List<dynamic>? items, Widget Function(dynamic item) detailsBuilder) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 200,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: items?.length ?? 0,
+            itemBuilder: (context, index) {
+              final item = items?[index];
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => detailsBuilder(item),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: 140,
+                  margin: const EdgeInsets.only(left: 16.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    color: Colors.grey,
+                    image: DecorationImage(
+                      image: NetworkImage(
+                        'https://image.tmdb.org/t/p/w185/${item?.posterPath}',
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
