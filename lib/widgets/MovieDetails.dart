@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:filmaccio_flutter/main.dart';
@@ -12,6 +14,7 @@ import 'data/api/TmdbApiClient.dart';
 import 'data/api/api_key.dart';
 import 'login/Auth.dart';
 import 'models/Person.dart';
+import 'package:filmaccio_flutter/color_schemes.g.dart';
 
 class MovieDetails extends StatefulWidget {
   final Movie movie;
@@ -65,6 +68,7 @@ class _MovieDetailsState extends State<MovieDetails> {
       ),
     );
   }
+
   Future<void> checkisFavorite() async {
     _isFavorite = false;
     filmvisti = await FirestoreService.getList(currentUserId, 'favorite_m');
@@ -87,6 +91,7 @@ class _MovieDetailsState extends State<MovieDetails> {
   // ci vanno le funzione che devono partire all'inizio
   void initState() {
     super.initState();
+    _apiClient = TmdbApiClient(_dio);
     _movie = widget.movie;
     fetchMovieDetails();
     _movieDetails = widget.movie;
@@ -142,192 +147,211 @@ class _MovieDetailsState extends State<MovieDetails> {
             ),
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Transform.scale(
-                scale: 1.5, // scala dell'ingrandimento
-                alignment: Alignment.bottomLeft,
-                child: Container(
-                  transform: Matrix4.translationValues(10, -10, 0),
-                  width: 110,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    image: DecorationImage(
-                      image: NetworkImage(
-                        'https://image.tmdb.org/t/p/original/${_movieDetails.posterPath}',
-                      ),
-                      fit: BoxFit.cover,
-                    ),
+              Container(
+                margin: const EdgeInsets.only(left: 16, top: 8),
+                width: 120,
+                height: 180,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    'https://image.tmdb.org/t/p/original/${_movieDetails.posterPath}',
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
-              Container(
-                transform: Matrix4.translationValues(80, 0, 0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "${_movie.title}",
+              Expanded(
+                  child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(left: 16, top: 8, right: 16),
+                    child: Text(
+                      _movie.title ?? '',
                       style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blueGrey,
-                          fontFamily: "sans-serif-black"),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
                     ),
-                    SizedBox(
-                      height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        margin:
+                            const EdgeInsets.only(left: 16, top: 8, right: 16),
+                        child: Text(
+                            "${_movieDetails.releaseDate.split("-").first ?? ''} | Diretto da:",
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.normal,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 3),
+                      ),
+                      Container(
+                        margin:
+                            const EdgeInsets.only(left: 16, top: 8, right: 16),
+                        child: Text("${_movieDetails.duration} min",
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            )),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 16, top: 8, right: 16),
+                    child: Text(
+                      directorNames ?? '',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.normal,
+                        fontFeatures: [FontFeature.enable('smcp')],
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
                     ),
-                    Row(
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                                "${_movieDetails.releaseDate.split("-").first} | Diretto da:"),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text("${directorNames ?? ''}")
-                          ],
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 80,
-                            ),
-                            Text("${_movieDetails.duration} min")
-                          ],
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),
+                  ),
+                ],
+              ))
             ],
           ),
+          Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 8,
+              ),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton.filled(
+                            onPressed: () {
+                              setState(() {
+                                if (_isWatched) {
+                                  FirestoreService.removeFromList(currentUserId,
+                                      'watched_m', _movieDetails.id);
+                                  AggiungiMinutes(_movieDetails.duration! * -1);
+                                  _isWatched = !_isWatched;
+                                } else {
+                                  FirestoreService.addToList(currentUserId,
+                                      'watched_m', _movieDetails.id);
+                                  AggiungiMinutes(_movieDetails.duration!);
+                                  _isWatched = !_isWatched;
+                                }
+                              });
+                            },
+                            icon: Icon(_isWatched
+                                ? Icons.check
+                                : Icons.remove_red_eye),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: _isWatched
+                                  ? Theme.of(context).colorScheme.tertiary
+                                  : Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                          const Text('Guardato'),
+                        ]),
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton.filled(
+                            onPressed: () {
+                              setState(() {
+                                if (_isFavorite) {
+                                  FirestoreService.removeFromList(currentUserId,
+                                      'favorite_m', _movieDetails.id);
+                                  _isFavorite = !_isFavorite;
+                                } else {
+                                  FirestoreService.addToList(currentUserId,
+                                      'favorite_m', _movieDetails.id);
+                                  _isFavorite = !_isFavorite;
+                                }
+                              });
+                            },
+                            icon: Icon(
+                                _isFavorite ? Icons.check : Icons.favorite),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: _isFavorite
+                                  ? Theme.of(context).colorScheme.tertiary
+                                  : Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                          const Text('Preferiti'),
+                        ]),
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton.filled(
+                            onPressed: () {
+                              setState(() {
+                                if (_isAddedToWatchlist) {
+                                  FirestoreService.removeFromList(currentUserId,
+                                      'watchlist_m', _movieDetails.id);
+                                  _isAddedToWatchlist = !_isAddedToWatchlist;
+                                  ;
+                                } else {
+                                  FirestoreService.addToList(currentUserId,
+                                      'watchlist_m', _movieDetails.id);
+                                  _isAddedToWatchlist = !_isAddedToWatchlist;
+                                }
+                              });
+                            },
+                            icon: Icon(_isAddedToWatchlist
+                                ? Icons.check
+                                : Icons.more_time_rounded),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: _isAddedToWatchlist
+                                  ? Theme.of(context).colorScheme.tertiary
+                                  : Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                          const Text('Watchlist'),
+                        ]),
+                  ])),
+          const Divider(),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          setState(() {
-                            if (_isWatched) {
-                              FirestoreService.removeFromList(
-                                  currentUserId, 'watched_m', _movieDetails.id);
-                              AggiungiMinutes(_movieDetails.duration! * -1);
-                              _isWatched = !_isWatched;
-                            } else {
-                              FirestoreService.addToList(
-                                  currentUserId, 'watched_m', _movieDetails.id);
-                              AggiungiMinutes(_movieDetails.duration!);
-                              _isWatched = !_isWatched;
-                            }
-                          });
-                        },
-                        icon: Icon(_isWatched
-                            ? Icons.check_box
-                            : Icons.check_box_outline_blank),
-                        label: Text(_isWatched ? 'Guardato' : 'Guardato',
-                            style: TextStyle(fontSize: 12)),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          setState(() {
-                            if (_isFavorite) {
-                              FirestoreService.removeFromList(currentUserId,
-                                  'favorite_m', _movieDetails.id);
-                              _isFavorite = !_isFavorite;
-                            } else {
-                              FirestoreService.addToList(currentUserId,
-                                  'favorite_m', _movieDetails.id);
-                              _isFavorite = !_isFavorite;
-                            }
-                          });
-                        },
-                        icon: Icon(_isFavorite
-                            ? Icons.favorite
-                            : Icons.favorite_border),
-                        label: Text(
-                            _isFavorite ? 'Preferiti' : 'Aggiungi ai preferiti',
-                            style: TextStyle(fontSize: 12)),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          setState(() {
-                            if (_isAddedToWatchlist) {
-                              FirestoreService.removeFromList(currentUserId,
-                                  'watchlist_m', _movieDetails.id);
-                              _isAddedToWatchlist = !_isAddedToWatchlist;
-                              ;
-                            } else {
-                              FirestoreService.addToList(currentUserId,
-                                  'watchlist_m', _movieDetails.id);
-                              _isAddedToWatchlist = !_isAddedToWatchlist;
-                            }
-                          });
-                        },
-                        icon: Icon(_isAddedToWatchlist
-                            ? Icons.playlist_add_check
-                            : Icons.playlist_add),
-                        label: Text(
-                            _isAddedToWatchlist
-                                ? 'Watchlist'
-                                : 'Aggiungi alla watchlist',
-                            style: TextStyle(fontSize: 11)),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
                   'Descrizione',
                   style: TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    fontWeight: FontWeight.normal,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ),
               Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(0.1),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: ExpandableText(
-                      text: '${_movieDetails.overview}',
+                      text: _movieDetails.overview,
                       maxLines: 3,
                     ),
-                  )),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  ),
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
                   'Cast',
                   style: TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    fontWeight: FontWeight.normal,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ),
-              Container(
-                decoration: BoxDecoration(color: Colors.transparent),
+              SizedBox(
                 width: 500,
-                height: 150,
+                height: 190,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: 20,
@@ -335,54 +359,64 @@ class _MovieDetailsState extends State<MovieDetails> {
                     final castMember = _movieDetails.credits?.cast[index];
                     return GestureDetector(
                       onTap: () {
-                         schermataperson( castMember!.id.toString());
+                        schermataperson(castMember!.id.toString());
                       },
-                      child: Container(
-                        width: 150,
-                        height: 200,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              transform: Matrix4.translationValues(10, -10, 0),
-                              width: 80,
-                              height: 80,
-                              child: Image.network(
-                                "https://image.tmdb.org/t/p/w185${castMember?.profilePath}",
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                '${castMember?.name}',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                      child: Card(
+                        child: Container(
+                          width: 110,
+                          height: 180,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 100,
+                                height: 100,
+                                margin: EdgeInsets.all(5.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  child: castMember?.profilePath != null ? Image.network(
+                                    "https://image.tmdb.org/t/p/w185${castMember?.profilePath}",
+                                    fit: BoxFit.cover,
+                                  ) : Image.asset(
+                                    'assets/images/error_404.png',
+                                    fit: BoxFit.cover,
+                                  )
+                                  ),
+                                ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
+                                child: Text(
+                                  '${castMember?.name}',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).colorScheme.primary,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
                                 ),
                               ),
-                            ),
-                            Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  width: 200, // Larghezza del container
-                                  child: Text(
-                                    '${castMember?.character}',
-                                    softWrap: true,
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.bold,
-                                    ), // Abilita l'andare a capo
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Text(
+                                  '${castMember?.character}',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                )),
-                          ],
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
                   },
                 ),
               ),
+
             ],
           ),
         ],
@@ -462,9 +496,7 @@ class _ExpandableTextState extends State<ExpandableText> {
         );
       },
     );
-
   }
-
 }
 
 void myCallback(bool success) {
@@ -488,8 +520,6 @@ void AggiungiMinutes(int minFilm) async {
         .catchError((error) => myCallback(false));
   }
 }
-
-
 
 // Movie convertToMovie(TmdbEntity entity) {
 //   return Movie(
