@@ -1,19 +1,14 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:filmaccio_flutter/main.dart';
-import 'package:filmaccio_flutter/widgets/models/Director.dart';
 import 'package:filmaccio_flutter/widgets/models/Movie.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 import 'Firebase/FirestoreService.dart';
 import 'data/api/TmdbApiClient.dart';
 import 'data/api/api_key.dart';
 import 'login/Auth.dart';
-import 'models/Character.dart';
-import 'models/TmdbEntity.dart';
 
 class MovieDetails extends StatefulWidget {
   final Movie movie;
@@ -25,12 +20,10 @@ class MovieDetails extends StatefulWidget {
 }
 
 class _MovieDetailsState extends State<MovieDetails> {
-
   final User? currentUser = Auth().currentUser;
   final String currentUserId = Auth().currentUser!.uid;
   DocumentSnapshot? userData;
   int? movieMinutes;
-
 
   late Movie _movie;
   late Movie _movieDetails;
@@ -38,19 +31,19 @@ class _MovieDetailsState extends State<MovieDetails> {
   late TmdbApiClient _apiClient;
   List<dynamic>? filmvisti;
 
-
   bool _isWatched = false;
   bool _isFavorite = false;
   bool _isAddedToWatchlist = false;
 
-    Future<void> checkIsWatched() async {
-      _isWatched = false;
-      filmvisti = await FirestoreService.getList(currentUserId, 'watched_m');
-      if (filmvisti != null && filmvisti!.contains(_movieDetails.id)) {
-        _isWatched = true;
-      }
-      setState(() {});
+  Future<void> checkIsWatched() async {
+    _isWatched = false;
+    filmvisti = await FirestoreService.getList(currentUserId, 'watched_m');
+    if (filmvisti != null && filmvisti!.contains(_movieDetails.id)) {
+      _isWatched = true;
     }
+    setState(() {});
+  }
+
   Future<void> checkisFavorite() async {
     _isFavorite = false;
     filmvisti = await FirestoreService.getList(currentUserId, 'favorite_m');
@@ -59,6 +52,7 @@ class _MovieDetailsState extends State<MovieDetails> {
     }
     setState(() {});
   }
+
   Future<void> ceckisAddedToWatchlist() async {
     _isAddedToWatchlist = false;
     filmvisti = await FirestoreService.getList(currentUserId, 'watchlist_m');
@@ -68,14 +62,13 @@ class _MovieDetailsState extends State<MovieDetails> {
     setState(() {});
   }
 
-
-    @override
+  @override
   // ci vanno le funzione che devono partire all'inizio
   void initState() {
     super.initState();
     _movie = widget.movie;
     fetchMovieDetails();
-    _movieDetails=widget.movie;
+    _movieDetails = widget.movie;
     checkIsWatched();
     checkisFavorite();
     ceckisAddedToWatchlist();
@@ -87,9 +80,9 @@ class _MovieDetailsState extends State<MovieDetails> {
     if (widget.movie != oldWidget.movie) {
       _movie = widget.movie;
       fetchMovieDetails();
-
     }
   }
+
   String? get directorNames {
     final directors = _movieDetails.credits?.crew
         .where((crewMember) => crewMember.job == "Director")
@@ -98,12 +91,11 @@ class _MovieDetailsState extends State<MovieDetails> {
     return directors?.join(",\n ");
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView
-      (child:Column(
+      body: SingleChildScrollView(
+          child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
@@ -151,16 +143,17 @@ class _MovieDetailsState extends State<MovieDetails> {
               ),
               Container(
                 transform: Matrix4.translationValues(80, 0, 0),
-                child:
-                Column(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("${_movie.title}",
+                    Text(
+                      "${_movie.title}",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.blueGrey,
-                          fontFamily: "sans-serif-black"),),
+                          fontFamily: "sans-serif-black"),
+                    ),
                     SizedBox(
                       height: 20,
                     ),
@@ -170,16 +163,20 @@ class _MovieDetailsState extends State<MovieDetails> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("${_movieDetails.releaseDate.split("-").first} | Diretto da:"),
-                            SizedBox(height: 10,),
+                            Text(
+                                "${_movieDetails.releaseDate.split("-").first} | Diretto da:"),
+                            SizedBox(
+                              height: 10,
+                            ),
                             Text("${directorNames ?? ''}")
                           ],
                         ),
-
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            SizedBox(width: 80,),
+                            SizedBox(
+                              width: 80,
+                            ),
                             Text("${_movieDetails.duration} min")
                           ],
                         )
@@ -201,19 +198,24 @@ class _MovieDetailsState extends State<MovieDetails> {
                       child: ElevatedButton.icon(
                         onPressed: () {
                           setState(() {
-                            if(_isWatched) {
-                              FirestoreService.removeFromList(currentUserId, 'watched_m', _movieDetails.id);
-                              AggiungiMinutes(_movieDetails.duration!*-1);
+                            if (_isWatched) {
+                              FirestoreService.removeFromList(
+                                  currentUserId, 'watched_m', _movieDetails.id);
+                              AggiungiMinutes(_movieDetails.duration! * -1);
                               _isWatched = !_isWatched;
                             } else {
-                              FirestoreService.addToList(currentUserId, 'watched_m', _movieDetails.id);
+                              FirestoreService.addToList(
+                                  currentUserId, 'watched_m', _movieDetails.id);
                               AggiungiMinutes(_movieDetails.duration!);
                               _isWatched = !_isWatched;
                             }
                           });
                         },
-                        icon: Icon(_isWatched ? Icons.check_box : Icons.check_box_outline_blank),
-                        label: Text(_isWatched ? 'Guardato' : 'Guardato',style: TextStyle(fontSize: 12)),
+                        icon: Icon(_isWatched
+                            ? Icons.check_box
+                            : Icons.check_box_outline_blank),
+                        label: Text(_isWatched ? 'Guardato' : 'Guardato',
+                            style: TextStyle(fontSize: 12)),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -221,17 +223,23 @@ class _MovieDetailsState extends State<MovieDetails> {
                       child: ElevatedButton.icon(
                         onPressed: () {
                           setState(() {
-                            if(_isFavorite) {
-                              FirestoreService.removeFromList(currentUserId, 'favorite_m', _movieDetails.id);
+                            if (_isFavorite) {
+                              FirestoreService.removeFromList(currentUserId,
+                                  'favorite_m', _movieDetails.id);
                               _isFavorite = !_isFavorite;
                             } else {
-                            FirestoreService.addToList(currentUserId, 'favorite_m', _movieDetails.id);
-                            _isFavorite = !_isFavorite;
+                              FirestoreService.addToList(currentUserId,
+                                  'favorite_m', _movieDetails.id);
+                              _isFavorite = !_isFavorite;
                             }
                           });
                         },
-                        icon: Icon(_isFavorite ? Icons.favorite : Icons.favorite_border),
-                        label: Text(_isFavorite ? 'Preferiti' : 'Aggiungi ai preferiti',style: TextStyle(fontSize: 12)),
+                        icon: Icon(_isFavorite
+                            ? Icons.favorite
+                            : Icons.favorite_border),
+                        label: Text(
+                            _isFavorite ? 'Preferiti' : 'Aggiungi ai preferiti',
+                            style: TextStyle(fontSize: 12)),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -239,18 +247,26 @@ class _MovieDetailsState extends State<MovieDetails> {
                       child: ElevatedButton.icon(
                         onPressed: () {
                           setState(() {
-                            if(_isAddedToWatchlist) {
-                              FirestoreService.removeFromList(currentUserId, 'watchlist_m', _movieDetails.id);
-                              _isAddedToWatchlist = !_isAddedToWatchlist;;
+                            if (_isAddedToWatchlist) {
+                              FirestoreService.removeFromList(currentUserId,
+                                  'watchlist_m', _movieDetails.id);
+                              _isAddedToWatchlist = !_isAddedToWatchlist;
+                              ;
                             } else {
-                              FirestoreService.addToList(currentUserId, 'watchlist_m', _movieDetails.id);
+                              FirestoreService.addToList(currentUserId,
+                                  'watchlist_m', _movieDetails.id);
                               _isAddedToWatchlist = !_isAddedToWatchlist;
                             }
-
                           });
                         },
-                        icon: Icon(_isAddedToWatchlist ? Icons.playlist_add_check : Icons.playlist_add),
-                        label: Text(_isAddedToWatchlist ? 'Watchlist' : 'Aggiungi alla watchlist',style: TextStyle(fontSize: 11)),
+                        icon: Icon(_isAddedToWatchlist
+                            ? Icons.playlist_add_check
+                            : Icons.playlist_add),
+                        label: Text(
+                            _isAddedToWatchlist
+                                ? 'Watchlist'
+                                : 'Aggiungi alla watchlist',
+                            style: TextStyle(fontSize: 11)),
                       ),
                     ),
                   ],
@@ -268,15 +284,14 @@ class _MovieDetailsState extends State<MovieDetails> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Padding(
-                  padding: const EdgeInsets.all(0.1),
-                  child: ExpandableText(
-                    text: '${_movieDetails.overview}',
-                    maxLines: 3,
-                  ),
-                )
-              ),
+                  padding: const EdgeInsets.all(16.0),
+                  child: Padding(
+                    padding: const EdgeInsets.all(0.1),
+                    child: ExpandableText(
+                      text: '${_movieDetails.overview}',
+                      maxLines: 3,
+                    ),
+                  )),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
@@ -293,9 +308,8 @@ class _MovieDetailsState extends State<MovieDetails> {
                 width: 500,
                 height: 150,
                 child: ListView.builder(
-
                   scrollDirection: Axis.horizontal,
-                  itemCount: 20 ,
+                  itemCount: 20,
                   itemBuilder: (context, index) {
                     final castMember = _movieDetails.credits?.cast[index];
                     return GestureDetector(
@@ -310,20 +324,19 @@ class _MovieDetailsState extends State<MovieDetails> {
                       child: Container(
                         width: 150,
                         height: 200,
-
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
                               transform: Matrix4.translationValues(10, -10, 0),
-                              width:80,
+                              width: 80,
                               height: 80,
-                              child:Image.network(
+                              child: Image.network(
                                 "https://image.tmdb.org/t/p/w185${castMember?.profilePath}",
-                                  fit: BoxFit.contain,
-                                ),
+                                fit: BoxFit.contain,
                               ),
+                            ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
@@ -335,37 +348,31 @@ class _MovieDetailsState extends State<MovieDetails> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                width: 200, // Larghezza del container
-                                child: Text(
-                                  '${castMember?.character}',
-                                  softWrap: true,
-                                  style:TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.bold,
-                                  ) ,// Abilita l'andare a capo
-                                ),
-                              )
-                            ),
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  width: 200, // Larghezza del container
+                                  child: Text(
+                                    '${castMember?.character}',
+                                    softWrap: true,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                    ), // Abilita l'andare a capo
+                                  ),
+                                )),
                           ],
                         ),
                       ),
-
                     );
                   },
                 ),
               ),
-
             ],
           ),
-
         ],
       )),
     );
   }
-
-
 
   Future<void> fetchMovieDetails() async {
     try {
@@ -377,15 +384,15 @@ class _MovieDetailsState extends State<MovieDetails> {
         region: 'IT',
         appendToResponse: 'credits',
       );
-      print(_movieDetails.credits?.cast.length );
+      print(_movieDetails.credits?.cast.length);
 
-      setState(() {
-      });
+      setState(() {});
     } catch (error) {
       print('Error fetching top trending movies: $error');
     }
   }
 }
+
 class ExpandableText extends StatefulWidget {
   final String text;
   final int maxLines;
@@ -456,8 +463,10 @@ void AggiungiMinutes(int minFilm) async {
   userData = await FirestoreService.getUserByUid(currentUserId);
   if (userData != null) {
     var movieMinutes = userData['movieMinutes'] as int?;
-    int movieFinale = movieMinutes! + minFilm;  // Ho cambiato da - a +, dato il nome della funzione "AggiungiMinutes"
-    FirestoreService.updateUserField(currentUserId, 'movieMinutes', movieFinale, myCallback)
+    int movieFinale = movieMinutes! +
+        minFilm; // Ho cambiato da - a +, dato il nome della funzione "AggiungiMinutes"
+    FirestoreService.updateUserField(
+            currentUserId, 'movieMinutes', movieFinale, myCallback)
         .catchError((error) => myCallback(false));
   }
 }
