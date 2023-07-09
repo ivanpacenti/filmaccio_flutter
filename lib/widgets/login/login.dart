@@ -14,7 +14,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
-    super.initState(); // Esegue il logout dell'utente quando si carica la pagina di login
+    super
+        .initState(); // Esegue il logout dell'utente quando si carica la pagina di login
   }
 
   bool visibilitaPassword = false;
@@ -90,11 +91,11 @@ class _LoginPageState extends State<LoginPage> {
                           labelText: 'Nome utente o email',
                           labelStyle:
                               TextStyle(color: erroreLogin ? Colors.red : null),
-                          prefixIcon: Icon(Icons.person),
+                          prefixIcon: const Icon(Icons.person),
                           prefixIconColor:
                               erroreLogin ? Colors.red : Colors.grey,
                           suffixIcon: IconButton(
-                            icon: Icon(Icons.clear),
+                            icon: const Icon(Icons.clear),
                             onPressed: () {
                               _email.text = "";
                               setState(() {
