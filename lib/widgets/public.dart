@@ -8,7 +8,6 @@ import 'SeriesDetails.dart';
 import 'data/api/TmdbApiClient.dart';
 import 'data/api/api_key.dart';
 
-// quella che viene chiamata Tendenza
 
 class HomeApi extends StatefulWidget {
   const HomeApi({super.key});
