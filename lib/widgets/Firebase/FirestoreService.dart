@@ -7,18 +7,17 @@ import '../login/Auth.dart';
 import '../models/UserData.dart';
 
 class FirestoreService {
-  static FirebaseFirestore _db = FirebaseFirestore.instance;
-  static CollectionReference _collectionUsers = _db.collection('users');
-  static CollectionReference _collectionFollow = _db.collection('follow');
-  static CollectionReference _collectionLists = _db.collection('lists');
-  static CollectionReference _collectionEpisodes = _db.collection('episodes');
-  static CollectionReference _collectionUsersReviews = _db.collection('usersReviews');
-  static CollectionReference _collectionProductsReviews = _db.collection('productsReviews');
+  static final FirebaseFirestore _db = FirebaseFirestore.instance;
+  //riferimenti alle collezioni del database
+  static final CollectionReference _collectionUsers = _db.collection('users');
+  static final CollectionReference _collectionFollow = _db.collection('follow');
+  static final CollectionReference _collectionLists = _db.collection('lists');
+  static final CollectionReference _collectionEpisodes = _db.collection('episodes');
+  static final CollectionReference _collectionUsersReviews = _db.collection('usersReviews');
+  static final CollectionReference _collectionProductsReviews = _db.collection('productsReviews');
 
   static Future<dynamic> getUserByUid(String uid) async {
-    print('Getting user with uid: $uid'); // x debug
     DocumentSnapshot snapshot = await _collectionUsers.doc(uid).get();
-    print('Got user data: ${snapshot.data()}');  // Stampa i dati dell'utente x debug
     return snapshot.data();
   }
   static Future<bool> searchUsersByEmail(String email) async {
@@ -122,30 +121,16 @@ class FirestoreService {
       DocumentReference reviewsRef = FirebaseFirestore.instance.collection('usersReviews').doc(uid);
       await reviewsRef.set(reviewsDocument);
 
-
-      print('Utente creato con successo');
     } catch (error) {
-      print('Errore durante la creazione dell\'utente: $error');
+      print('Error durante la creation dell\'utente: $error'); // lasciamo importante
     }
   }
-
-
-  // static Future<void> popolateUser(UserData userData) async {
-  //   try{
-  //     String uid= UserData.uid;
-  //     // Conversione della data di nascita in un Timestamp
-  //     Timestamp birthDate = Timestamp.fromDate(userData.dataNascita);
-  //
-  //   }
-  // }
-
-
 
   static Future<List<dynamic>> searchUsers(String query) async {
     QuerySnapshot snapshot = await _collectionUsers
         .orderBy('username')
         .startAt([query])
-        .endAt([query + '\uf8ff'])
+        .endAt(['$query\uf8ff'])
         .get();
     return snapshot.docs.map((doc) => doc.data()).toList();
   }
@@ -229,7 +214,7 @@ class FirestoreService {
   static Future<Object?> getLists(String uid) async {
     DocumentSnapshot doc = await _collectionLists.doc(uid).get();
     Object? lists = doc.data();
-    return lists?? null;
+    return lists;
   }
 
   static Future<void> addSeriesToWatching(String uid, int seriesId) async {
@@ -272,185 +257,9 @@ class FirestoreService {
     return watchingSeries;
   }
 
-  // static Future<dynamic> getMovieRating(String uid, int movieId) async {
-  //   DocumentSnapshot doc = await _collectionUsersReviews.doc(uid).get();
-  //   double? ratingValueDoc = doc.get('movies.$movieId.rating.value');
-  //   double ratingValue = ratingValueDoc?.toDouble() ?? 0;
-  //   Timestamp? ratingTimestampDoc = doc.get('movies.$movieId.rating.timestamp');
-  //   Timestamp ratingTimestamp = ratingTimestampDoc ?? Timestamp.now();
-  //   return {'ratingValue': ratingValue, 'ratingTimestamp': ratingTimestamp};
-  // }
-  //
-  // static Future<dynamic> getMovieReview(String uid, int movieId) async {
-  //   DocumentSnapshot doc = await _collectionUsersReviews.doc(uid).get();
-  //   String? reviewDoc = doc.get('movies.$movieId.review.text');
-  //   String review = reviewDoc ?? '';
-  //   Timestamp? reviewTimestampDoc =
-  //   doc.get('movies.$movieId.review.timestamp');
-  //   Timestamp reviewTimestamp = reviewTimestampDoc ?? Timestamp.now();
-  //   return {'review': review, 'reviewTimestamp': reviewTimestamp};
-  // }
-  //
-  // static Future<void> updateMovieRating(
-  //     String uid, int movieId, double rating, Timestamp timestamp) async {
-  //   DocumentReference docRef = _collectionUsersReviews.doc(uid);
-  //   DocumentReference productsDocRef = _collectionProductsReviews.doc('movies');
-  //   dynamic currentRating = await getMovieRating(uid, movieId);
-  //   if (currentRating['ratingValue'] != 0) {
-  //     docRef.update({'movies.$movieId.rating.value': rating});
-  //     docRef.update({'movies.$movieId.rating.timestamp': timestamp});
-  //     productsDocRef.update({
-  //       '$movieId.value': FieldValue.increment(rating - currentRating['ratingValue'])
-  //     });
-  //   } else {
-  //     docRef.update({
-  //       'movies.$movieId.rating': {'value': rating, 'timestamp': timestamp}
-  //     });
-  //     productsDocRef.update({'$movieId.ratings': FieldValue.arrayUnion([uid])});
-  //     productsDocRef.update({
-  //       '$movieId.value': FieldValue.increment(rating)
-  //     });
-  //   }
-  // }
-  //
-  // static Future<void> updateMovieReview(
-  //     String uid, int movieId, String review, Timestamp timestamp) async {
-  //   DocumentReference docRef = _collectionUsersReviews.doc(uid);
-  //   DocumentReference productsDocRef = _collectionProductsReviews.doc('movies');
-  //   dynamic currentReview = await getMovieReview(uid, movieId);
-  //   if (currentReview['review'] != '') {
-  //     docRef.update({'movies.$movieId.review.text': review});
-  //     docRef.update({'movies.$movieId.review.timestamp': timestamp});
-  //   } else {
-  //     docRef.update({
-  //       'movies.$movieId.review': {'text': review, 'timestamp': timestamp}
-  //     });
-  //     productsDocRef.update({'$movieId.reviews': FieldValue.arrayUnion([uid])});
-  //   }
-  // }
-  //
-  // static Future<dynamic> getSeriesRating(String uid, int seriesId) async {
-  //   DocumentSnapshot doc = await _collectionUsersReviews.doc(uid).get();
-  //   double? ratingValueDoc = doc.get('series.$seriesId.rating.value');
-  //   double ratingValue = ratingValueDoc?.toDouble() ?? 0;
-  //   Timestamp? ratingTimestampDoc = doc.get('series.$seriesId.rating.timestamp');
-  //   Timestamp ratingTimestamp = ratingTimestampDoc ?? Timestamp.now();
-  //   return {'ratingValue': ratingValue, 'ratingTimestamp': ratingTimestamp};
-  // }
-  //
-  // static Future<dynamic> getSeriesReview(String uid, int seriesId) async {
-  //   DocumentSnapshot doc = await _collectionUsersReviews.doc(uid).get();
-  //   String? reviewDoc = doc.get('series.$seriesId.review.text');
-  //   String review = reviewDoc ?? '';
-  //   Timestamp? reviewTimestampDoc =
-  //   doc.get('series.$seriesId.review.timestamp');
-  //   Timestamp reviewTimestamp = reviewTimestampDoc ?? Timestamp.now();
-  //   return {'review': review, 'reviewTimestamp': reviewTimestamp};
-  // }
-  //
-  // static Future<void> updateSeriesRating(
-  //     String uid, int seriesId, double rating, Timestamp timestamp) async {
-  //   DocumentReference docRef = _collectionUsersReviews.doc(uid);
-  //   DocumentReference productsDocRef = _collectionProductsReviews.doc('series');
-  //   dynamic currentRating = await getSeriesRating(uid, seriesId);
-  //   if (currentRating['ratingValue'] != 0) {
-  //     docRef.update({'series.$seriesId.rating.value': rating});
-  //     docRef.update({'series.$seriesId.rating.timestamp': timestamp});
-  //     productsDocRef.update({
-  //       '$seriesId.value': FieldValue.increment(rating - currentRating['ratingValue'])
-  //     });
-  //   } else {
-  //     docRef.update({
-  //       'series.$seriesId.rating': {'value': rating, 'timestamp': timestamp}
-  //     });
-  //     productsDocRef.update({'$seriesId.ratings': FieldValue.arrayUnion([uid])});
-  //     productsDocRef.update({
-  //       '$seriesId.value': FieldValue.increment(rating)
-  //     });
-  //   }
-  // }
-  //
-  // static Future<void> updateSeriesReview(
-  //     String uid, int seriesId, String review, Timestamp timestamp) async {
-  //   DocumentReference docRef = _collectionUsersReviews.doc(uid);
-  //   DocumentReference productsDocRef = _collectionProductsReviews.doc('series');
-  //   dynamic currentReview = await getSeriesReview(uid, seriesId);
-  //   if (currentReview['review'] != '') {
-  //     docRef.update({'series.$seriesId.review.text': review});
-  //     docRef.update({'series.$seriesId.review.timestamp': timestamp});
-  //   } else {
-  //     docRef.update({
-  //       'series.$seriesId.review': {'text': review, 'timestamp': timestamp}
-  //     });
-  //     productsDocRef.update({'$seriesId.reviews': FieldValue.arrayUnion([uid])});
-  //   }
-  // }
-
-  // static Future<double> getAverageMovieRating(int movieId) async {
-  //   DocumentSnapshot docRef = await _collectionProductsReviews.doc('movies').get();
-  //   double value = 0;
-  //   List<dynamic> users = [];
-  //   Map<String, dynamic> data = docRef.data() ?? {};
-  //   if (data.containsKey('$movieId.ratings')) {
-  //     users = data['$movieId.ratings'];
-  //   }
-  //   if (data.containsKey('$movieId.value')) {
-  //     value = data['$movieId.value'].toDouble();
-  //   }
-  //   if (users.isEmpty) {
-  //     return 0;
-  //   }
-  //   return value / users.length;
-  // }
-
-  // static Future<double> getAverageSeriesRating(int seriesId) async {
-  //   DocumentSnapshot docRef =
-  //   await _collectionProductsReviews.doc('series').get();
-  //   double value = 0;
-  //   List<dynamic> users = [];
-  //   Map<String, dynamic> data = docRef.data() ?? {};
-  //   if (data.containsKey('$seriesId.ratings')) {
-  //     users = data['$seriesId.ratings'];
-  //   }
-  //   if (data.containsKey('$seriesId.value')) {
-  //     value = data['$seriesId.value'].toDouble();
-  //   }
-  //   if (users.isEmpty) {
-  //     return 0;
-  //   }
-  //   return value / users.length;
-  // }
-
-  // static Future<List<dynamic>> getMovieReviews(int movieId) async {
-  //   DocumentSnapshot docRef =
-  //   await _collectionProductsReviews.doc('movies').get();
-  //   List<dynamic> users = [];
-  //   Map<String, dynamic> data = docRef.data() ?? {};
-  //   if (data.containsKey('$movieId.reviews')) {
-  //     users = data['$movieId.reviews'];
-  //   }
-  //   List<dynamic> reviews = [];
-  //   for (String user in users) {
-  //     dynamic userData = await getUserByUid(user);
-  //     dynamic reviewData = await getMovieReview(user, movieId);
-  //     DateTime date = reviewData['reviewTimestamp'].toDate();
-  //     String dateString =
-  //         '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
-  //     Map<String, dynamic> review = {
-  //       'userData': userData,
-  //       'reviewText': reviewData['review'],
-  //       'reviewDate': dateString,
-  //     };
-  //     reviews.add(review);
-  //   }
-  //   return reviews;
-  // }
-  //
-
-  // attenzione anche per le serie stampa ritorna una lista di valori movie e id non serie id
   static Future<List<dynamic>> getAllRatings(String type) async {
     DocumentSnapshot docRef =
-    await _collectionProductsReviews.doc(type).get();// qui va a prendere il documento movies o series
+    await _collectionProductsReviews.doc(type).get();
     Map<String, dynamic> data = docRef.data() as Map<String, dynamic> ?? {};
     List<dynamic> ratings = [];
     for (String id in data.keys) {
@@ -463,31 +272,6 @@ class FirestoreService {
     }
     return ratings;
   }
-
-  // static Future<List<dynamic>> getSeriesReviews(int seriesId) async {
-  //   DocumentSnapshot docRef =
-  //   await _collectionProductsReviews.doc('series').get();
-  //   List<dynamic> users = [];
-  //   Map<String, dynamic> data = docRef.data() ?? {};
-  //   if (data.containsKey('$seriesId.reviews')) {
-  //     users = data['$seriesId.reviews'];
-  //   }
-  //   List<dynamic> reviews = [];
-  //   for (String user in users) {
-  //     dynamic userData = await getUserByUid(user);
-  //     dynamic reviewData = await getSeriesReview(user, seriesId);
-  //     DateTime date = reviewData['reviewTimestamp'].toDate();
-  //     String dateString =
-  //         '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
-  //     Map<String, dynamic> review = {
-  //       'userData': userData,
-  //       'reviewText': reviewData['review'],
-  //       'reviewDate': dateString,
-  //     };
-  //     reviews.add(review);
-  //   }
-  //   return reviews;
-  // }
 
   static Future<Map<String, dynamic>?> getUserReviews(String userId, String type) async {
     DocumentSnapshot docRef =
@@ -542,7 +326,6 @@ class FirestoreService {
         'gender': userData.genere,
         'birthDate': userData.dataNascita,
         'nameShown': userData.nomeVisualizzato,
-        // Aggiungi altri campi dati se necessario
       });
       // Caricamento dati completato con successo
     } catch (error) {
