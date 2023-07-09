@@ -58,6 +58,8 @@ class _TvShowDetailsState extends State<TvShowDetails> {
   }
 
   Future<void> schermataperson(String personId) async {
+    // cambiamento dal solito metodo a casusa della natura asincrona delle gunzioni async, lo statp del BuildContext potrebbe non essere più valido prima che sia c
+    //completata la funzione, e si potrebbero creare errori
     Person person = await _apiClient.getPersonDetails(
       apiKey: tmdbApiKey,
       personId: personId,
@@ -65,13 +67,16 @@ class _TvShowDetailsState extends State<TvShowDetails> {
       region: 'IT',
       appendToResponse: 'combined_credits',
     );
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PersonDetailsActivity(person: person),
-      ),
-    );
+    if(mounted){
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PersonDetailsActivity(person: person),
+        ),
+      );
+    }
   }
+
 
   Future<void> checkisFavorite() async {
     _isFavorite = false;
