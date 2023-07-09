@@ -134,7 +134,7 @@ class _HomeState extends State<Home> {
         // Assicurati di passare i parametri corretti nella funzione getMovieDetails
         moviesList.add(await _apiClient.getMovieDetails(
             apiKey: tmdbApiKey,
-            movieId: movie['movieId'].toString(),
+            movieId: movie['id'].toString(),
             language: 'it-IT',
             region: 'IT',
         ));
@@ -156,16 +156,33 @@ class _HomeState extends State<Home> {
 
   Future<void> fetchTopRatedTV() async {
     try {
-      final response = await _apiClient.getTopRatedTv(tmdbApiKey, 6,'it-IT',"IT");
+      var series = await FirestoreService.getAllRatings("series");
+      print(series);
+      series.sort((a, b) => b['rating'].compareTo(a['rating']));
+
+      var seriesList = <TvShow>[];
+      for (var serie in series) {
+        // Assicurati di passare i parametri corretti nella funzione getSeriesDetails
+        var tvShow = await _apiClient.getTvDetails(
+          apiKey: tmdbApiKey,
+          serieId: serie['id'].toString(), // anche se sono serie tv, l'id è sempre movieId
+          language: 'it-IT',
+          region: 'IT',
+        );
+        print(" le serioe tv sono $tvShow");
+        seriesList.add(tvShow);
+      }
+
       setState(() {
-        if (response.results != null) {
-          _topRatedTV = response.results!.toList();
+        if (seriesList.isNotEmpty) {
+          _topRatedTV = seriesList;
         } else {
           _topRatedTV = [];
         }
       });
     } catch (error) {
-      print('Error fetching top rated movies: $error');
+      print('Error fetching top rated series: $error');
     }
   }
+
 }

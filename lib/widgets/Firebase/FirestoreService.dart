@@ -446,18 +446,20 @@ class FirestoreService {
   //   return reviews;
   // }
   //
+
+  // attenzione anche per le serie stampa ritorna una lista di valori movie e id non serie id
   static Future<List<dynamic>> getAllRatings(String type) async {
     DocumentSnapshot docRef =
-    await _collectionProductsReviews.doc(type).get();
+    await _collectionProductsReviews.doc(type).get();// qui va a prendere il documento movies o series
     Map<String, dynamic> data = docRef.data() as Map<String, dynamic> ?? {};
     List<dynamic> ratings = [];
-    for (String movieId in data.keys) {
-      if (data[movieId]['ratings'] == null) {
+    for (String id in data.keys) {
+      if (data[id]['ratings'] == null) {
         continue;
       }
       double rating =
-          data[movieId]['value'].toDouble() / data[movieId]['ratings'].length;
-      ratings.add({'movieId': int.parse(movieId), 'rating': rating});
+          data[id]['value'].toDouble() / data[id]['ratings'].length;
+      ratings.add({'id': int.parse(id), 'rating': rating});
     }
     return ratings;
   }
