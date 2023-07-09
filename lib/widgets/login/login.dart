@@ -21,7 +21,6 @@ class _LoginPageState extends State<LoginPage> {
   bool visibilitaPassword = false;
   bool erroreLogin = false;
   bool isLoggedOut = true;
-  Color _color = Colors.black;
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
 
@@ -33,7 +32,6 @@ class _LoginPageState extends State<LoginPage> {
       print(error);
       setState(() {
         erroreLogin = true;
-        _color = Colors.red;
       });
     }
   }
@@ -82,13 +80,12 @@ class _LoginPageState extends State<LoginPage> {
                       onChanged: (String newValue) {
                         // test for your condition
                         setState(() {
-                          _color = Colors.black;
                           erroreLogin = false; // change the color
                         });
                       },
                       controller: _email,
                       decoration: InputDecoration(
-                          labelText: 'Nome utente o email',
+                          labelText: 'Indirizzo email',
                           labelStyle:
                               TextStyle(color: erroreLogin ? Colors.red : null),
                           prefixIcon: const Icon(Icons.person),
@@ -123,7 +120,6 @@ class _LoginPageState extends State<LoginPage> {
                       onChanged: (String newValue) {
                         // test for your condition
                         setState(() {
-                          _color = Colors.black;
                           erroreLogin = false; // change the color
                         });
                       },
@@ -157,7 +153,6 @@ class _LoginPageState extends State<LoginPage> {
                         SignIn();
                         setState(() {
                           if (erroreLogin) {
-                            _color = Colors.red;
                           }
                         });
                       },
