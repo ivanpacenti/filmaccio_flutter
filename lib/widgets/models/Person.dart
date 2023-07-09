@@ -8,12 +8,12 @@ class Person {
   String name;
   @JsonKey(name: 'profile_path')
   String? profilePath;
-  String biography;
+  String? biography;
   String? birthday;
   String? deathday;
   @JsonKey(name: 'place_of_birth')
   String? placeOfBirth;
-  int gender;
+  int? gender;
   @JsonKey(name: 'known_for_department')
   String knownFor;
   @JsonKey(name: 'place_of_death')
