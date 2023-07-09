@@ -446,21 +446,21 @@ class FirestoreService {
   //   return reviews;
   // }
   //
-  // static Future<List<dynamic>> getAllRatings(String type) async {
-  //   DocumentSnapshot docRef =
-  //   await _collectionProductsReviews.doc(type).get();
-  //   Map<String, dynamic> data = docRef.data() ?? {};
-  //   List<dynamic> ratings = [];
-  //   for (String movieId in data.keys) {
-  //     if (data[movieId]['ratings'] == null) {
-  //       continue;
-  //     }
-  //     double rating =
-  //         data[movieId]['value'].toDouble() / data[movieId]['ratings'].length;
-  //     ratings.add({'movieId': int.parse(movieId), 'rating': rating});
-  //   }
-  //   return ratings;
-  // }
+  static Future<List<dynamic>> getAllRatings(String type) async {
+    DocumentSnapshot docRef =
+    await _collectionProductsReviews.doc(type).get();
+    Map<String, dynamic> data = docRef.data() as Map<String, dynamic> ?? {};
+    List<dynamic> ratings = [];
+    for (String movieId in data.keys) {
+      if (data[movieId]['ratings'] == null) {
+        continue;
+      }
+      double rating =
+          data[movieId]['value'].toDouble() / data[movieId]['ratings'].length;
+      ratings.add({'movieId': int.parse(movieId), 'rating': rating});
+    }
+    return ratings;
+  }
 
   // static Future<List<dynamic>> getSeriesReviews(int seriesId) async {
   //   DocumentSnapshot docRef =
