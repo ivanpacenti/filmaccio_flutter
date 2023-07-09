@@ -16,7 +16,7 @@ class _LogoutState extends State<Logout> {
   Widget build(BuildContext context) {
     return Center(
       child:
-      IconButton(onPressed: (){SignOut();}, icon: Icon(Icons.logout)),
+      IconButton(onPressed: (){SignOut();}, icon: const Icon(Icons.logout)),
 
     );
   }

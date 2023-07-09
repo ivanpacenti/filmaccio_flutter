@@ -29,13 +29,13 @@ class _PasswordDimenticataState extends State<PasswordDimenticata> {
               ),
             ),
             SizedBox(height: 10),
-            Text(
+            const Text(
               "Inserisci il tuo indirizzo email e ti invieremo un link per il reset della tua password.",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16),
             ),
-            SizedBox(height: 10),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextFormField(
               controller: _emailController,
               decoration: InputDecoration(
@@ -52,7 +52,7 @@ class _PasswordDimenticataState extends State<PasswordDimenticata> {
               ),
               keyboardType: TextInputType.emailAddress,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () async{
                 await FirebaseAuth.instance.sendPasswordResetEmail(email: _emailController.text);
@@ -68,8 +68,8 @@ class _PasswordDimenticataState extends State<PasswordDimenticata> {
               },
               child: Text("Invia il link di reset"),
             ),
-            SizedBox(height: 20),
-            Row(
+            const SizedBox(height: 20),
+            const Row(
               children: [
                 Expanded(
                   child: Divider(),
@@ -90,7 +90,7 @@ class _PasswordDimenticataState extends State<PasswordDimenticata> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Container(
@@ -107,8 +107,8 @@ class _PasswordDimenticataState extends State<PasswordDimenticata> {
                       MaterialPageRoute(builder: (context) =>  MyApp()),
                     );
                   },
-                  icon: Icon(Icons.arrow_back),
-                  label: Text("Indietro"),
+                  icon: const Icon(Icons.arrow_back),
+                  label: const Text("Indietro"),
                 ),
               ],
             )
