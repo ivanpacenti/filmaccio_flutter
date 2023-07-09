@@ -40,13 +40,16 @@ class _HomeState extends State<Home> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Ultime uscite
-              buildSection('Ultime uscite', _movieNowPlaying, (movie) => MovieDetails(movie: movie)),
+              buildSection('Ultime uscite', _movieNowPlaying,
+                  (movie) => MovieDetails(movie: movie)),
               const Divider(),
               // Film più votati
-              buildSection('Film più votati', _movieTopRating, (movie) => MovieDetails(movie: movie)),
+              buildSection('Film più votati', _movieTopRating,
+                  (movie) => MovieDetails(movie: movie)),
               const Divider(),
               // Serie TV più votate
-              buildSection('Serie TV più votate', _topRatedTV, (tvShow) => TvShowDetails(tvShow: tvShow)),
+              buildSection('Serie TV più votate', _topRatedTV,
+                  (tvShow) => TvShowDetails(tvShow: tvShow)),
             ],
           ),
         ),
@@ -54,7 +57,8 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget buildSection(String title, List<dynamic>? items, Widget Function(dynamic item) detailsBuilder) {
+  Widget buildSection(String title, List<dynamic>? items,
+      Widget Function(dynamic item) detailsBuilder) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -92,16 +96,16 @@ class _HomeState extends State<Home> {
                     borderRadius: BorderRadius.circular(8.0),
                     child: item?.posterPath != null
                         ? Image.network(
-                      'https://image.tmdb.org/t/p/w185/${item?.posterPath}',
-                      fit: BoxFit.cover,
-                    )
+                            'https://image.tmdb.org/t/p/w185/${item?.posterPath}',
+                            fit: BoxFit.cover,
+                          )
                         : Image.asset(
-                      'assets/images/error_404.png',
-                      fit: BoxFit.cover,
-                    ),
-                    ),
+                            'assets/images/error_404.png',
+                            fit: BoxFit.cover,
+                          ),
                   ),
-                );
+                ),
+              );
             },
           ),
         ),
@@ -111,7 +115,8 @@ class _HomeState extends State<Home> {
 
   Future<void> fetchTopTrending() async {
     try {
-      final response = await _apiClient.getMovieNowPlaying(tmdbApiKey, 1, 'it-IT', 'IT');
+      final response =
+          await _apiClient.getMovieNowPlaying(tmdbApiKey, 1, 'it-IT', 'IT');
       setState(() {
         _movieNowPlaying = response.results.toList();
       });
@@ -119,7 +124,6 @@ class _HomeState extends State<Home> {
       print('Error fetching now playing movies: $error');
     }
   }
-
 
   Future<void> fetchTopRating() async {
     try {
@@ -130,10 +134,10 @@ class _HomeState extends State<Home> {
       for (var movie in movies) {
         // Assicurati di passare i parametri corretti nella funzione getMovieDetails
         moviesList.add(await _apiClient.getMovieDetails(
-            apiKey: tmdbApiKey,
-            movieId: movie['id'].toString(),
-            language: 'it-IT',
-            region: 'IT',
+          apiKey: tmdbApiKey,
+          movieId: movie['id'].toString(),
+          language: 'it-IT',
+          region: 'IT',
         ));
       }
 
@@ -149,19 +153,17 @@ class _HomeState extends State<Home> {
     }
   }
 
-
-
   Future<void> fetchTopRatedTV() async {
+    // prende le top serie tv
     try {
       var series = await FirestoreService.getAllRatings("series");
       series.sort((a, b) => b['rating'].compareTo(a['rating']));
 
       var seriesList = <TvShow>[];
       for (var serie in series) {
-        // Assicurati di passare i parametri corretti nella funzione getSeriesDetails
         var tvShow = await _apiClient.getTvDetails(
           apiKey: tmdbApiKey,
-          serieId: serie['id'].toString(), // anche se sono serie tv, l'id è sempre movieId
+          serieId: serie['id'].toString(),
           language: 'it-IT',
           region: 'IT',
         );
@@ -179,5 +181,4 @@ class _HomeState extends State<Home> {
       print('Error fetching top rated series: $error');
     }
   }
-
 }

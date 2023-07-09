@@ -8,26 +8,31 @@ import 'RegTerza.dart';
 
 class RegSeconda extends StatefulWidget {
   final UserData userData;
-  const RegSeconda( {Key? key,required this.userData}) : super(key: key);
+
+  const RegSeconda({Key? key, required this.userData}) : super(key: key);
 
   @override
   _RegSecondaState createState() => _RegSecondaState();
 }
-enum Genere {M,F,A}
+
+enum Genere { M, F, A }
+
 class _RegSecondaState extends State<RegSeconda> {
-  int day=1;
-  int month=10;
-  int year=1993;
-  bool dateValidator(int year,int month,int day)
-  {
-    var eta=DateTime(year,month,day);
-    var today=DateTime.now();
-    var difference=today.difference(eta).inDays/365.round();
-    if(difference<14) return false;
-    else return true;
+  int day = 1;
+  int month = 10;
+  int year = 1993;
+
+  bool dateValidator(int year, int month, int day) {
+    var eta = DateTime(year, month, day);
+    var today = DateTime.now();
+    var difference = today.difference(eta).inDays / 365.round();
+    if (difference < 14)
+      return false;
+    else
+      return true;
   }
 
-  Genere? _genere= Genere.M;
+  Genere? _genere = Genere.M;
   late UserData userData;
 
   @override
@@ -35,6 +40,7 @@ class _RegSecondaState extends State<RegSeconda> {
     super.initState();
     userData = widget.userData;
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,13 +50,13 @@ class _RegSecondaState extends State<RegSeconda> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) =>  RegPrima()),
+              MaterialPageRoute(builder: (context) => RegPrima()),
             );
           },
         ),
         title: Align(
             alignment: Alignment.centerRight,
-            child:Text(
+            child: Text(
               '2/3',
               textAlign: TextAlign.end,
               style: TextStyle(
@@ -88,7 +94,7 @@ class _RegSecondaState extends State<RegSeconda> {
               ],
             ),
           ),
-           Container(
+          Container(
             height: 50,
           ),
           const Text(
@@ -97,7 +103,7 @@ class _RegSecondaState extends State<RegSeconda> {
               fontSize: 18,
             ),
           ),
-           Container(
+          Container(
             height: 3,
           ),
           Row(
@@ -108,7 +114,7 @@ class _RegSecondaState extends State<RegSeconda> {
                 groupValue: _genere,
                 onChanged: (Genere? value) {
                   setState(() {
-                    _genere=value;
+                    _genere = value;
                   });
                 },
               ),
@@ -118,7 +124,7 @@ class _RegSecondaState extends State<RegSeconda> {
                 groupValue: _genere,
                 onChanged: (Genere? value) {
                   setState(() {
-                    _genere=value;
+                    _genere = value;
                   });
                 },
               ),
@@ -128,14 +134,14 @@ class _RegSecondaState extends State<RegSeconda> {
                 groupValue: _genere,
                 onChanged: (Genere? value) {
                   setState(() {
-                    _genere=value;
+                    _genere = value;
                   });
                 },
               ),
               const Text('Altro'),
             ],
           ),
-           Container(
+          Container(
             height: 30,
           ),
           const Text(
@@ -144,7 +150,7 @@ class _RegSecondaState extends State<RegSeconda> {
               fontSize: 18,
             ),
           ),
-           Container(
+          Container(
             height: 20,
           ),
           Container(
@@ -156,56 +162,65 @@ class _RegSecondaState extends State<RegSeconda> {
                     borderSide: BorderSide(color: Colors.grey, width: 1.0),
                   ),
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10))), // optional
-              isDropdownHideUnderline: true, // optional
-              isFormValidator: true, // optional
-              startYear: 1900, // optional
-              endYear: 2020, // optional
-              selectedDay: 14, // optional
-              selectedMonth: 10, // optional
-              selectedYear: 1993, // optional
+                      borderRadius: BorderRadius.circular(10))),
+              // optional
+              isDropdownHideUnderline: true,
+              // optional
+              isFormValidator: true,
+              // optional
+              startYear: 1900,
+              // optional
+              endYear: 2020,
+              // optional
+              selectedDay: 14,
+              // optional
+              selectedMonth: 10,
+              // optional
+              selectedYear: 1993,
+              // optional
               onChangedDay: (value) => setState(() {
-                if(value!.isNotEmpty){
-                  day=int.parse(value);
+                if (value!.isNotEmpty) {
+                  day = int.parse(value);
                 }
               }),
               onChangedMonth: (value) => setState(() {
-                if(value!.isNotEmpty){
-                  month=int.parse(value);
+                if (value!.isNotEmpty) {
+                  month = int.parse(value);
                 }
               }),
               onChangedYear: (value) => setState(() {
-                if(value!.isNotEmpty){
-                  year=int.parse(value);
+                if (value!.isNotEmpty) {
+                  year = int.parse(value);
                 }
               }),
-              locale: "it_IT",// optional
+              locale: "it_IT", // optional
             ),
           ),
-           Container(
+          Container(
             height: 20,
           ),
           ElevatedButton(
             onPressed: () {
-              if(dateValidator(year, month, day)) {
-                userData.dataNascita=DateTime(year,month,day);
+              if (dateValidator(year, month, day)) {
+                userData.dataNascita = DateTime(year, month, day);
                 userData.genere = _genere.toString().split('.').last;
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>  RegTerza(userData: userData)),
+                  MaterialPageRoute(
+                      builder: (context) => RegTerza(userData: userData)),
                 );
-              }
-              else {
+              } else {
                 Fluttertoast.showToast(
-                    msg: "Inserisci una data di nascita valida (almeno 14 anni)",
+                    msg:
+                        "Inserisci una data di nascita valida (almeno 14 anni)",
                     toastLength: Toast.LENGTH_SHORT,
                     gravity: ToastGravity.CENTER,
                     timeInSecForIosWeb: 2,
                     backgroundColor: Colors.grey,
                     textColor: Colors.white,
-                    fontSize: 16.0
-                );
-                };
+                    fontSize: 16.0);
+              }
+              ;
             },
             child: const Text('Avanti'),
             style: ElevatedButton.styleFrom(

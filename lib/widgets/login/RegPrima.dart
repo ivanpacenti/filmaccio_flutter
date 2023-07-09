@@ -7,10 +7,8 @@ import '../models/UserData.dart';
 import 'Auth.dart';
 import 'RegSeconda.dart';
 
-
-
 class RegPrima extends StatefulWidget {
-  UserData userData=UserData();
+  UserData userData = UserData();
 
   @override
   _RegPrimaState createState() => _RegPrimaState();
@@ -18,18 +16,18 @@ class RegPrima extends StatefulWidget {
 
 class _RegPrimaState extends State<RegPrima> {
   var confirmPass;
-  bool visibilitaPassword1=false;
-  bool visibilitaPassword2=false;
-  int lunghezza=0;
-  final TextEditingController _email=TextEditingController();
-  final TextEditingController _utente=TextEditingController();
-  final TextEditingController _password1=TextEditingController();
-  final TextEditingController _password2=TextEditingController();
-  bool passwordUguali=true;
-  bool emailValida=true;
-  bool utenteValido=true;
-  bool passwordValida=true;
-  bool emailEsistente=false;
+  bool visibilitaPassword1 = false;
+  bool visibilitaPassword2 = false;
+  int lunghezza = 0;
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _utente = TextEditingController();
+  final TextEditingController _password1 = TextEditingController();
+  final TextEditingController _password2 = TextEditingController();
+  bool passwordUguali = true;
+  bool emailValida = true;
+  bool utenteValido = true;
+  bool passwordValida = true;
+  bool emailEsistente = false;
   late UserData userData;
 
   @override
@@ -42,17 +40,19 @@ class _RegPrimaState extends State<RegPrima> {
     RegExp regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     return regex.hasMatch(string);
   }
+
   bool isUtente(String string) {
     RegExp regex = RegExp(r"^(?=.*[a-zA-Z])[a-zA-Z0-9._]{3,}$");
     return regex.hasMatch(string);
   }
+
   bool isPassword(String string) {
     RegExp regex = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$');
     return regex.hasMatch(string);
   }
-  bool isPasswordUguali(String pwd1, String pwd2)
-  {
-    return(_password2.text==_password1.text);
+
+  bool isPasswordUguali(String pwd1, String pwd2) {
+    return (_password2.text == _password1.text);
   }
 
   @override
@@ -94,62 +94,61 @@ class _RegPrimaState extends State<RegPrima> {
                   controller: _email,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    labelText: 'Indirizzo email',
-                    labelStyle: TextStyle(color: !emailValida?Colors.red:null),
-                    prefixIcon: const Icon(Icons.email),
-                    prefixIconColor: !emailValida?Colors.red:null,
-                    suffixIcon: IconButton(
-                      icon:  Icon(emailValida?Icons.clear:Icons.warning_amber),
-                      onPressed: () {
-                        _email.text="";
-                        setState(() {
-                          emailValida=true;
-                        });
-                      },
-                    ),
-                    suffixIconColor: !emailValida?Colors.red:null
-                  ),
+                      labelText: 'Indirizzo email',
+                      labelStyle:
+                          TextStyle(color: !emailValida ? Colors.red : null),
+                      prefixIcon: const Icon(Icons.email),
+                      prefixIconColor: !emailValida ? Colors.red : null,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                            emailValida ? Icons.clear : Icons.warning_amber),
+                        onPressed: () {
+                          _email.text = "";
+                          setState(() {
+                            emailValida = true;
+                          });
+                        },
+                      ),
+                      suffixIconColor: !emailValida ? Colors.red : null),
                 ),
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if(!emailValida) const Text("Indirizzo mail non valido",
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.red)) else
-                              if(emailEsistente) const Text("Indirizzo mail già esistente",
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.red))
-
+                    if (!emailValida)
+                      const Text("Indirizzo mail non valido",
+                          style: TextStyle(fontSize: 12, color: Colors.red))
+                    else if (emailEsistente)
+                      const Text("Indirizzo mail già esistente",
+                          style: TextStyle(fontSize: 12, color: Colors.red))
                   ],
                 ),
                 TextFormField(
-                  onChanged: (hasValue)
-                  {
+                  onChanged: (hasValue) {
                     setState(() {
-                      lunghezza=_utente.text.length;
+                      lunghezza = _utente.text.length;
                     });
                   },
-                  controller:_utente,
+                  controller: _utente,
                   decoration: InputDecoration(
                     labelText: 'Nome utente',
-                    labelStyle: TextStyle(color: !utenteValido?Colors.red:null),
+                    labelStyle:
+                        TextStyle(color: !utenteValido ? Colors.red : null),
                     prefixIcon: const Icon(Icons.person),
-                    prefixIconColor: !utenteValido?Colors.red:null,
+                    prefixIconColor: !utenteValido ? Colors.red : null,
                     suffixIcon: IconButton(
-                      icon:  Icon(utenteValido?Icons.clear:Icons.warning_amber),
+                      icon: Icon(
+                          utenteValido ? Icons.clear : Icons.warning_amber),
                       onPressed: () {
-                        _utente.text="";
+                        _utente.text = "";
                         setState(() {
-                          lunghezza=0;
-                          utenteValido=true;
+                          lunghezza = 0;
+                          utenteValido = true;
                         });
                       },
                     ),
-                    suffixIconColor: !utenteValido?Colors.red:null,
-                    counter:  Text('$lunghezza / 30'),
+                    suffixIconColor: !utenteValido ? Colors.red : null,
+                    counter: Text('$lunghezza / 30'),
                   ),
                   keyboardType: TextInputType.text,
                   //maxLength: 30,
@@ -157,150 +156,158 @@ class _RegPrimaState extends State<RegPrima> {
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [  if(!utenteValido)
+                  children: [
+                    if (!utenteValido)
                       Container(
-                        width: 300,
-                        child: const Text("Il nome utente deve essere lungo "
-                            "almeno 3 caratteri, deve contenere almeno una lettera e può contenere "
-                            "solo lettere, numeri e i caratteri '.' e '_'",
-                            softWrap: true,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 3,
-                            style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.red))
-                      )
-                    
+                          width: 300,
+                          child: const Text(
+                              "Il nome utente deve essere lungo "
+                              "almeno 3 caratteri, deve contenere almeno una lettera e può contenere "
+                              "solo lettere, numeri e i caratteri '.' e '_'",
+                              softWrap: true,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 3,
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.red)))
                   ],
                 ),
                 TextFormField(
-                  onChanged: (hasChange)
-                  {
-                    if(hasChange.isNotEmpty) setState(() {
-                      passwordValida=true;
-                    });
+                  onChanged: (hasChange) {
+                    if (hasChange.isNotEmpty)
+                      setState(() {
+                        passwordValida = true;
+                      });
                   },
                   controller: _password1,
                   decoration: InputDecoration(
-                    labelText: 'Password',
-                      labelStyle: TextStyle(color: !passwordValida?Colors.red:null),
-                    prefixIcon: const Icon(Icons.lock),
-                    prefixIconColor: !passwordValida?Colors.red:null,
-                    suffixIcon: IconButton(
-                      icon: Icon(visibilitaPassword1 ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () {
-                        setState(() {
-                          visibilitaPassword1=!visibilitaPassword1;
-                        });
-                      },
-                    ),
-                    suffixIconColor: !passwordValida?Colors.red:null
-                  ),
+                      labelText: 'Password',
+                      labelStyle:
+                          TextStyle(color: !passwordValida ? Colors.red : null),
+                      prefixIcon: const Icon(Icons.lock),
+                      prefixIconColor: !passwordValida ? Colors.red : null,
+                      suffixIcon: IconButton(
+                        icon: Icon(visibilitaPassword1
+                            ? Icons.visibility_off
+                            : Icons.visibility),
+                        onPressed: () {
+                          setState(() {
+                            visibilitaPassword1 = !visibilitaPassword1;
+                          });
+                        },
+                      ),
+                      suffixIconColor: !passwordValida ? Colors.red : null),
                   obscureText: !visibilitaPassword1,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [  if(!passwordValida)  Container(
-                    width: 300,
-                    child: const Text("La password deve essere lunga "
-                        "almeno 8 caratteri e contenere almeno una lettera "
-                        "maiuscola, una minuscola e un numero",style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.red)),
-                  )
-
+                  children: [
+                    if (!passwordValida)
+                      Container(
+                        width: 300,
+                        child: const Text(
+                            "La password deve essere lunga "
+                            "almeno 8 caratteri e contenere almeno una lettera "
+                            "maiuscola, una minuscola e un numero",
+                            style: TextStyle(fontSize: 12, color: Colors.red)),
+                      )
                   ],
                 ),
-
                 TextFormField(
                   controller: _password2,
                   decoration: InputDecoration(
-                    labelText: 'Conferma password',
-                      labelStyle: TextStyle(color: !passwordValida?Colors.red:null),
-                    prefixIcon: const Icon(Icons.lock),
-                    prefixIconColor: !passwordValida?Colors.red:null,
-                    suffixIcon: IconButton(
-                      icon: Icon(visibilitaPassword2 ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () {
-                        setState(() {
-                          visibilitaPassword2=!visibilitaPassword2;
-                        });
-                      },
-                    ),
-                    suffixIconColor: !passwordValida?Colors.red:null
-                  ),
+                      labelText: 'Conferma password',
+                      labelStyle:
+                          TextStyle(color: !passwordValida ? Colors.red : null),
+                      prefixIcon: const Icon(Icons.lock),
+                      prefixIconColor: !passwordValida ? Colors.red : null,
+                      suffixIcon: IconButton(
+                        icon: Icon(visibilitaPassword2
+                            ? Icons.visibility_off
+                            : Icons.visibility),
+                        onPressed: () {
+                          setState(() {
+                            visibilitaPassword2 = !visibilitaPassword2;
+                          });
+                        },
+                      ),
+                      suffixIconColor: !passwordValida ? Colors.red : null),
                   obscureText: !visibilitaPassword2,
-                  onChanged: (String hasChange){
-                    if(hasChange.isNotEmpty){
-                      passwordUguali=isPasswordUguali(_password1.text, _password2.text);
-                      } else passwordUguali=false;
-                    },
+                  onChanged: (String hasChange) {
+                    if (hasChange.isNotEmpty) {
+                      passwordUguali =
+                          isPasswordUguali(_password1.text, _password2.text);
+                    } else
+                      passwordUguali = false;
+                  },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if(passwordUguali==false) const Text("Le password non corrispondono",
-                        style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.red)),
+                    if (passwordUguali == false)
+                      const Text("Le password non corrispondono",
+                          style: TextStyle(fontSize: 12, color: Colors.red)),
                   ],
                 ),
                 const Divider(height: 16),
                 ElevatedButton(
-                  onPressed: () async{
+                  onPressed: () async {
                     if (isEmail(_email.text)) {
                       setState(() {
-                      emailValida=true;
-                    });
-                    } else {
-                      setState(() {
-                      emailValida=false;
-                    });
-                    }
-                    if (isUtente(_utente.text)) {
-                      setState(() {
-                        utenteValido=true;
+                        emailValida = true;
                       });
                     } else {
                       setState(() {
-                        utenteValido=false;
+                        emailValida = false;
+                      });
+                    }
+                    if (isUtente(_utente.text)) {
+                      setState(() {
+                        utenteValido = true;
+                      });
+                    } else {
+                      setState(() {
+                        utenteValido = false;
                       });
                     }
                     if (isPassword(_password1.text)) {
                       setState(() {
-                        passwordValida=true;
+                        passwordValida = true;
                       });
                     } else {
                       setState(() {
-                        passwordValida=false;
+                        passwordValida = false;
                       });
                     }
-                    passwordUguali=isPasswordUguali(_password1.text,_password2.text);
-                    if(utenteValido&&emailValida&&passwordUguali&&passwordValida)
-                      {
-
-                        userData.email=_email.text;
-                        userData.nomeUtente=_utente.text;
-                        userData.password=_password1.text;
-                        if(await FirestoreService.searchUsersByEmail(_email.text)){
-                          setState(() {
-                            emailEsistente=true;
-                            emailValida=false;
-                          });
-                        }
-                        else{
-                          setState(() {
-                            emailEsistente=false;
-                            emailValida=true;
-                          });
-                        }
-                        if(!emailEsistente) {
-                          Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => RegSeconda(userData: userData)),
-                        );
-                        }
+                    passwordUguali =
+                        isPasswordUguali(_password1.text, _password2.text);
+                    if (utenteValido &&
+                        emailValida &&
+                        passwordUguali &&
+                        passwordValida) {
+                      userData.email = _email.text;
+                      userData.nomeUtente = _utente.text;
+                      userData.password = _password1.text;
+                      if (await FirestoreService.searchUsersByEmail(
+                          _email.text)) {
+                        setState(() {
+                          emailEsistente = true;
+                          emailValida = false;
+                        });
+                      } else {
+                        setState(() {
+                          emailEsistente = false;
+                          emailValida = true;
+                        });
                       }
+                      if (!emailEsistente) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  RegSeconda(userData: userData)),
+                        );
+                      }
+                    }
                   },
                   child: const Text('Avanti'),
                   style: ElevatedButton.styleFrom(
@@ -315,29 +322,29 @@ class _RegPrimaState extends State<RegPrima> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () async{
-            try {
-              await Auth().signOut();
-            } catch (e) {
+          onPressed: () {
+            Auth().signOut().then((_) {
+              if (mounted) {
+                // verifica che il widget esista ancora spiegato meglio da altre parti, per problema sincronicità
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyApp()),
+                );
+              }
+            }).catchError((e) {
               print('Errore durante il logout: $e');
-            }
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MyApp()),
-            );
-
+            });
           },
         ),
         title: Align(
             alignment: Alignment.centerRight,
-            child:Text(
+            child: Text(
               '1/3',
               textAlign: TextAlign.end,
               style: TextStyle(
                 fontFamily: 'sans-serif',
                 color: Theme.of(context).secondaryHeaderColor,
                 fontSize: 24,
-
               ),
             )),
       ),

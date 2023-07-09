@@ -48,19 +48,25 @@ class _MovieDetailsState extends State<MovieDetails> {
   }
 
   Future<void> schermataperson(String personId) async {
-    Person person = await _apiClient.getPersonDetails(
-      apiKey: tmdbApiKey,
-      personId: personId,
-      language: 'it-IT',
-      region: 'IT',
-      appendToResponse: 'combined_credits',
-    );
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PersonDetailsActivity(person: person),
-      ),
-    );
+    try {
+      Person person = await _apiClient.getPersonDetails(
+        apiKey: tmdbApiKey,
+        personId: personId,
+        language: 'it-IT',
+        region: 'IT',
+        appendToResponse: 'combined_credits',
+      );
+      if (mounted) {
+        // verifica che il widget esista ancora sempre stesso discorso
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PersonDetailsActivity(person: person),
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error getting person details: $e');
+    }
   }
 
   Future<void> checkisFavorite() async {
@@ -413,7 +419,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                                     const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
                                   '${castMember?.character}',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 11,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -501,7 +507,7 @@ class _ExpandableTextState extends State<ExpandableText> {
                 },
                 child: Text(
                   isExpanded ? 'Mostra meno' : 'Mostra altro',
-                  style: TextStyle(color: Colors.blue),
+                  style: const TextStyle(color: Colors.blue),
                 ),
               ),
           ],
@@ -532,12 +538,3 @@ void AggiungiMinutes(int minFilm) async {
         .catchError((error) => myCallback(false));
   }
 }
-
-// Movie convertToMovie(TmdbEntity entity) {
-//   return Movie(
-//     id: entity.id,
-//     title: entity.title,
-//     posterPath: entity.imagePath,
-//     backdropPath: entity.backdropPath,
-//     // Aggiungi qui altri campi se necessario
-//
