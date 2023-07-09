@@ -411,7 +411,7 @@ class _ProfiloState extends State<Profilo> {
                                           padding:
                                               const EdgeInsets.only(top: 10),
                                           child: Text(
-                                            moviesNumber.toString() ?? '0',
+                                            moviesNumber.toString(),
                                             style: TextStyle(
                                               fontFamily: 'sans-serif-black',
                                               fontSize: 20,
@@ -1283,7 +1283,7 @@ class _ProfiloState extends State<Profilo> {
     List<dynamic> list = await FirestoreService.getList(uid, listName);
     if (list.isEmpty) {
       return []; // ritorna una lista vuota
-    } else {}
+    }
     List<String> posterPathsTv = [];
     String baseUrl = "https://image.tmdb.org/t/p/w185/";
 
