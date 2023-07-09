@@ -1,7 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import 'Credits.dart';
+
 part 'Movie.g.dart';
+
 @JsonSerializable()
 class Movie {
   final int id;
@@ -30,5 +32,6 @@ class Movie {
   });
 
   factory Movie.fromJson(Map<String, dynamic> json) => _$MovieFromJson(json);
+
   Map<String, dynamic> toJson() => _$MovieToJson(this);
 }

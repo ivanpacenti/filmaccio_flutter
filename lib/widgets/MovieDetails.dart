@@ -2,11 +2,9 @@ import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
-import 'package:filmaccio_flutter/main.dart';
 import 'package:filmaccio_flutter/widgets/models/Movie.dart';
 import 'package:filmaccio_flutter/widgets/peopleDetails.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'Firebase/FirestoreService.dart';
@@ -14,7 +12,6 @@ import 'data/api/TmdbApiClient.dart';
 import 'data/api/api_key.dart';
 import 'login/Auth.dart';
 import 'models/Person.dart';
-import 'package:filmaccio_flutter/color_schemes.g.dart';
 
 class MovieDetails extends StatefulWidget {
   final Movie movie;
@@ -139,13 +136,13 @@ class _MovieDetailsState extends State<MovieDetails> {
               ),
               child: _movieDetails.backdropPath != null
                   ? Image.network(
-                'https://image.tmdb.org/t/p/w780/${_movieDetails.backdropPath}',
-                fit: BoxFit.cover,
-              )
+                      'https://image.tmdb.org/t/p/w780/${_movieDetails.backdropPath}',
+                      fit: BoxFit.cover,
+                    )
                   : Image.asset(
-                'assets/images/error_404.png',
-                fit: BoxFit.cover,
-              ),
+                      'assets/images/error_404.png',
+                      fit: BoxFit.cover,
+                    ),
             ),
           ),
           Row(
@@ -159,13 +156,13 @@ class _MovieDetailsState extends State<MovieDetails> {
                   borderRadius: BorderRadius.circular(8),
                   child: _movieDetails.posterPath != null
                       ? Image.network(
-                    'https://image.tmdb.org/t/p/w185/${_movieDetails.posterPath}',
-                    fit: BoxFit.cover,
-                  )
+                          'https://image.tmdb.org/t/p/w185/${_movieDetails.posterPath}',
+                          fit: BoxFit.cover,
+                        )
                       : Image.asset(
-                    'assets/images/error_404.png',
-                    fit: BoxFit.cover,
-                  ),
+                          'assets/images/error_404.png',
+                          fit: BoxFit.cover,
+                        ),
                 ),
               ),
               Expanded(
@@ -192,7 +189,9 @@ class _MovieDetailsState extends State<MovieDetails> {
                         margin:
                             const EdgeInsets.only(left: 16, top: 8, right: 16),
                         child: Text(
-                            _movieDetails.releaseDate != null ? "${_movieDetails.releaseDate!.split("-").first ?? ''} | Diretto da:" : "Diretto da:",
+                            _movieDetails.releaseDate != null
+                                ? "${_movieDetails.releaseDate!.split("-").first ?? ''} | Diretto da:"
+                                : "Diretto da:",
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.normal,
@@ -203,11 +202,13 @@ class _MovieDetailsState extends State<MovieDetails> {
                       Container(
                         margin:
                             const EdgeInsets.only(left: 16, top: 8, right: 16),
-                        child: _movieDetails.duration != null ? Text("${_movieDetails.duration} min",
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            )) : null,
+                        child: _movieDetails.duration != null
+                            ? Text("${_movieDetails.duration} min",
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ))
+                            : null,
                       ),
                     ],
                   ),
@@ -338,12 +339,13 @@ class _MovieDetailsState extends State<MovieDetails> {
                 ),
               ),
               Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: ExpandableText(
-                      text: _movieDetails.overview ?? "Non disponibile",
-                      maxLines: 3,
-                    ),
-                  ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: ExpandableText(
+                  text: _movieDetails.overview ?? "Non disponibile",
+                  maxLines: 3,
+                ),
+              ),
               const Divider(),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -380,31 +382,35 @@ class _MovieDetailsState extends State<MovieDetails> {
                                 height: 100,
                                 margin: EdgeInsets.all(5.0),
                                 child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  child: castMember?.profilePath != null ? Image.network(
-                                    "https://image.tmdb.org/t/p/w185${castMember?.profilePath}",
-                                    fit: BoxFit.cover,
-                                  ) : Image.asset(
-                                    'assets/images/error_404.png',
-                                    fit: BoxFit.cover,
-                                  )
-                                  ),
-                                ),
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: castMember?.profilePath != null
+                                        ? Image.network(
+                                            "https://image.tmdb.org/t/p/w185${castMember?.profilePath}",
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Image.asset(
+                                            'assets/images/error_404.png',
+                                            fit: BoxFit.cover,
+                                          )),
+                              ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0, vertical: 5.0),
                                 child: Text(
                                   '${castMember?.name}',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).colorScheme.primary,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
                                   '${castMember?.character}',
                                   style: TextStyle(
@@ -423,7 +429,6 @@ class _MovieDetailsState extends State<MovieDetails> {
                   },
                 ),
               ),
-
             ],
           ),
         ],
