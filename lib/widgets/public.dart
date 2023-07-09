@@ -11,6 +11,8 @@ import 'data/api/api_key.dart';
 // quella che viene chiamata Tendenza
 
 class HomeApi extends StatefulWidget {
+  const HomeApi({super.key});
+
   @override
   _HomeApiState createState() => _HomeApiState();
 }
@@ -149,7 +151,7 @@ class _HomeApiState extends State<HomeApi> {
           await _apiClient.getTopRatedTv(tmdbApiKey, 1, 'it-IT', 'IT');
       setState(() {
         if (response.results != null) {
-          _topTvShows = response.results!.toList();
+          _topTvShows = response.results.toList();
         } else {
           _topTvShows = [];
         }
@@ -160,18 +162,15 @@ class _HomeApiState extends State<HomeApi> {
   }
 
   Future<void> fetchTrandingTvShows() async {
-    // funzione per prendere i le serie tv  in tranding
+    // funzione per prendere i le serie tv  rated movies
     try {
       final response = await _apiClient.getTrandingTV(tmdbApiKey, 'it-IT', 'IT');
       setState(() {
-        if (response.results != null) {
-          _topTrandingTvShows = response.results.toList();
-        } else {
-          _topTrandingTvShows = [];
-        }
+        _topTrandingTvShows = response.results.isNotEmpty ? response.results.toList() : [];
       });
     } catch (error) {
       print('Error fetching top TV shows: $error');
     }
   }
+
 }

@@ -113,16 +113,13 @@ class _HomeState extends State<Home> {
     try {
       final response = await _apiClient.getMovieNowPlaying(tmdbApiKey, 1, 'it-IT', 'IT');
       setState(() {
-        if (response.results != null) {
-          _movieNowPlaying = response.results.toList();
-        } else {
-          _movieNowPlaying = [];
-        }
+        _movieNowPlaying = response.results.toList();
       });
     } catch (error) {
       print('Error fetching now playing movies: $error');
     }
   }
+
 
   Future<void> fetchTopRating() async {
     try {
@@ -157,7 +154,6 @@ class _HomeState extends State<Home> {
   Future<void> fetchTopRatedTV() async {
     try {
       var series = await FirestoreService.getAllRatings("series");
-      print(series);
       series.sort((a, b) => b['rating'].compareTo(a['rating']));
 
       var seriesList = <TvShow>[];
@@ -169,7 +165,6 @@ class _HomeState extends State<Home> {
           language: 'it-IT',
           region: 'IT',
         );
-        print(" le serioe tv sono $tvShow");
         seriesList.add(tvShow);
       }
 
