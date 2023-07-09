@@ -58,9 +58,6 @@ class _MovieDetailsState extends State<MovieDetails> {
       region: 'IT',
       appendToResponse: 'combined_credits',
     );
-    if (kDebugMode) {
-      print("PERSONA: ${person.name}");
-    }
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -142,7 +139,7 @@ class _MovieDetailsState extends State<MovieDetails> {
               ),
               child: _movieDetails.backdropPath != null
                   ? Image.network(
-                'https://image.tmdb.org/t/p/w185/${_movieDetails.backdropPath}',
+                'https://image.tmdb.org/t/p/w780/${_movieDetails.backdropPath}',
                 fit: BoxFit.cover,
               )
                   : Image.asset(
@@ -206,11 +203,11 @@ class _MovieDetailsState extends State<MovieDetails> {
                       Container(
                         margin:
                             const EdgeInsets.only(left: 16, top: 8, right: 16),
-                        child: Text("${_movieDetails.duration} min",
+                        child: _movieDetails.duration != null ? Text("${_movieDetails.duration} min",
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                            )),
+                            )) : null,
                       ),
                     ],
                   ),
@@ -364,7 +361,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                 height: 190,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: 20,
+                  itemCount: _movieDetails.credits?.cast.length,
                   itemBuilder: (context, index) {
                     final castMember = _movieDetails.credits?.cast[index];
                     return GestureDetector(
