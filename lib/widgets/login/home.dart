@@ -3,6 +3,7 @@ import 'package:filmaccio_flutter/widgets/MovieDetails.dart';
 import 'package:filmaccio_flutter/widgets/models/Movie.dart';
 import 'package:filmaccio_flutter/widgets/models/TvShow.dart';
 import 'package:flutter/material.dart';
+import '../Firebase/FirestoreService.dart';
 import '../data/api/TmdbApiClient.dart';
 import '../data/api/api_key.dart';
 import '../SeriesDetails.dart';
@@ -125,22 +126,34 @@ class _HomeState extends State<Home> {
 
   Future<void> fetchTopRating() async {
     try {
-      final response = await _apiClient.getTopRatedMovies(tmdbApiKey, 1,'it-IT',"IT");
+      var movies = await FirestoreService.getAllRatings("movies");
+      movies.sort((a, b) => b['rating'].compareTo(a['rating']));
+
+      var moviesList = <Movie>[];
+      for (var movie in movies) {
+        // Assicurati di passare i parametri corretti nella funzione getMovieDetails
+        moviesList.add(await _apiClient.getMovieDetails(
+            apiKey: tmdbApiKey,
+            movieId: movie['movieId'].toString(),
+            language: 'it-IT',
+            region: 'IT',
+        ));
+      }
+
       setState(() {
-        if (response.results != null) {
-
-          _movieTopRating = response.results!.toList();
-
-
+        if (moviesList.isNotEmpty) {
+          _movieTopRating = moviesList;
         } else {
           _movieTopRating = [];
-
         }
       });
     } catch (error) {
       print('Error fetching top rated movies: $error');
     }
   }
+
+
+
   Future<void> fetchTopRatedTV() async {
     try {
       final response = await _apiClient.getTopRatedTv(tmdbApiKey, 6,'it-IT',"IT");
