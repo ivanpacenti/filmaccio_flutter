@@ -1,7 +1,9 @@
 import 'package:filmaccio_flutter/widgets/models/CombinedCredits.dart';
 import 'package:filmaccio_flutter/widgets/models/Product.dart';
 import 'package:json_annotation/json_annotation.dart';
+
 part 'Person.g.dart';
+
 @JsonSerializable()
 class Person {
   int id;
@@ -20,7 +22,7 @@ class Person {
   String? placeOfDeath;
   final CombinedCredits? combinedCredits;
 
- List<Product>? products = [];
+  List<Product>? products = [];
 
   Person({
     required this.id,

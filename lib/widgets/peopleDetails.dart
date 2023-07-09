@@ -2,6 +2,7 @@ import 'package:filmaccio_flutter/widgets/Firebase/FirestoreService.dart';
 import 'package:filmaccio_flutter/widgets/MovieDetails.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 import 'login/Auth.dart';
 import 'models/Person.dart';
 
@@ -114,7 +115,9 @@ class _PersonDetailsActivityState extends State<PersonDetailsActivity> {
               Text(
                 widget.person.gender == null
                     ? 'Conosciuto per'
-                    : (widget.person.gender == 1 ? 'Conosciuta per' : 'Conosciuto per'),
+                    : (widget.person.gender == 1
+                        ? 'Conosciuta per'
+                        : 'Conosciuto per'),
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
