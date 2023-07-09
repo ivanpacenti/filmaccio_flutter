@@ -643,7 +643,7 @@ class _ProfiloState extends State<Profilo> {
                                                     width: 50,
                                                     height: 50,
                                                     child:
-                                                        CircularProgressIndicator(),
+                                                        const CircularProgressIndicator(),
                                                   ),
                                                 );
                                               } else if (snapshot.hasError) {
@@ -660,8 +660,9 @@ class _ProfiloState extends State<Profilo> {
                                                       (BuildContext context,
                                                           int index) {
                                                     return Padding(
-                                                      padding: EdgeInsets.only(
-                                                          right: 8),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 8),
                                                       child: Container(
                                                         width: 40,
                                                         height: 60,
@@ -998,7 +999,7 @@ class _ProfiloState extends State<Profilo> {
                                                     width: 50,
                                                     height: 50,
                                                     child:
-                                                        CircularProgressIndicator(),
+                                                        const CircularProgressIndicator(),
                                                   ),
                                                 );
                                               } else if (snapshot.hasError) {
@@ -1141,8 +1142,8 @@ class _ProfiloState extends State<Profilo> {
                               ],
                             ),
                           ),
-                          SizedBox(height: 8),
-                          Divider(),
+                          const SizedBox(height: 8),
+                          const Divider(),
                           Text(
                             'Serie TV completate',
                             style: TextStyle(
@@ -1151,7 +1152,7 @@ class _ProfiloState extends State<Profilo> {
                               color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           SingleChildScrollView(
                             child: Padding(
                               padding: EdgeInsets.symmetric(horizontal: 8),
@@ -1192,7 +1193,8 @@ class _ProfiloState extends State<Profilo> {
                                         itemBuilder: (context, index) {
                                           final tvShow = tvShows[index];
                                           return Padding(
-                                            padding: EdgeInsets.only(bottom: 8),
+                                            padding: const EdgeInsets.only(
+                                                bottom: 8),
                                             child: Row(
                                               children: [
                                                 ClipRRect(
@@ -1210,8 +1212,8 @@ class _ProfiloState extends State<Profilo> {
                                                 Expanded(
                                                   child: Text(
                                                     tvShow.name ?? " ",
-                                                    style:
-                                                        TextStyle(fontSize: 14),
+                                                    style: const TextStyle(
+                                                        fontSize: 14),
                                                   ),
                                                 ),
                                               ],
@@ -1251,11 +1253,8 @@ class _ProfiloState extends State<Profilo> {
   Future<List<String>> getPosters(String uid, String listName) async {
     List<dynamic> list = await FirestoreService.getList(uid, listName);
     if (list.isEmpty) {
-      print("La lista è vuota");
       return []; // ritorna una lista vuota
-    } else {
-      print("La lista non è vuota");
-    }
+    } else {}
     List<String> posterPaths = [];
     String baseUrl = "https://image.tmdb.org/t/p/w185/";
 
@@ -1283,11 +1282,8 @@ class _ProfiloState extends State<Profilo> {
     // PER LE SERIE TV NON CI SBAGLIAMO
     List<dynamic> list = await FirestoreService.getList(uid, listName);
     if (list.isEmpty) {
-      print("La lista è vuota");
       return []; // ritorna una lista vuota
-    } else {
-      print("La lista non è vuota");
-    }
+    } else {}
     List<String> posterPathsTv = [];
     String baseUrl = "https://image.tmdb.org/t/p/w185/";
 
@@ -1315,11 +1311,8 @@ class _ProfiloState extends State<Profilo> {
     // PER LE SERIE TV FINITE
     List<dynamic> list = await FirestoreService.getList(uid, listName);
     if (list.isEmpty) {
-      print("La lista è vuota");
       return []; // ritorna una lista vuota
-    } else {
-      print("La lista non è vuota");
-    }
+    } else {}
     List<TvShow> tvShows = [];
     String baseUrl = "https://image.tmdb.org/t/p/w185/";
 
@@ -1346,7 +1339,6 @@ class _ProfiloState extends State<Profilo> {
         );
 
         tvShows.add(tvShow);
-        print("tvShow: $tvShow");
       }
     }
     return tvShows;

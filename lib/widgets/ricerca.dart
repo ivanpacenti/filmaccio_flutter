@@ -14,6 +14,8 @@ import 'models/TvShow.dart';
 import 'other_user_profile.dart';
 
 class Ricerca extends StatefulWidget {
+  const Ricerca({super.key});
+
   @override
   _RicercaState createState() => _RicercaState();
 }
@@ -25,6 +27,7 @@ class _RicercaState extends State<Ricerca> {
   final TextEditingController _searchController = TextEditingController();
   final List<dynamic> _searchResults = [];
 
+  @override // metodo di sovrascrizione
   void initState() {
     super.initState();
     _apiClient = TmdbApiClient(_dio);
@@ -35,7 +38,7 @@ class _RicercaState extends State<Ricerca> {
       final userSnapshot = await FirebaseFirestore.instance
           .collection('users')
           .where('username', isGreaterThanOrEqualTo: searchText)
-          .where('username', isLessThanOrEqualTo: searchText + '\uf8ff')
+          .where('username', isLessThanOrEqualTo: '$searchText\uf8ff')
           .get();
       final userList = userSnapshot.docs;
       print('User Search Results: $userList');
@@ -101,7 +104,7 @@ class _RicercaState extends State<Ricerca> {
                 border: const OutlineInputBorder(),
                 labelText: 'Ricerca film, serie TV, persone e utenti',
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.search),
+                  icon: const Icon(Icons.search),
                   onPressed: _search,
                 ),
               ),
@@ -178,51 +181,69 @@ class _RicercaState extends State<Ricerca> {
   }
 
   Future<void> schermatatv(String seriesId) async {
-    TvShow tvDetails = await _apiClient.getTvDetails(
-      apiKey: tmdbApiKey,
-      serieId: seriesId,
-      language: 'it-IT',
-      region: 'IT',
-    );
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TvShowDetails(tvShow: tvDetails),
-      ),
-    );
+    // fa una chiamta all'api per ottenere i dettagli della serie e poi la passa alla schermata dei dettagli
+    try {
+      TvShow tvDetails = await _apiClient.getTvDetails(
+        apiKey: tmdbApiKey,
+        serieId: seriesId,
+        language: 'it-IT',
+        region: 'IT',
+      );
+      if (mounted) {
+        // verifica che il widget esista ancora
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => TvShowDetails(tvShow: tvDetails),
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error getting TV show details: $e');
+    }
   }
 
   Future<void> schermatafilm(String movieId) async {
-    Movie movie = await _apiClient.getMovieDetails(
-      apiKey: tmdbApiKey,
-      movieId: movieId,
-      language: 'it-IT',
-      region: 'IT',
-    );
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MovieDetails(movie: movie),
-      ),
-    );
+    // fa una chiamta all'api per ottenere i dettagli del film e poi la passa alla schermata dei dettagli
+    try {
+      Movie movie = await _apiClient.getMovieDetails(
+        apiKey: tmdbApiKey,
+        movieId: movieId,
+        language: 'it-IT',
+        region: 'IT',
+      );
+      if (mounted) {
+        // verifica che il widget esista ancora
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => MovieDetails(movie: movie),
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error getting movie details: $e');
+    }
   }
 
   Future<void> schermataperson(String personId) async {
-    Person person = await _apiClient.getPersonDetails(
-      apiKey: tmdbApiKey,
-      personId: personId,
-      language: 'it-IT',
-      region: 'IT',
-      appendToResponse: 'combined_credits',
-    );
-    print("PERSONA: " + person.name);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PersonDetailsActivity(person: person),
-      ),
-    );
+    // fa una chiamta all'api per ottenere i dettagli della persona e poi la passa alla schermata dei dettagli
+    try {
+      Person person = await _apiClient.getPersonDetails(
+        apiKey: tmdbApiKey,
+        personId: personId,
+        language: 'it-IT',
+        region: 'IT',
+        appendToResponse: 'combined_credits',
+      );
+      if (mounted) {
+        // verifica che il widget esista ancora
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PersonDetailsActivity(person: person),
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error getting person details: $e');
+    }
   }
 }
