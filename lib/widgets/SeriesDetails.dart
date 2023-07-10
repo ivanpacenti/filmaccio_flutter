@@ -70,7 +70,7 @@ class _TvShowDetailsState extends State<TvShowDetails> {
       region: 'IT',
       appendToResponse: 'combined_credits',
     );
-    if(mounted){
+    if (mounted) {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -79,7 +79,6 @@ class _TvShowDetailsState extends State<TvShowDetails> {
       );
     }
   }
-
 
   Future<void> checkisFavorite() async {
     _isFavorite = false;
@@ -216,7 +215,7 @@ class _TvShowDetailsState extends State<TvShowDetails> {
                             const EdgeInsets.only(left: 16, top: 8, right: 16),
                         child: Text(
                             _tvShowDetails.releaseDate != null
-                                ? "${_tvShowDetails.releaseDate!.split("-").first ?? ''} | Diretto da:"
+                                ? "${_tvShowDetails.releaseDate!.split("-").first} | Diretto da:"
                                 : "Diretto da:",
                             style: const TextStyle(
                               fontSize: 12,

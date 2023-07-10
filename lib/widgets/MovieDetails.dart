@@ -13,7 +13,6 @@ import 'data/api/api_key.dart';
 import 'login/Auth.dart';
 import 'models/Person.dart';
 
-
 /// Classe per la visualizzazione dei dettagli di un film in particolare
 /// {@autor ivanpacenti}
 /// {@autor NicolaPiccia}
@@ -201,7 +200,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                             const EdgeInsets.only(left: 16, top: 8, right: 16),
                         child: Text(
                             _movieDetails.releaseDate != null
-                                ? "${_movieDetails.releaseDate!.split("-").first ?? ''} | Diretto da:"
+                                ? "${_movieDetails.releaseDate!.split("-").first} | Diretto da:"
                                 : "Diretto da:",
                             style: const TextStyle(
                               fontSize: 12,

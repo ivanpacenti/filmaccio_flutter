@@ -25,5 +25,5 @@ class SearchResponse {
 
   Map<String, dynamic> toJson() => _$SearchResponseToJson(this);
 
-  // List<TmdbEntity> get results => entities;
+// List<TmdbEntity> get results => entities;
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'auth.dart';
+
 /// Classe che imnpementa il logout
 /// {@autor ivanpacenti}
 class Logout extends StatefulWidget {

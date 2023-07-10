@@ -67,8 +67,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '345521301448',
     projectId: 'filmaccio',
     storageBucket: 'filmaccio.appspot.com',
-    androidClientId: '345521301448-0u06erg3bbjjo6tme4bnkroajodefsh6.apps.googleusercontent.com',
-    iosClientId: '345521301448-pa62qhqv90k4p14f01jh7ppk3canr4io.apps.googleusercontent.com',
+    androidClientId:
+        '345521301448-0u06erg3bbjjo6tme4bnkroajodefsh6.apps.googleusercontent.com',
+    iosClientId:
+        '345521301448-pa62qhqv90k4p14f01jh7ppk3canr4io.apps.googleusercontent.com',
     iosBundleId: 'com.example.filmaccioFlutter',
   );
 
@@ -78,8 +80,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '345521301448',
     projectId: 'filmaccio',
     storageBucket: 'filmaccio.appspot.com',
-    androidClientId: '345521301448-0u06erg3bbjjo6tme4bnkroajodefsh6.apps.googleusercontent.com',
-    iosClientId: '345521301448-esdsgjpo93em9qmahqqvl6463kqn2shl.apps.googleusercontent.com',
+    androidClientId:
+        '345521301448-0u06erg3bbjjo6tme4bnkroajodefsh6.apps.googleusercontent.com',
+    iosClientId:
+        '345521301448-esdsgjpo93em9qmahqqvl6463kqn2shl.apps.googleusercontent.com',
     iosBundleId: 'com.example.filmaccioFlutter.RunnerTests',
   );
 }

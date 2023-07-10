@@ -1,16 +1,16 @@
+import 'dart:io';
+
 import 'package:filmaccio_flutter/main.dart';
 import 'package:filmaccio_flutter/widgets/Firebase/FirestoreService.dart';
 import 'package:filmaccio_flutter/widgets/login/RegSeconda.dart';
-import 'package:filmaccio_flutter/widgets/login/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 
 import '../models/UserData.dart';
-import '../nav/bottomnavbar.dart';
+
 /// terza classe per la registrazione degli utenti
 /// {@autor ivanpacenti}
 class RegTerza extends StatefulWidget {

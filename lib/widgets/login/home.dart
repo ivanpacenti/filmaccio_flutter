@@ -3,12 +3,12 @@ import 'package:filmaccio_flutter/widgets/MovieDetails.dart';
 import 'package:filmaccio_flutter/widgets/models/Movie.dart';
 import 'package:filmaccio_flutter/widgets/models/TvShow.dart';
 import 'package:flutter/material.dart';
+
 import '../Firebase/FirestoreService.dart';
+import '../SeriesDetails.dart';
 import '../data/api/TmdbApiClient.dart';
 import '../data/api/api_key.dart';
-import '../SeriesDetails.dart';
 
-import 'package:filmaccio_flutter/color_schemes.g.dart';
 /// Classe home che implementa le 3 categorie di film
 /// {@autor ivanpacenti}
 /// {@autor nicolaPiccia}

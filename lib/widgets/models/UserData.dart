@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-
 class UserData {
   late String _nomeUtente;
   late String _email;

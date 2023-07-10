@@ -1,7 +1,6 @@
 import 'package:filmaccio_flutter/widgets/Firebase/FirestoreService.dart';
-import 'package:filmaccio_flutter/widgets/login/login.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import '../../main.dart';
 import '../models/UserData.dart';
 import 'Auth.dart';

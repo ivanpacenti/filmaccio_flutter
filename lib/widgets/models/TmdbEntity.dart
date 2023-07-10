@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
+
 part 'TmdbEntity.g.dart';
+
 @JsonSerializable()
 class TmdbEntity {
   @JsonKey(name: 'id')

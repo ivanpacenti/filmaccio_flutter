@@ -1,10 +1,11 @@
+import 'package:datepicker_dropdown/datepicker_dropdown.dart';
 import 'package:filmaccio_flutter/widgets/login/RegPrima.dart';
 import 'package:filmaccio_flutter/widgets/models/UserData.dart';
 import 'package:flutter/material.dart';
-import 'package:datepicker_dropdown/datepicker_dropdown.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'RegTerza.dart';
+
 /// seconda classe per la registrazione degli utenti
 /// {@autor ivanpacenti}
 class RegSeconda extends StatefulWidget {

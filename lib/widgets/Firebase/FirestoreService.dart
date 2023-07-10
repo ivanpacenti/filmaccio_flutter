@@ -5,66 +5,65 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import '../login/Auth.dart';
 import '../models/UserData.dart';
+
 /// Classe che implementa i servizi di firestore, in modo da fare le chiamate al database in un unica classe
 /// {@autor nicolaPiccia}
 class FirestoreService {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
+
   //riferimenti alle collezioni del database
   static final CollectionReference _collectionUsers = _db.collection('users');
   static final CollectionReference _collectionFollow = _db.collection('follow');
   static final CollectionReference _collectionLists = _db.collection('lists');
-  static final CollectionReference _collectionEpisodes = _db.collection('episodes');
-  static final CollectionReference _collectionUsersReviews = _db.collection('usersReviews');
-  static final CollectionReference _collectionProductsReviews = _db.collection('productsReviews');
+  static final CollectionReference _collectionEpisodes =
+      _db.collection('episodes');
+  static final CollectionReference _collectionUsersReviews =
+      _db.collection('usersReviews');
+  static final CollectionReference _collectionProductsReviews =
+      _db.collection('productsReviews');
 
   static Future<dynamic> getUserByUid(String uid) async {
     DocumentSnapshot snapshot = await _collectionUsers.doc(uid).get();
     return snapshot.data();
   }
+
   static Future<bool> searchUsersByEmail(String email) async {
-    QuerySnapshot snapshot = await _collectionUsers
-        .where('email', isEqualTo: email)
-        .limit(1)
-        .get();
+    QuerySnapshot snapshot =
+        await _collectionUsers.where('email', isEqualTo: email).limit(1).get();
 
     return snapshot.size > 0;
-
   }
+
   static Future<void> createUser(UserData userData) async {
     try {
-		//qui creo l'utente con mail e password
-      await Auth().createUserWithEmailAndPassword(email: userData.email, password: userData.password);
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      //qui creo l'utente con mail e password
+      await Auth().createUserWithEmailAndPassword(
+          email: userData.email, password: userData.password);
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: userData.email,
         password: userData.password,
       );
-		//prendo id dell'utente creato
-      String uid= userCredential.user!.uid;
+      //prendo id dell'utente creato
+      String uid = userCredential.user!.uid;
       // Conversione della data di nascita in un Timestamp
       Timestamp birthDate = Timestamp.fromDate(userData.dataNascita);
-		//questa parte serve per l'immagine profilo
+      //questa parte serve per l'immagine profilo
       final compressedImage = await userData.avatar.readAsBytes();
-      final compressedImageData = await FlutterImageCompress.compressWithList(
-        compressedImage,
-        minHeight: 500,
-        minWidth: 500,
-        quality: 80,
-      );
-			//prende il riferimento a Firebase storage
+      //prende il riferimento a Firebase storage
       final storageReference = FirebaseStorage.instance.ref();
-			//crea il riferimento all'immagine che verrà caricata
+      //crea il riferimento all'immagine che verrà caricata
       final propicReference = storageReference.child("propic/$uid/profile.jpg");
-			//la carica
-      final uploadTask = propicReference.putData(compressedImageData);
-      final snapshot = await uploadTask.whenComplete(() {});
-			//prende il link all'immagine sul server
+      //la carica
+      //prende il link all'immagine sul server
       final propicURL = await propicReference.getDownloadURL();
 
       // Creazione dei dati utente da salvare nel documento
-			//creo una mappa che verrà caricata sul db
-			//nello specifico questa è per gli attributi dell'utente
+      //creo una mappa che verrà caricata sul db
+      //nello specifico questa è per gli attributi dell'utente
       Map<String, dynamic> userDataMap = {
-        'backdropImage': "https://image.tmdb.org/t/p/w1280//chauy3iJaZtrMbTr72rgNmOZwo3.jpg",
+        'backdropImage':
+            "https://image.tmdb.org/t/p/w1280//chauy3iJaZtrMbTr72rgNmOZwo3.jpg",
         'birthDate': birthDate,
         'email': userData.email,
         'gender': userData.genere,
@@ -73,12 +72,13 @@ class FirestoreService {
         'uid': uid,
         'username': userData.nomeUtente,
         'movieMinutes': 0,
-        'moviesNumber':0,
-        'tvMinutes':0,
-        'tvNumber':0
+        'moviesNumber': 0,
+        'tvMinutes': 0,
+        'tvNumber': 0
       };
-			//prende l id utente (perché due volte?)
-      DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(uid);
+      //prende l id utente (perché due volte?)
+      DocumentReference userRef =
+          FirebaseFirestore.instance.collection('users').doc(uid);
 
       // Salvataggio della mappa con i dati utente nel documento
       await userRef.set(userDataMap);
@@ -90,7 +90,8 @@ class FirestoreService {
         'following': [],
         'people': [],
       };
-      DocumentReference followRef = FirebaseFirestore.instance.collection('follow').doc(uid);
+      DocumentReference followRef =
+          FirebaseFirestore.instance.collection('follow').doc(uid);
       await followRef.set(followDataMap);
 
       //mappa per le liste
@@ -103,7 +104,8 @@ class FirestoreService {
         'watchlist_m': [],
         'watchlist_t': [],
       };
-      DocumentReference listsRef = FirebaseFirestore.instance.collection('lists').doc(uid);
+      DocumentReference listsRef =
+          FirebaseFirestore.instance.collection('lists').doc(uid);
       await listsRef.set(listDataMap);
 
       // mappa per gli espisodi
@@ -111,7 +113,8 @@ class FirestoreService {
         'watchingSeries': <String, dynamic>{},
       };
 
-      DocumentReference watchingSeriesRef = FirebaseFirestore.instance.collection('episodes').doc(uid);
+      DocumentReference watchingSeriesRef =
+          FirebaseFirestore.instance.collection('episodes').doc(uid);
       await watchingSeriesRef.set(watchingSeriesMap);
 
       Map<String, dynamic> reviewsDocument = {
@@ -119,20 +122,19 @@ class FirestoreService {
         "series": <String, dynamic>{},
       };
 
-      DocumentReference reviewsRef = FirebaseFirestore.instance.collection('usersReviews').doc(uid);
+      DocumentReference reviewsRef =
+          FirebaseFirestore.instance.collection('usersReviews').doc(uid);
       await reviewsRef.set(reviewsDocument);
-
     } catch (error) {
-      print('Error durante la creation dell\'utente: $error'); // lasciamo importante
+      print(
+          'Error durante la creation dell\'utente: $error'); // lasciamo importante
     }
   }
 
   static Future<List<dynamic>> searchUsers(String query) async {
     QuerySnapshot snapshot = await _collectionUsers
         .orderBy('username')
-        .startAt([query])
-        .endAt(['$query\uf8ff'])
-        .get();
+        .startAt([query]).endAt(['$query\uf8ff']).get();
     return snapshot.docs.map((doc) => doc.data()).toList();
   }
 
@@ -171,39 +173,55 @@ class FirestoreService {
 
   static Future<void> followUser(String uid, String targetUid) async {
     DocumentReference followRef = _collectionFollow.doc(uid);
-    await followRef.update({'following': FieldValue.arrayUnion([targetUid])});
+    await followRef.update({
+      'following': FieldValue.arrayUnion([targetUid])
+    });
 
     DocumentReference followerRef = _collectionFollow.doc(targetUid);
-    await followerRef.update({'followers': FieldValue.arrayUnion([uid])});
+    await followerRef.update({
+      'followers': FieldValue.arrayUnion([uid])
+    });
   }
 
   static Future<void> unfollowUser(String uid, String targetUid) async {
     DocumentReference followRef = _collectionFollow.doc(uid);
-    await followRef.update({'following': FieldValue.arrayRemove([targetUid])});
+    await followRef.update({
+      'following': FieldValue.arrayRemove([targetUid])
+    });
 
     DocumentReference followerRef = _collectionFollow.doc(targetUid);
-    await followerRef.update({'followers': FieldValue.arrayRemove([uid])});
+    await followerRef.update({
+      'followers': FieldValue.arrayRemove([uid])
+    });
   }
 
   static Future<void> followPerson(String uid, int personId) async {
     DocumentReference followRef = _collectionFollow.doc(uid);
-    await followRef.update({'people': FieldValue.arrayUnion([personId])});
+    await followRef.update({
+      'people': FieldValue.arrayUnion([personId])
+    });
   }
 
   static Future<void> unfollowPerson(String uid, int personId) async {
     DocumentReference followRef = _collectionFollow.doc(uid);
-    await followRef.update({'people': FieldValue.arrayRemove([personId])});
+    await followRef.update({
+      'people': FieldValue.arrayRemove([personId])
+    });
   }
 
   static Future<void> addToList(String uid, String listName, int itemId) async {
     DocumentReference listsRef = _collectionLists.doc(uid);
-    await listsRef.update({listName: FieldValue.arrayUnion([itemId])});
+    await listsRef.update({
+      listName: FieldValue.arrayUnion([itemId])
+    });
   }
 
   static Future<void> removeFromList(
       String uid, String listName, int itemId) async {
     DocumentReference listsRef = _collectionLists.doc(uid);
-    await listsRef.update({listName: FieldValue.arrayRemove([itemId])});
+    await listsRef.update({
+      listName: FieldValue.arrayRemove([itemId])
+    });
   }
 
   static Future<List<dynamic>> getList(String uid, String listName) async {
@@ -230,7 +248,7 @@ class FirestoreService {
     DocumentReference docRef = _collectionEpisodes.doc(uid);
     docRef.update({
       'watchingSeries.$seriesId.$seasonNumber':
-      FieldValue.arrayUnion([episodeNumber])
+          FieldValue.arrayUnion([episodeNumber])
     });
   }
 
@@ -239,7 +257,7 @@ class FirestoreService {
     DocumentReference docRef = _collectionEpisodes.doc(uid);
     docRef.update({
       'watchingSeries.$seriesId.$seasonNumber':
-      FieldValue.arrayRemove([episodeNumber])
+          FieldValue.arrayRemove([episodeNumber])
     });
   }
 
@@ -259,24 +277,22 @@ class FirestoreService {
   }
 
   static Future<List<dynamic>> getAllRatings(String type) async {
-    DocumentSnapshot docRef =
-    await _collectionProductsReviews.doc(type).get();
-    Map<String, dynamic> data = docRef.data() as Map<String, dynamic> ?? {};
+    DocumentSnapshot docRef = await _collectionProductsReviews.doc(type).get();
+    Map<String, dynamic> data = docRef.data() as Map<String, dynamic>;
     List<dynamic> ratings = [];
     for (String id in data.keys) {
       if (data[id]['ratings'] == null) {
         continue;
       }
-      double rating =
-          data[id]['value'].toDouble() / data[id]['ratings'].length;
+      double rating = data[id]['value'].toDouble() / data[id]['ratings'].length;
       ratings.add({'id': int.parse(id), 'rating': rating});
     }
     return ratings;
   }
 
-  static Future<Map<String, dynamic>?> getUserReviews(String userId, String type) async {
-    DocumentSnapshot docRef =
-    await _collectionUsersReviews.doc(userId).get();
+  static Future<Map<String, dynamic>?> getUserReviews(
+      String userId, String type) async {
+    DocumentSnapshot docRef = await _collectionUsersReviews.doc(userId).get();
     Map<String, dynamic>? reviews = docRef.get(type);
     Map<String, dynamic>? latestReview = findLatestReview(reviews);
     if (latestReview == null) {
@@ -291,7 +307,10 @@ class FirestoreService {
       'reviewText': latestReview['review'],
       'reviewDate': dateString,
     };
-    return {'reviewTriple': reviewTriple, 'latestReview': latestReview['movieId']};
+    return {
+      'reviewTriple': reviewTriple,
+      'latestReview': latestReview['movieId']
+    };
   }
 
   static Map<String, dynamic>? findLatestReview(Map<String, dynamic>? reviews) {

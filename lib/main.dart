@@ -1,12 +1,11 @@
 import 'package:filmaccio_flutter/widgets/nav/bottomnavbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'widgets/login/login.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'package:flutter/material.dart';
 
 import 'color_schemes.g.dart';
+import 'widgets/login/login.dart';
+
 /// questa classe è la radice della nostra applicazione
 ///{@autor ivanpacenti}
 void main() async {
@@ -23,7 +22,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
     final FirebaseAuth firebaseAuth = FirebaseAuth.instance;

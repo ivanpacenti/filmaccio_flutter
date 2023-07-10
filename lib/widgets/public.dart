@@ -8,8 +8,6 @@ import 'SeriesDetails.dart';
 import 'data/api/TmdbApiClient.dart';
 import 'data/api/api_key.dart';
 
-
-
 /// Questa è la classe per la visualizzazione di 4 endpoint dell'api, Film popolari, serie TV popolari,film di tendenza serie TV di tendenza
 ///{@autor nicolaPiccia}
 ///{@autor nicolobartolinii}
@@ -138,7 +136,8 @@ class _HomeApiState extends State<HomeApi> {
   Future<void> fetchTrandingMovie() async {
     // funzione per prendere i tranding  rated movies
     try {
-      final response = await _apiClient.getTrandingMovie(tmdbApiKey, 'it-IT', 'IT');
+      final response =
+          await _apiClient.getTrandingMovie(tmdbApiKey, 'it-IT', 'IT');
       setState(() {
         _topMoviesWeek = response.results.toList();
       });
@@ -153,11 +152,7 @@ class _HomeApiState extends State<HomeApi> {
       final response =
           await _apiClient.getTopRatedTv(tmdbApiKey, 1, 'it-IT', 'IT');
       setState(() {
-        if (response.results != null) {
           _topTvShows = response.results.toList();
-        } else {
-          _topTvShows = [];
-        }
       });
     } catch (error) {
       print('Error fetching top TV shows: $error');
@@ -167,13 +162,14 @@ class _HomeApiState extends State<HomeApi> {
   Future<void> fetchTrandingTvShows() async {
     // funzione per prendere i le serie tv  rated movies
     try {
-      final response = await _apiClient.getTrandingTV(tmdbApiKey, 'it-IT', 'IT');
+      final response =
+          await _apiClient.getTrandingTV(tmdbApiKey, 'it-IT', 'IT');
       setState(() {
-        _topTrandingTvShows = response.results.isNotEmpty ? response.results.toList() : [];
+        _topTrandingTvShows =
+            response.results.isNotEmpty ? response.results.toList() : [];
       });
     } catch (error) {
       print('Error fetching top TV shows: $error');
     }
   }
-
 }
