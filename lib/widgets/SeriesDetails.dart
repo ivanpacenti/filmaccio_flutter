@@ -14,6 +14,9 @@ import 'login/Auth.dart';
 import 'models/Person.dart';
 import 'models/TvShow.dart';
 
+/// classe per il dettaglio delle serie tv
+/// @autor NicolaPiccia
+/// @autor {nicolobartolinii}
 class TvShowDetails extends StatefulWidget {
   final TvShow tvShow;
 
