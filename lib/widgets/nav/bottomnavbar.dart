@@ -4,7 +4,10 @@ import 'package:filmaccio_flutter/widgets/ricerca.dart';
 import 'package:flutter/material.dart';
 
 import '../login/home.dart';
-
+/// Clase per la navigazione tra le pagine
+/// {@autor ivanpacenti}
+/// {@autor nicolaPiccia}
+/// {@autor nicolobartolinii}
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({Key? key}) : super(key: key);
 

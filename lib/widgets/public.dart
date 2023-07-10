@@ -9,6 +9,10 @@ import 'data/api/TmdbApiClient.dart';
 import 'data/api/api_key.dart';
 
 
+
+/// Questa è la classe per la visualizzazione di 4 endpoint dell'api, Film popolari, serie TV popolari,film di tendenza serie TV di tendenza
+///{@autor nicolaPiccia}
+///{@autor nicolobartolinii}
 class HomeApi extends StatefulWidget {
   const HomeApi({super.key});
 

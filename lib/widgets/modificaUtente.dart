@@ -5,6 +5,11 @@ import 'package:flutter/material.dart';
 import 'Firebase/FirestoreService.dart';
 import 'login/Auth.dart';
 
+
+
+///Classe per la modifica dei dati degli utenti
+///{@autor nicolaPiccia}
+///{@autor nicolobartolinii}
 class ModificaUtente extends StatefulWidget {
   ModificaUtente({Key? key}) : super(key: key);
 

@@ -13,7 +13,12 @@ import 'models/TmdbEntity.dart';
 import 'models/TvShow.dart';
 import 'other_user_profile.dart';
 
+
+/// Questa è la classe di riferimento per la ricerca di film, serie tv, persone e utenti
+///  {@autor NicolaPiccia}
+/// {@autor {nicolobartolinii}
 class Ricerca extends StatefulWidget {
+
   const Ricerca({super.key});
 
   @override

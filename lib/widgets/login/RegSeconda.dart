@@ -5,7 +5,8 @@ import 'package:datepicker_dropdown/datepicker_dropdown.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'RegTerza.dart';
-
+/// seconda classe per la registrazione degli utenti
+/// {@autor ivanpacenti}
 class RegSeconda extends StatefulWidget {
   final UserData userData;
 

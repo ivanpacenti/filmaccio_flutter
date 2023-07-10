@@ -7,6 +7,8 @@ import '../models/UserData.dart';
 import 'Auth.dart';
 import 'RegSeconda.dart';
 
+/// prima classe per la registrazione degli utenti
+/// {@autor ivanpacenti}
 class RegPrima extends StatefulWidget {
   UserData userData = UserData();
 

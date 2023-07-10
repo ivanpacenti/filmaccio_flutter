@@ -9,7 +9,10 @@ import '../data/api/api_key.dart';
 import '../SeriesDetails.dart';
 
 import 'package:filmaccio_flutter/color_schemes.g.dart';
-
+/// Classe home che implementa le 3 categorie di film
+/// {@autor ivanpacenti}
+/// {@autor nicolaPiccia}
+/// {@autor nicolobartolinii}
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();

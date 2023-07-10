@@ -11,7 +11,8 @@ import 'dart:io';
 
 import '../models/UserData.dart';
 import '../nav/bottomnavbar.dart';
-
+/// terza classe per la registrazione degli utenti
+/// {@autor ivanpacenti}
 class RegTerza extends StatefulWidget {
   final UserData userData;
 

@@ -10,6 +10,10 @@ import 'login/Auth.dart';
 import 'models/Movie.dart';
 import 'models/TvShow.dart';
 
+
+/// classe per la visualizzazione del profilo  di altri utenti
+///{@autor nicolaPiccia}
+///{@autor nicolobartolinii}
 class OtherUserProfile extends StatefulWidget {
   final String userId;
 

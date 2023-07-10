@@ -12,6 +12,9 @@ import 'login/Auth.dart';
 import 'models/Movie.dart';
 import 'modificaUtente.dart';
 
+/// Classe per la visualizzazione del profilo personale con due collegamenti con i pulsanti di logout e modifica
+///{@autor nicolaPiccia}
+///{@autor nicolobartolinii}
 class Profilo extends StatefulWidget {
   Profilo({Key? key}) : super(key: key);
 

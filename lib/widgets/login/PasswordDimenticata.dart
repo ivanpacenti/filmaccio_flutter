@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+/// classe che implementa la modifica della password in un utente che non ha fatto login
+/// {@autor ivanpacenti}
 class PasswordDimenticata extends StatefulWidget {
   @override
   _PasswordDimenticataState createState() => _PasswordDimenticataState();

@@ -4,6 +4,9 @@ import 'package:filmaccio_flutter/widgets/login/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+/// Classe che implementa la pagina di  login
+/// {@autor ivanpacenti}
+/// {@autor nicolaPiccia}
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 

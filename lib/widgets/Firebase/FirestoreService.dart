@@ -5,7 +5,8 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import '../login/Auth.dart';
 import '../models/UserData.dart';
-
+/// Classe che implementa i servizi di firestore, in modo da fare le chiamate al database in un unica classe
+/// {@autor nicolaPiccia}
 class FirestoreService {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
   //riferimenti alle collezioni del database

@@ -13,6 +13,11 @@ import 'data/api/api_key.dart';
 import 'login/Auth.dart';
 import 'models/Person.dart';
 
+
+/// Classe per la visualizzazione dei dettagli di un film in particolare
+/// {@autor ivanpacenti}
+/// {@autor NicolaPiccia}
+/// {@autor nicolobartolinii}
 class MovieDetails extends StatefulWidget {
   final Movie movie;
 

@@ -15,6 +15,9 @@ class PersonDetailsActivity extends StatefulWidget {
   _PersonDetailsActivityState createState() => _PersonDetailsActivityState();
 }
 
+/// Questa è la classe per la visualizzazione dei dettagli di una persona /attore/regista o facente parte del casting
+///{@autor nicolaPiccia}
+///{@autor nicolobartolinii}
 class _PersonDetailsActivityState extends State<PersonDetailsActivity> {
   final User? currentUser = Auth().currentUser;
   final String currentUserId = Auth().currentUser!.uid;
